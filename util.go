@@ -64,7 +64,7 @@ func initConfig() (*config, error) {
 	flag.StringVar(&c.consulToken, "token", "",
 		"Optional consul token to access the target cluster")
 	flag.StringVar(&c.consulPrefix, "prefix", "/",
-		"Optional prefix from under which all keys will be fetched or restored")
+		"Optional prefix from under which all keys will be fetched")
 
 	// parse flags
 	flag.Parse()
