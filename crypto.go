@@ -11,14 +11,14 @@ import (
 )
 
 // ensure 32 byte hashed key
-func buildKey(s string) []byte {
-	sum := sha256.Sum256([]byte(s))
+func (c *config) buildKey() []byte {
+	sum := sha256.Sum256([]byte(c.cryptKey))
 	return sum[:]
 }
 
 // read a compressed/encrypted backup file
-func readFile(src string, key []byte) ([]byte, error) {
-	var inFile *os.File        // input file
+func (c *config) readFile() ([]byte, error) {
+	var in *os.File            // input file
 	var gzReader *gzip.Reader  // compressed reader
 	var iv [aes.BlockSize]byte // initialization vector
 	var cb cipher.Block        // cipher block interface
@@ -26,15 +26,15 @@ func readFile(src string, key []byte) ([]byte, error) {
 	var err error              // general error handler
 
 	// open source file
-	if inFile, err = os.Open(src); err != nil {
+	if in, err = os.Open(c.inFile); err != nil {
 		return nil, err
 	}
 
 	// close when done
-	defer inFile.Close()
+	defer in.Close()
 
 	// wrap reader
-	if gzReader, err = gzip.NewReader(inFile); err != nil {
+	if gzReader, err = gzip.NewReader(in); err != nil {
 		return nil, err
 	}
 
@@ -42,7 +42,7 @@ func readFile(src string, key []byte) ([]byte, error) {
 	defer gzReader.Close()
 
 	// init cipher block
-	if cb, err = aes.NewCipher(key); err != nil {
+	if cb, err = aes.NewCipher(c.buildKey()); err != nil {
 		return nil, err
 	}
 
@@ -60,8 +60,8 @@ func readFile(src string, key []byte) ([]byte, error) {
 }
 
 // write an encrypted/compressed backup file
-func writeFile(dst string, src, key []byte) error {
-	var outFile *os.File       // destination file
+func (c *config) writeFile(data []byte) error {
+	var out *os.File           // destination file
 	var gzWriter *gzip.Writer  // compressed writer
 	var iv [aes.BlockSize]byte // initialization vector
 	var cb cipher.Block        // cipher block interface
@@ -69,28 +69,28 @@ func writeFile(dst string, src, key []byte) error {
 
 	// open destination file and create/overwite if neeeded
 	// and ensure it's only accessible by the current executer
-	if outFile, err = os.OpenFile(dst, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600); err != nil {
+	if out, err = os.OpenFile(c.outFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600); err != nil {
 		return err
 	}
 
 	// close when done
-	defer outFile.Close()
+	defer out.Close()
 
 	// wrap writer
-	gzWriter = gzip.NewWriter(outFile)
+	gzWriter = gzip.NewWriter(out)
 
 	// close when done
 	defer gzWriter.Close()
 
 	// init cipher block
-	if cb, err = aes.NewCipher(key); err != nil {
+	if cb, err = aes.NewCipher(c.buildKey()); err != nil {
 		return err
 	}
 
 	// copy data to destination file encrypting and compressing along the way
 	_, err = io.Copy(&cipher.StreamWriter{
 		S: cipher.NewOFB(cb, iv[:]), W: gzWriter,
-	}, bytes.NewReader(src))
+	}, bytes.NewReader(data))
 
 	// return last error
 	return err

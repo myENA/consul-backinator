@@ -1,8 +1,8 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
+	"errors"
+	"flag"
 	"github.com/hashicorp/consul/api"
 	"log"
 	"strings"
@@ -11,84 +11,110 @@ import (
 // consul kvp separator
 const consulSeparator = "/"
 
-func (c *client) backupKeys(file, key, prefix string) (int, error) {
-	// get data and key count from consul api
-	data, count, err := c.getKeys(prefix)
-
-	// check error
-	if err != nil {
-		return 0, err
-	}
-
-	// write data
-	if err := writeFile(file, data, buildKey(key)); err != nil {
-		return 0, err
-	}
-
-	// return key count - no error
-	return count, nil
+// our instance configuration
+type config struct {
+	inFile        string
+	outFile       string
+	cryptKey      string
+	pathTransform string
+	pathReplacer  *strings.Replacer
+	delTree       bool
+	backupReq     bool
+	restoreReq    bool
+	consulAddr    string
+	consulScheme  string
+	consulDc      string
+	consulToken   string
+	consulPrefix  string
+	consulClient  *api.Client
 }
 
-func (c *client) restoreKeys(file, key, prefix, transform string, deltree bool) (int, error) {
-	var replacer *strings.Replacer
-	var kvps api.KVPairs
+// bad count
+var ErrBadTransform = errors.New("Path transformation list not even. " +
+	"Transformations must be specified as pairs.")
 
-	// restore keys
-	bytes, err := readFile(file, buildKey(key))
+// init instance configuration
+func initConfig() (*config, error) {
+	var c = new(config) // instance configuration
+	var err error       // general error holder
 
-	// check error
-	if err != nil {
-		return 0, err
-	}
+	// declare flags
+	flag.StringVar(&c.inFile, "in", "consul.bak",
+		"Input file for restore operations")
+	flag.StringVar(&c.outFile, "out", "consul.bak",
+		"Output file for backup operations")
+	flag.StringVar(&c.cryptKey, "key", "password",
+		"Encryption key used to secure the destination file on backup "+
+			"and read the input file on restore")
+	flag.StringVar(&c.pathTransform, "transform", "",
+		"Optional path transformation to be applied on backup and restore "+
+			"(oldPath,newPath...)")
+	flag.BoolVar(&c.delTree, "delete", false,
+		"Optionally delete all keys under the destination prefix before restore")
+	flag.BoolVar(&c.backupReq, "backup", false,
+		"Trigger backup operation")
+	flag.BoolVar(&c.restoreReq, "restore", false,
+		"Trigger restore operation")
+	flag.StringVar(&c.consulAddr, "addr", "",
+		"Consul instance address and port (\"127.0.0.1:8500\")")
+	flag.StringVar(&c.consulScheme, "scheme", "",
+		"Optional consul instance scheme (\"http\" or \"https\")")
+	flag.StringVar(&c.consulDc, "dc", "",
+		"Optional consul datacenter label for backup and restore")
+	flag.StringVar(&c.consulToken, "token", "",
+		"Optional consul token to access the target cluster")
+	flag.StringVar(&c.consulPrefix, "prefix", "/",
+		"Optional prefix from under which all keys will be fetched or restored")
 
-	// check transformation request
-	if transform != "" {
+	// parse flags
+	flag.Parse()
+
+	// build replacer
+	if c.pathTransform != "" {
 		// split strings
-		split := strings.Split(transform, ",")
+		split := strings.Split(c.pathTransform, ",")
 		// check count
 		if (len(split) % 2) != 0 {
-			return 0, fmt.Errorf("Odd transform count: %d", len(split))
+			return c, ErrBadTransform
 		}
 		// build replacer
-		replacer = strings.NewReplacer(split...)
+		c.pathReplacer = strings.NewReplacer(split...)
 	}
 
-	// decode data
-	if err := json.Unmarshal(bytes, &kvps); err != nil {
-		return 0, err
-	}
+	// populate client
+	err = c.buildClient()
 
-	// delete tree before restore if requested
-	if deltree {
-		if _, err := c.KV().DeleteTree(prefix, nil); err != nil {
-			return 0, err
-		}
+	// return configuration and last error
+	return c, err
+}
+
+// perform path transformation if needed
+func (c *config) transformPaths(kvps api.KVPairs) {
+	// check replacer - return immediately if not valid
+	if c.pathReplacer == nil {
+		return
 	}
 
 	// loop through keys
 	for _, kv := range kvps {
-		// transform path if we have a valid replacer
-		if replacer != nil {
-			// split path and key with strings because
-			// the path package will trim a trailing / which
-			// breaks empty folders present in the kvp store
-			split := strings.Split(kv.Key, consulSeparator)
-			// get and check length ... only continue if we actually
-			// have a path we may want to transform
-			if length := len(split); length > 1 {
-				// isolate and replace path
-				rpath := replacer.Replace(strings.Join(split[:length-1], consulSeparator))
-				// join replaced path with key and update
-				kv.Key = strings.Join([]string{rpath, split[length-1]}, consulSeparator)
+		// split path and key with strings because
+		// the path package will trim a trailing / which
+		// breaks empty folders present in the kvp store
+		split := strings.Split(kv.Key, consulSeparator)
+		// get and check length ... only continue if we actually
+		// have a path we may want to transform
+		if length := len(split); length > 1 {
+			// isolate and replace path
+			rpath := c.pathReplacer.Replace(strings.Join(split[:length-1], consulSeparator))
+			// join replaced path with key
+			newKey := strings.Join([]string{rpath, split[length-1]}, consulSeparator)
+			// check keys
+			if kv.Key != newKey {
+				// log change
+				log.Printf("[Transform] %s -> %s", kv.Key, newKey)
+				// update key
+				kv.Key = newKey
 			}
 		}
-		// attempt write key
-		if _, err = c.KV().Put(kv, nil); err != nil {
-			log.Printf("WARNING: Failed to restore %s: %s",
-				kv.Key, err.Error())
-		}
 	}
-
-	// return key count - no error
-	return len(kvps), nil
 }
