@@ -34,17 +34,20 @@ func buildClient(address, scheme, dc, token string) (*client, error) {
 	return &client{Client: c}, err
 }
 
-func (c *client) getKeys(prefix string) ([]byte, error) {
+func (c *client) getKeys(prefix string) ([]byte, int, error) {
 	// build options
 	opts := &api.QueryOptions{
+		AllowStale:        false,
 		RequireConsistent: true,
 	}
 	// get all keys
 	pairs, _, err := c.KV().List(prefix, opts)
 	// check error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	// encode and return
-	return json.Marshal(pairs)
+	data, err := json.Marshal(pairs)
+	// return
+	return data, len(pairs), err
 }

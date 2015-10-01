@@ -2,22 +2,38 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"os"
 )
 
 func main() {
-	var inputFile = flag.String("input", "consul.bak", "Input file")
-	var outputFile = flag.String("output", "consul.bak", "Output file")
-	var encKey = flag.String("key", "password", "Encryption key")
-	var consulAddr = flag.String("address", "", "Consul instance address")
-	var consulScheme = flag.String("scheme", "", "Consul instance scheme (http or https")
-	var consulDc = flag.String("dc", "", "Consul datacenter")
-	var consulToken = flag.String("token", "", "Consul access token")
-	var pathPrefix = flag.String("prefix", "/", "Path prefix")
-	//	var pathRegex = flag.String("regex", "", "Regex applied to data paths")
-	var doBackup = flag.Bool("backup", false, "Request backup")
-	var doRestore = flag.Bool("restore", false, "Request restoration")
+	var inputFile = flag.String("input", "consul.bak",
+		"Input file for restore operations")
+	var outputFile = flag.String("output", "consul.bak",
+		"Output file for backup operations")
+	var encKey = flag.String("key", "password",
+		"Encryption key to be used for backup and restore operations")
+	var consulAddr = flag.String("address", "",
+		"Consul instance address (\"127.0.0.1:8500\")")
+	var consulScheme = flag.String("scheme", "",
+		"Optional consul instance scheme (\"http\" or \"https\")")
+	var consulDc = flag.String("dc", "",
+		"Optional consul datacenter label for backup and restore")
+	var consulToken = flag.String("token", "",
+		"Optional consul token to access the target cluster")
+	var pathPrefix = flag.String("prefix", "/",
+		"Optional prefix from under which all keys will be fetched or restored")
+	var pathTransform = flag.String("transform", "",
+		"Optional path transformation pairs for restore (source1,dest1,source2,dest2...)")
+	var deleteTree = flag.Bool("delete", false,
+		"Optionally delete all keys under destination prefix before restore")
+	var doBackup = flag.Bool("backup", false,
+		"Trigger backup operation")
+	var doRestore = flag.Bool("restore", false,
+		"Trigger restore operation")
 
+	// parse flags
 	flag.Parse()
 
 	// doing a backup?
@@ -25,20 +41,22 @@ func main() {
 		// build client
 		c, err := buildClient(*consulAddr, *consulScheme, *consulDc, *consulToken)
 
-		// get data from consul api
-		data, err := c.getKeys(*pathPrefix)
+		// check error
+		if err != nil {
+			log.Fatalf("Failed to build consul client: %s", err.Error())
+		}
+
+		// backup keys
+		count, err := c.backupKeys(*outputFile, *encKey, *pathPrefix)
 
 		// check error
 		if err != nil {
-			log.Printf("Failed to fetch keys: %s", err.Error())
+			log.Fatalf("Failed to backup KV data: %s", err.Error())
 		}
 
-		// write data
-		if err := writeFile(*outputFile, data, buildKey(*encKey)); err != nil {
-			log.Fatalf("Failed to write backup data: %s", err.Error())
-		}
-
-		log.Printf("Backed up xxx keys to %s", *outputFile)
+		// show success
+		log.Printf("Success: Backed up %d keys from %s%s to %s",
+			count, *consulAddr, *pathPrefix, *outputFile)
 
 		// exit
 		return
@@ -46,14 +64,32 @@ func main() {
 
 	// doing a restore?
 	if *doRestore {
-		bytes, err := readFile(*inputFile, buildKey(*encKey))
+		// build client
+		c, err := buildClient(*consulAddr, *consulScheme, *consulDc, *consulToken)
+
+		// check error
 		if err != nil {
-			log.Fatalf("Failed to read restore data: %s", err.Error())
+			log.Fatalf("Failed to build consul client: %s", err.Error())
 		}
-		log.Printf("Read: %s", string(bytes))
+
+		// restore keys
+		count, err := c.restoreKeys(*inputFile, *encKey, *pathPrefix, *pathTransform, *deleteTree)
+
+		// check error
+		if err != nil {
+			log.Fatalf("Failed to restore data: %s", err.Error())
+		}
+
+		// show success
+		log.Printf("Success: Restored %d keys from %s to %s%s",
+			count, *inputFile, *consulAddr, *pathPrefix)
+
 		// exit
 		return
 	}
+
+	// print usage
+	fmt.Fprintf(os.Stderr, "Usage: %s -h\n", os.Args[0])
 
 	// exit
 	return

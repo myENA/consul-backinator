@@ -1,0 +1,7 @@
+.DS_*
+.Apple*
+.vimrc
+.*~
+?
+*.bak
+consul-backinator

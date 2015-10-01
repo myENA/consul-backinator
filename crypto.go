@@ -92,6 +92,6 @@ func writeFile(dst string, src, key []byte) error {
 		S: cipher.NewOFB(cb, iv[:]), W: gzWriter,
 	}, bytes.NewReader(src))
 
-	// return last error state
+	// return last error
 	return err
 }
