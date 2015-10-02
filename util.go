@@ -45,8 +45,7 @@ func initConfig() (*config, error) {
 	flag.StringVar(&c.outFile, "out", "consul.bak",
 		"Output file for backup operations")
 	flag.StringVar(&c.cryptKey, "key", "password",
-		"Encryption key used to secure the destination file on backup "+
-			"and read the input file on restore")
+		"Passphrase used for data encryption and signature validation")
 	flag.StringVar(&c.pathTransform, "transform", "",
 		"Optional path transformation to be applied on backup and restore "+
 			"(oldPath,newPath...)")
