@@ -11,7 +11,7 @@ functionality should not be impacted.
 
 * Written in Golang using the official Consul API
 * No limits on the number of keys that can be backed up or restored
-* Backup files are written as AES256 encrypted/gzipped compressed JSON
+* Backup files are written as AES256 encrypted/gzip compressed JSON
 * Optional path transformation (path replacement) on backup and/or restore
 * Clean well documented code that's simple to follow
 
@@ -19,13 +19,13 @@ functionality should not be impacted.
 
 With a proper Go environment simply run:
 
-```bash
+```
 go get github.com/leprechau/consul-backinator
 ```
 
 ## Usage
 
-```bash
+```
 $ ./consul-backinator -h
 Usage of ./consul-backinator:
   -addr string
