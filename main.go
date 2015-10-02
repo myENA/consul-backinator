@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// it all starts here
 func main() {
 	var c *config // main config
 	var count int // key count

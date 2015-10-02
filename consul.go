@@ -41,6 +41,7 @@ func (c *config) buildClient() error {
 	return err
 }
 
+// fetch keys from the store and write to a backup file
 func (c *config) backupKeys() (int, error) {
 	var kvps api.KVPairs       // list of requested kv pairs
 	var opts *api.QueryOptions // client query options
@@ -79,6 +80,7 @@ func (c *config) backupKeys() (int, error) {
 	return count, nil
 }
 
+// read keys from a backup file and restore to consul
 func (c *config) restoreKeys() (int, error) {
 	var kvps api.KVPairs // decoded kv pairs
 	var count int        // key count
