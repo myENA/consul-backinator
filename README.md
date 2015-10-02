@@ -1,11 +1,19 @@
-## consul-backinator
+# consul-backinator
 
-Flexible Consul KV pair backup and restore tool with a few neat features.
-	* Written in Golang using the official Consul API
-	* No limits on the number of keys that can be backed up or restored
-	* Backup files are written as AES256 encrypted/gzipped compressed JSON
-	* Optional path transformation (path replacement) on backup and/or restore
-	* Clean well documented code that's simple to follow
+## Summary
+
+Flexible Consul KV pair backup and restore tool with a some unique features.
+This was written for and tested in a production environment but is still
+a work in progress.  More features will be coming but existing
+functionality should not be impacted.
+
+## Key Features
+
+* Written in Golang using the official Consul API
+* No limits on the number of keys that can be backed up or restored
+* Backup files are written as AES256 encrypted/gzipped compressed JSON
+* Optional path transformation (path replacement) on backup and/or restore
+* Clean well documented code that's simple to follow
 
 ## Installing
 
