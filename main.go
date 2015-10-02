@@ -28,6 +28,11 @@ func main() {
 		log.Printf("[Success] Backed up %d keys from %s%s to %s",
 			count, c.consulAddr, c.consulPrefix, c.outFile)
 
+		// make sure they know to keep the sig
+		fmt.Printf("Keep your backup (%s) and signature (%s.sig) files "+
+			"in a safe place.\nYou will need both to restore your data.\n",
+			c.outFile, c.outFile)
+
 		// exit
 		return
 	}

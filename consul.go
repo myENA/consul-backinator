@@ -73,7 +73,7 @@ func (c *config) backupKeys() (int, error) {
 	}
 
 	// write data
-	if err = c.writeFile(data); err != nil {
+	if err = c.writeBackupFile(data); err != nil {
 		return count, err
 	}
 
@@ -89,7 +89,7 @@ func (c *config) restoreKeys() (int, error) {
 	var err error        // general error holder
 
 	// read json data from file
-	if data, err = c.readFile(); err != nil {
+	if data, err = c.readBackupFile(); err != nil {
 		return count, err
 	}
 
