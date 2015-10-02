@@ -21,6 +21,7 @@ type config struct {
 	delTree       bool
 	backupReq     bool
 	restoreReq    bool
+	dataDump      bool
 	consulAddr    string
 	consulScheme  string
 	consulDc      string
@@ -49,6 +50,9 @@ func initConfig() (*config, error) {
 	flag.StringVar(&c.pathTransform, "transform", "",
 		"Optional path transformation to be applied on backup and restore "+
 			"(oldPath,newPath...)")
+	flag.BoolVar(&c.dataDump, "dump", false,
+		"Dump backup file contents to stdout and exit on restore without "+
+			"performing any path transformations or writing to consul")
 	flag.BoolVar(&c.delTree, "delete", false,
 		"Optionally delete all keys under the destination prefix before restore")
 	flag.BoolVar(&c.backupReq, "backup", false,

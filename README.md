@@ -26,30 +26,31 @@ go get github.com/leprechau/consul-backinator
 ## Usage
 
 ```
-$ ./consul-backinator -h
 Usage of ./consul-backinator:
   -addr string
-        Consul instance address and port ("127.0.0.1:8500")
+      Consul instance address and port ("127.0.0.1:8500")
   -backup
-        Trigger backup operation
+      Trigger backup operation
   -dc string
-        Optional consul datacenter label for backup and restore
+      Optional consul datacenter label for backup and restore
   -delete
-        Optionally delete all keys under the destination prefix before restore
+      Optionally delete all keys under the destination prefix before restore
+  -dump
+      Dump backup file contents to stdout and exit on restore without performing any path transformations or writing to consul
   -in string
-        Input file for restore operations (default "consul.bak")
+      Input file for restore operations (default "consul.bak")
   -key string
-        Encryption key used to secure the destination file on backup and read the input file on restore (default "password")
+      Encryption key used to secure the destination file on backup and read the input file on restore (default "password")
   -out string
-        Output file for backup operations (default "consul.bak")
+      Output file for backup operations (default "consul.bak")
   -prefix string
-        Optional prefix from under which all keys will be fetched (default "/")
+      Optional prefix from under which all keys will be fetched (default "/")
   -restore
-        Trigger restore operation
+      Trigger restore operation
   -scheme string
-        Optional consul instance scheme ("http" or "https")
+      Optional consul instance scheme ("http" or "https")
   -token string
-        Optional consul token to access the target cluster
+      Optional consul token to access the target cluster
   -transform string
-        Optional path transformation to be applied on backup and restore (oldPath,newPath...)
+      Optional path transformation to be applied on backup and restore (oldPath,newPath...)
 ```

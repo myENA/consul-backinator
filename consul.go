@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/hashicorp/consul/api"
 	"log"
+	"os"
 )
 
 // build consul client
@@ -67,7 +68,7 @@ func (c *config) backupKeys() (int, error) {
 	count = len(kvps)
 
 	// encode and return
-	if data, err = json.Marshal(kvps); err != nil {
+	if data, err = json.MarshalIndent(kvps, "", "  "); err != nil {
 		return count, err
 	}
 
@@ -90,6 +91,16 @@ func (c *config) restoreKeys() (int, error) {
 	// read json data from file
 	if data, err = c.readFile(); err != nil {
 		return count, err
+	}
+
+	// doing a dump?
+	if c.dataDump {
+		// write payload
+		os.Stdout.Write(data)
+		// write a blank line
+		os.Stdout.WriteString("\n")
+		// exit clean
+		os.Exit(0)
 	}
 
 	// decode data
