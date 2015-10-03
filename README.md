@@ -9,7 +9,7 @@ This was written for and tested in a production environment.
 
 * Written in Golang using the official Consul API
 * No limits on the number of keys that can be backed up or restored
-* Backup files are written as AES256 encrypted/gzip compressed JSON
+* Backup files are written as gzip compressed and AES256 encrypted JSON data
 * Data integrity validation via HMAC-SHA256 signature of the raw data
 * Optional path transformation (path replacement) on backup and/or restore
 * Clean well documented code that's simple to follow
