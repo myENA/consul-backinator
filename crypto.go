@@ -30,7 +30,7 @@ func (c *config) writeChecksum(data []byte) error {
 
 	// open destination file and create/overwite if neeeded
 	// and ensure it's only accessible by the current executer
-	if out, err = os.OpenFile(c.outFile+".sig", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600); err != nil {
+	if out, err = os.OpenFile(c.fileName+".sig", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600); err != nil {
 		return err
 	}
 
@@ -63,7 +63,7 @@ func (c *config) validChecksum(data []byte) error {
 	var buf *bytes.Buffer // signature buffer
 
 	// open source file
-	if in, err = os.Open(c.inFile + ".sig"); err != nil {
+	if in, err = os.Open(c.fileName + ".sig"); err != nil {
 		return err
 	}
 
@@ -106,7 +106,7 @@ func (c *config) readBackupFile() ([]byte, error) {
 	var err error              // general error handler
 
 	// open source file
-	if in, err = os.Open(c.inFile); err != nil {
+	if in, err = os.Open(c.fileName); err != nil {
 		return nil, err
 	}
 
@@ -156,7 +156,7 @@ func (c *config) writeBackupFile(data []byte) error {
 
 	// open destination file and create/overwite if neeeded
 	// and ensure it's only accessible by the current executer
-	if out, err = os.OpenFile(c.outFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600); err != nil {
+	if out, err = os.OpenFile(c.fileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600); err != nil {
 		return err
 	}
 

@@ -13,8 +13,7 @@ const consulSeparator = "/"
 
 // our instance configuration
 type config struct {
-	inFile        string
-	outFile       string
+	fileName      string
 	cryptKey      string
 	pathTransform string
 	pathReplacer  *strings.Replacer
@@ -40,26 +39,23 @@ func initConfig() (*config, error) {
 	var err error       // general error holder
 
 	// declare flags
-	flag.StringVar(&c.inFile, "in", "consul.bak",
-		"Input file for restore operations")
-	flag.StringVar(&c.outFile, "out", "consul.bak",
-		"Output file for backup operations")
+	flag.StringVar(&c.fileName, "file", "consul.bak",
+		"File for backup and restore operations")
 	flag.StringVar(&c.cryptKey, "key", "password",
 		"Passphrase used for data encryption and signature validation")
 	flag.StringVar(&c.pathTransform, "transform", "",
-		"Optional path transformation to be applied on backup and restore "+
-			"(oldPath,newPath...)")
+		"Optional folder path transformation (oldPath,newPath...)")
 	flag.BoolVar(&c.dataDump, "dump", false,
-		"Dump backup file contents to stdout and exit on restore without "+
-			"performing any path transformations or writing to consul")
+		"Dump backup file contents to stdout and exit when used with "+
+			"the -restore option")
 	flag.BoolVar(&c.delTree, "delete", false,
-		"Optionally delete all keys under the destination prefix before restore")
+		"Delete all keys under the destination prefix before restore")
 	flag.BoolVar(&c.backupReq, "backup", false,
 		"Trigger backup operation")
 	flag.BoolVar(&c.restoreReq, "restore", false,
 		"Trigger restore operation")
 	flag.StringVar(&c.consulAddr, "addr", "",
-		"Consul instance address and port (\"127.0.0.1:8500\")")
+		"Optional consul instance address and port (\"127.0.0.1:8500\")")
 	flag.StringVar(&c.consulScheme, "scheme", "",
 		"Optional consul instance scheme (\"http\" or \"https\")")
 	flag.StringVar(&c.consulDc, "dc", "",

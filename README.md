@@ -2,10 +2,8 @@
 
 ## Summary
 
-Flexible Consul KV pair backup and restore tool with a some unique features.
-This was written for and tested in a production environment but is still
-a work in progress.  More features will be coming but existing
-functionality should not be impacted.
+Flexible Consul KV pair backup and restore tool with a few unique features.
+This was written for and tested in a production environment.
 
 ## Key Features
 
@@ -30,21 +28,19 @@ go get github.com/leprechau/consul-backinator
 ahurt$ ./consul-backinator -h
 Usage of ./consul-backinator:
   -addr string
-      Consul instance address and port ("127.0.0.1:8500")
+      Optional consul instance address and port ("127.0.0.1:8500")
   -backup
       Trigger backup operation
   -dc string
       Optional consul datacenter label for backup and restore
   -delete
-      Optionally delete all keys under the destination prefix before restore
+      Delete all keys under the destination prefix before restore
   -dump
-      Dump backup file contents to stdout and exit on restore without performing any path transformations or writing to consul
-  -in string
-      Input file for restore operations (default "consul.bak")
+      Dump backup file contents to stdout and exit when used with the -restore option
+  -file string
+      File for backup and restore operations (default "consul.bak")
   -key string
       Passphrase used for data encryption and signature validation (default "password")
-  -out string
-      Output file for backup operations (default "consul.bak")
   -prefix string
       Optional prefix from under which all keys will be fetched (default "/")
   -restore
@@ -54,7 +50,7 @@ Usage of ./consul-backinator:
   -token string
       Optional consul token to access the target cluster
   -transform string
-      Optional path transformation to be applied on backup and restore (oldPath,newPath...)
+      Optional folder path transformation (oldPath,newPath...)
 ```
 
 ## Example
