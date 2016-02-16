@@ -19,7 +19,7 @@ This was written for and tested in a production environment.
 With a proper Go environment simply run:
 
 ```
-go get github.com/leprechau/consul-backinator
+go get github.com/myENA/consul-backinator
 ```
 
 ## Usage
