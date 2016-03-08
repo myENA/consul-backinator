@@ -41,6 +41,8 @@ Usage of ./consul-backinator:
       File for backup and restore operations (default "consul.bak")
   -key string
       Passphrase used for data encryption and signature validation (default "password")
+  -plain
+      Dump only the key and decoded value to stdout when used with the -restore and -dump options
   -prefix string
       Optional prefix from under which all keys will be fetched (default "/")
   -restore
