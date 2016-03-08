@@ -1,7 +1,6 @@
 package main
 
 import (
-	//"encoding/base64"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -129,8 +128,7 @@ func (c *config) transformPaths(kvps api.KVPairs) {
 // dump decoded data
 func dumpData(data []byte, plain bool) error {
 	var kvps api.KVPairs // decoded kv pairs
-	//var dd []byte        // decoded data
-	var err error // general error holder
+	var err error        // general error holder
 
 	if !plain {
 		// write payload
