@@ -95,10 +95,10 @@ func (c *config) restoreKeys() (int, error) {
 
 	// doing a dump?
 	if c.dataDump {
-		// write payload
-		os.Stdout.Write(data)
-		// write a blank line
-		os.Stdout.WriteString("\n")
+		// dump data
+		if err = dumpData(data, c.plainDump); err != nil {
+			return err
+		}
 		// exit clean
 		os.Exit(0)
 	}

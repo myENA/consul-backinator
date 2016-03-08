@@ -1,10 +1,14 @@
 package main
 
 import (
+	//"encoding/base64"
+	"encoding/json"
 	"errors"
 	"flag"
+	"fmt"
 	"github.com/hashicorp/consul/api"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -21,6 +25,7 @@ type config struct {
 	backupReq     bool
 	restoreReq    bool
 	dataDump      bool
+	plainDump     bool
 	consulAddr    string
 	consulScheme  string
 	consulDc      string
@@ -48,6 +53,9 @@ func initConfig() (*config, error) {
 	flag.BoolVar(&c.dataDump, "dump", false,
 		"Dump backup file contents to stdout and exit when used with "+
 			"the -restore option")
+	flag.BoolVar(&c.plainDump, "plain", false,
+		"Dump only the key and decoded value to stdout when used with "+
+			"the -restore and -dump options")
 	flag.BoolVar(&c.delTree, "delete", false,
 		"Delete all keys under the destination prefix before restore")
 	flag.BoolVar(&c.backupReq, "backup", false,
@@ -116,4 +124,33 @@ func (c *config) transformPaths(kvps api.KVPairs) {
 			}
 		}
 	}
+}
+
+// dump decoded data
+func dumpData(data []byte, plain bool) error {
+	var kvps api.KVPairs // decoded kv pairs
+	//var dd []byte        // decoded data
+	var err error // general error holder
+
+	if !plain {
+		// write payload
+		os.Stdout.Write(data)
+		// write a blank line
+		os.Stdout.WriteString("\n")
+		// all done
+		return nil
+	}
+
+	// decode data
+	if err = json.Unmarshal(data, &kvps); err != nil {
+		return err
+	}
+
+	// loop through and print data
+	for _, kv := range kvps {
+		fmt.Printf("Key: %s\n%s\n", kv.Key, kv.Value)
+	}
+
+	// okay
+	return nil
 }
