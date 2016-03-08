@@ -97,7 +97,7 @@ func (c *config) restoreKeys() (int, error) {
 	if c.dataDump {
 		// dump data
 		if err = dumpData(data, c.plainDump); err != nil {
-			return err
+			return count, err
 		}
 		// exit clean
 		os.Exit(0)
