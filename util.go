@@ -42,38 +42,41 @@ func initConfig() (*config, error) {
 	var c = new(config) // instance configuration
 	var err error       // general error holder
 
+	// our flagset
+	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+
 	// declare flags
-	flag.StringVar(&c.fileName, "file", "consul.bak",
+	fs.StringVar(&c.fileName, "file", "consul.bak",
 		"File for backup and restore operations")
-	flag.StringVar(&c.cryptKey, "key", "password",
+	fs.StringVar(&c.cryptKey, "key", "password",
 		"Passphrase used for data encryption and signature validation")
-	flag.StringVar(&c.pathTransform, "transform", "",
+	fs.StringVar(&c.pathTransform, "transform", "",
 		"Optional folder path transformation (oldPath,newPath...)")
-	flag.BoolVar(&c.dataDump, "dump", false,
+	fs.BoolVar(&c.dataDump, "dump", false,
 		"Dump backup file contents to stdout and exit when used with "+
 			"the -restore option")
-	flag.BoolVar(&c.plainDump, "plain", false,
+	fs.BoolVar(&c.plainDump, "plain", false,
 		"Dump only the key and decoded value to stdout when used with "+
 			"the -restore and -dump options")
-	flag.BoolVar(&c.delTree, "delete", false,
+	fs.BoolVar(&c.delTree, "delete", false,
 		"Delete all keys under the destination prefix before restore")
-	flag.BoolVar(&c.backupReq, "backup", false,
+	fs.BoolVar(&c.backupReq, "backup", false,
 		"Trigger backup operation")
-	flag.BoolVar(&c.restoreReq, "restore", false,
+	fs.BoolVar(&c.restoreReq, "restore", false,
 		"Trigger restore operation")
-	flag.StringVar(&c.consulAddr, "addr", "",
+	fs.StringVar(&c.consulAddr, "addr", "",
 		"Optional consul instance address and port (\"127.0.0.1:8500\")")
-	flag.StringVar(&c.consulScheme, "scheme", "",
+	fs.StringVar(&c.consulScheme, "scheme", "",
 		"Optional consul instance scheme (\"http\" or \"https\")")
-	flag.StringVar(&c.consulDc, "dc", "",
+	fs.StringVar(&c.consulDc, "dc", "",
 		"Optional consul datacenter label for backup and restore")
-	flag.StringVar(&c.consulToken, "token", "",
+	fs.StringVar(&c.consulToken, "token", "",
 		"Optional consul token to access the target cluster")
-	flag.StringVar(&c.consulPrefix, "prefix", "/",
+	fs.StringVar(&c.consulPrefix, "prefix", "/",
 		"Optional prefix from under which all keys will be fetched")
 
 	// parse flags
-	flag.Parse()
+	fs.Parse(os.Args[1:])
 
 	// build replacer
 	if c.pathTransform != "" {
