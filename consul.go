@@ -116,7 +116,14 @@ func (c *config) restoreKeys() (int, error) {
 
 	// delete tree before restore if requested
 	if c.delTree {
-		if _, err := c.consulClient.KV().DeleteTree(c.consulPrefix, nil); err != nil {
+		// set delete prefix to passed prefix
+		deletePrefix := c.consulPrefix
+		// check prefix
+		if c.consulPrefix == "/" {
+			deletePrefix = "" // special case for root
+		}
+		// send the delete request
+		if _, err := c.consulClient.KV().DeleteTree(deletePrefix, nil); err != nil {
 			return count, err
 		}
 	}
