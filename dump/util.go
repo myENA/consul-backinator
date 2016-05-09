@@ -17,8 +17,6 @@ func (c *Command) setupFlags(args []string) error {
 		"Destination file target")
 	cmdFlags.StringVar(&c.config.cryptKey, "key", "password",
 		"Passphrase for data encryption and signature validation")
-	cmdFlags.StringVar(&c.config.pathTransform, "transform", "",
-		"Optional path transformation")
 	cmdFlags.BoolVar(&c.config.plainDump, "plain", false,
 		"Dump the key and decoded value")
 

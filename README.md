@@ -5,6 +5,11 @@
 Flexible Consul KV pair backup and restore tool with a few unique features.
 This was written for and tested in a production environment.
 
+## Note
+There was a breaking change in the operation of this tool on May 09, 2016 when
+the different operations were broken out into sub commands to simplify the flag
+listing.
+
 ## Key Features
 
 * Written in Golang using the official Consul API
@@ -22,50 +27,92 @@ With a proper Go environment simply run:
 go get github.com/myENA/consul-backinator
 ```
 
+Or, if you have glide (https://github.com/Masterminds/glide) ...
+
+```
+git clone https://github.com/myENA/consul-backinator.git
+cd consul-backinator
+glide install
+./build.sh
+```
+
 ## Usage
 
 ```
-ahurt$ ./consul-backinator -h
-Usage of ./consul-backinator:
-  -addr string
-      Optional consul instance address and port ("127.0.0.1:8500")
-  -backup
-      Trigger backup operation
-  -dc string
-      Optional consul datacenter label for backup and restore
-  -delete
-      Delete all keys under the destination prefix before restore
-  -dump
-      Dump backup file contents to stdout and exit when used with the -restore option
-  -file string
-      File for backup and restore operations (default "consul.bak")
-  -key string
-      Passphrase used for data encryption and signature validation (default "password")
-  -plain
-      Dump only the key and decoded value to stdout when used with the -restore and -dump options
-  -prefix string
-      Optional prefix from under which all keys will be fetched (default "/")
-  -restore
-      Trigger restore operation
-  -scheme string
-      Optional consul instance scheme ("http" or "https")
-  -token string
-      Optional consul token to access the target cluster
-  -transform string
-      Optional folder path transformation (oldPath,newPath...)
+ahurt$ ./consul-backinator --help
+usage: consul-backinator [--version] [--help] <command> [<args>]
+
+Available commands are:
+    backup     Perform a backup operation
+    dump       Dump a backup file
+    restore    Perform a backup operation
+
+```
+
+```
+ahurt$ ./consul-backinator backup --help
+Usage: ./consul-backinator backup [options]
+
+  Performs a backup operation against a consul cluster KV store.
+
+Options:
+
+  -file         Sets the backup filename (default: "consul.bak")
+  -key          Passphrase for data encryption and signature validation (default: "password")
+  -transform    Optional path transformation (oldPath,newPath...)
+  -prefix       Optional prefix from under which all keys will be fetched
+  -addr         Optional consul address and port (default: "127.0.0.1:8500")
+  -scheme       Optional consul scheme ("http" or "https")
+  -dc           Optional consul datacenter
+  -token        Optional consul access token
+
+```
+
+```
+ahurt$ ./consul-backinator restore --help
+Usage: ./consul-backinator restore [options]
+
+  Performs a restore operation against a consul cluster KV store.
+
+Options:
+
+  -file         Source filename (default: "consul.bak")
+  -key          Passphrase for data encryption and signature validation (default: "password")
+  -transform    Optional path transformation (oldPath,newPath...)
+  -delete       Delete all keys under specified prefix prior to restoration (default: false)
+  -prefix       Prefix for delete operation
+  -addr         Optional consul address and port (default: "127.0.0.1:8500")
+  -scheme       Optional consul scheme ("http" or "https")
+  -dc           Optional consul datacenter
+  -token        Optional consul access token
+
+```
+
+```
+ahurt$ ./consul-backinator dump --help
+Usage: ./consul-backinator dump [options]
+
+  Dump and optionally decode the contents of a backup file to stdout.
+
+Options:
+
+  -file         Source filename (default: "consul.bak")
+  -key          Passphrase for data encryption and signature validation (default: "password")
+  -plain        Dump only the key and decoded value
+
 ```
 
 ## Example
 
 ```
-ahurt$ ./consul-backinator -addr=10.16.0.36:8500 -backup -key=SuperSecretStuff
-2015/10/02 15:01:59 [Success] Backed up 63 keys from 10.16.0.36:8500/ to consul.bak
+ahurt$ ./consul-backinator backup -key=superSecretStuff
+2016/05/09 17:14:11 [Success] Backed up 289 keys from / to consul.bak
 Keep your backup (consul.bak) and signature (consul.bak.sig) files in a safe place.
 You will need both to restore your data.
 ```
 
 ```
 ahurt$ ls -la *.sig *.bak
--rw-------+ 1 ahurt  staff  1901 Oct  2 15:01 consul.bak
--rw-------+ 1 ahurt  staff    44 Oct  2 15:01 consul.bak.sig
+-rw-------  1 ahurt  staff  11167 May  9 17:14 consul.bak
+-rw-------  1 ahurt  staff     44 May  9 17:14 consul.bak.sig
 ```

@@ -2,7 +2,6 @@ package dump
 
 import (
 	"fmt"
-	"github.com/myENA/consul-backinator/common"
 	"log"
 )
 
@@ -16,9 +15,8 @@ type config struct {
 
 // Command is a Command implementation that runs the backup operation
 type Command struct {
-	Self            string
-	config          *config
-	pathTransformer *common.PathTransformer
+	Self   string
+	config *config
 }
 
 // Run is a function to run the command
@@ -30,13 +28,7 @@ func (c *Command) Run(args []string) int {
 
 	// setup flags
 	if err = c.setupFlags(args); err != nil {
-		log.Printf("[Error] Startup failed: %s", err.Error())
-		return 1
-	}
-
-	// build transformer if needed
-	if c.pathTransformer, err = common.NewTransformer(c.config.pathTransform); err != nil {
-		log.Printf("[Error] Failed to initialize path transformer: %s", err.Error())
+		log.Printf("[Error] Init failed: %s", err.Error())
 		return 1
 	}
 
@@ -65,7 +57,6 @@ Options:
 
 	-file         Source filename (default: "consul.bak")
 	-key          Passphrase for data encryption and signature validation (default: "password")
-	-transform    Optional path transformation (oldPath,newPath...)
 	-plain        Dump only the key and decoded value
 
 `, c.Self)
