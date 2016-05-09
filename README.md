@@ -32,8 +32,7 @@ Or, if you have glide (https://github.com/Masterminds/glide) ...
 ```
 git clone https://github.com/myENA/consul-backinator.git
 cd consul-backinator
-glide install
-./build.sh
+./build.sh -i
 ```
 
 ## Usage
