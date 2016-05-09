@@ -1,0 +1,7 @@
+package: github.com/myENA/consul-backinator
+import:
+- package: github.com/hashicorp/consul
+  version: v0.6.4
+  subpackages:
+  - api
+- package: github.com/mitchellh/cli

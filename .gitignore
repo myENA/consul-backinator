@@ -5,4 +5,5 @@
 ?
 *.bak
 *.sig
+vendor/
 consul-backinator
