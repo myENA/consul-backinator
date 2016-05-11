@@ -6,9 +6,12 @@ Flexible Consul KV pair backup and restore tool with a few unique features.
 This was written for and tested in a production environment.
 
 ## Note
-There was a breaking change in the operation of this tool on May 09, 2016 when
-the different operations were broken out into sub commands to simplify the flag
-listing.
+
+There was a potentially breaking change in the operation of this tool on
+May 09, 2016 when the different operations were broken out into sub commands
+to simplify the flag listings.  The functionality remains the same and previous
+backup files are __not affected__.  However the command options and structure have
+changed and any scripts which embedded this tool will need to be updated.
 
 ## Key Features
 
@@ -37,6 +40,8 @@ cd consul-backinator
 
 ## Usage
 
+### Summary
+
 ```
 ahurt$ ./consul-backinator --help
 usage: consul-backinator [--version] [--help] <command> [<args>]
@@ -48,58 +53,44 @@ Available commands are:
 
 ```
 
-```
-ahurt$ ./consul-backinator backup --help
-Usage: ./consul-backinator backup [options]
+### Backup Options
 
-  Performs a backup operation against a consul cluster KV store.
+| Option      | Description |
+|-------------|-------------|
+| `file`      | The backup file target.  The signature will be the same with a `.sig` extension appended.  The default names are `consul.bak` and `consul.bak.sig`
+| `key`       | The passphrase used for data encryption and signature generation.  The default string `password` will be used if none specified.  This should be a secure pseudo random string.
+| `transform` | Optional argument that affects the key paths written to the backup file.  See the transformation notes below for more information.
+| `prefix`    | Optional argument that specifies the starting point for the backup tree.  The default prefix is the root `/` prefix.  To perform a partial tree backup specify a prefix.
 
-Options:
+### Restore Options
 
-  -file         Sets the backup filename (default: "consul.bak")
-  -key          Passphrase for data encryption and signature validation (default: "password")
-  -transform    Optional path transformation (oldPath,newPath...)
-  -prefix       Optional prefix from under which all keys will be fetched
-  -addr         Optional consul address and port (default: "127.0.0.1:8500")
-  -scheme       Optional consul scheme ("http" or "https")
-  -dc           Optional consul datacenter
-  -token        Optional consul access token
+| Option   | Description |
+|----------|-------------|
+| `file`   | The source file. The default is `consul.bak`
+| `key`    | The passphrase used for data decryption and signature validation.  This must match the key used when the backup was created.
+| `delete` | Optionally delete all keys under the specified prefix prior to restoring the backup file.  The default is false.
+| `prefix` | The prefix with the `delete` option.  The default is `/` root.  __THIS WILL DELETE ALL DATA IN YOUR KEYSTORE__ if not changed when using `-delete`.
 
-```
+### Shared Consul Options (backup/restore)
 
-```
-ahurt$ ./consul-backinator restore --help
-Usage: ./consul-backinator restore [options]
+| Option   | Description |
+|----------|-------------|
+| `addr`   | Optional consul agent address and port.  The default is read from the `CONSUL_HTTP_ADDR` environment variable if specified or set to `127.0.0.1:8500`.
+| `scheme` | Optional scheme `http` or `https` used when connecting to the consul agent.  The default is set to `https` if the `CONSUL_HTTP_SSL` environment variable is set to `true` otherwise the default is `http`.
+| `dc`     | Optional datacenter specification.  The default value is the datacenter of the agent to which you are connecting.
+| `token`  | Optional consul access token.  The default value is read from the `CONSUL_HTTP_TOKEN` environment variable if specified.
 
-  Performs a restore operation against a consul cluster KV store.
+### Dump Options
 
-Options:
+| Option   | Description |
+|----------|-------------|
+| `file`   | The source file.  The default is `consul.bak`
+| `key`    | The passphrase for the backup file to be dumped.  The default is `password` if not passed.
+| `plain`  | Optionally decode the backed up key values and only display the key name and decoded values without showing any metadata.
 
-  -file         Source filename (default: "consul.bak")
-  -key          Passphrase for data encryption and signature validation (default: "password")
-  -transform    Optional path transformation (oldPath,newPath...)
-  -delete       Delete all keys under specified prefix prior to restoration (default: false)
-  -prefix       Prefix for delete operation
-  -addr         Optional consul address and port (default: "127.0.0.1:8500")
-  -scheme       Optional consul scheme ("http" or "https")
-  -dc           Optional consul datacenter
-  -token        Optional consul access token
+## Transformations
 
-```
-
-```
-ahurt$ ./consul-backinator dump --help
-Usage: ./consul-backinator dump [options]
-
-  Dump and optionally decode the contents of a backup file to stdout.
-
-Options:
-
-  -file         Source filename (default: "consul.bak")
-  -key          Passphrase for data encryption and signature validation (default: "password")
-  -plain        Dump only the key and decoded value
-
-```
+Transformations are simple string operations and will affect the path anywhere there is a match.  For example, passing `-transform="foo,bar"` would rewrite `/apple/foo/key` => `/apple/bar/key` as well as `/orange/thing/foo/key` => `/orange/thing/bar/key`.  To avoid potential errors in transformations you should always use the most exact path possible.  Using the previous example if you only wanted to affect keys under `apple` you should pass `-transform="apple/foo,apple/bar"` to prevent other paths from being modified inadvertently.
 
 ## Example
 
