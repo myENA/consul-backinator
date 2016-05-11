@@ -90,7 +90,12 @@ Available commands are:
 
 ## Transformations
 
-Transformations are simple string operations and will affect the path anywhere there is a match.  For example, passing `-transform="foo,bar"` would rewrite `/apple/foo/key` => `/apple/bar/key` as well as `/orange/thing/foo/key` => `/orange/thing/bar/key`.  To avoid potential errors in transformations you should always use the most exact path possible.  Using the previous example if you only wanted to affect keys under `apple` you should pass `-transform="apple/foo,apple/bar"` to prevent other paths from being modified inadvertently.
+Transformations are simple string operations and will affect the path anywhere
+there is a match.  For example, passing `-transform="foo,bar"` would rewrite
+`/apple/foo/key` => `/apple/bar/key` as well as `/orange/thing/foo/key` => `/orange/thing/bar/key`.
+To avoid potential errors in transformations you should always use the most exact path possible.
+Using the previous example if you only wanted to affect keys under `apple` you should pass
+`-transform="apple/foo,apple/bar"` to prevent other paths from being modified inadvertently.
 
 ## Example
 
