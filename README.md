@@ -30,7 +30,7 @@ With a proper Go environment simply run:
 go get github.com/myENA/consul-backinator
 ```
 
-Or, if you have glide (https://github.com/Masterminds/glide) ...
+If you have glide (https://github.com/Masterminds/glide) ...
 
 ```
 git clone https://github.com/myENA/consul-backinator.git
