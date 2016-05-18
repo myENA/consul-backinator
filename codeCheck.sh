@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 ## ensure we have the golint tool
 ## https://github.com/golang/lint
@@ -29,37 +28,52 @@ if ! gocyclo="$(type -p "${GOPATH}/bin/gocyclo")"; then
 fi
 
 ## check formatting ignoring git and vendor
-if test $(find . -name '*.go' -not -path "./.git/*" -not -path "./vendor/*" | xargs gofmt -l -s 2>&1 | wc -l) -gt 0; then
-	echo "gofmt     failed" && exit 1
+fmtTest="$(find . -name '*.go' -not -path './.git/*' -not -path './vendor/*' | xargs gofmt -l -s 2>&1)"
+if [ ! -z "$fmtTest" ]; then
+	echo "gofmt     failed"
+	echo "$fmtTest"
+	exit 1
 else
 	echo "gofmt     succeeded"
 fi
 
 ## run go vet ignoring vendor and the silly "Error" bug/feature
 ## https://github.com/golang/go/issues/6407
-if test $(go vet ./... 2>&1 | egrep -v '^vendor/|\s+vendor/|/vendor/' | grep -v ^exit\ status | grep -v "possible formatting directive in Error call" | wc -l) -gt 0; then
-	echo "go vet    failed" && exit 1
+vetTest="$(go vet ./... 2>&1 | egrep -v '^vendor/|\s+vendor/|/vendor/|^exit\ status|\ possible\ formatting\ directive\ in\ Error\ call')"
+if [ ! -z "$vetTest" ]; then
+	echo "go vet    failed"
+	echo "$vetTest"
+	exit 1
 else
 	echo "go vet    succeeded"
 fi
 
 ## run go lint ignoring vendor
-if test $(${golint} ./... 2>&1 | egrep -v '^vendor/|\s+vendor/|/vendor/' | wc -l) -gt 0; then
-	echo "golint    failed" && exit 1
+lintTest=$(${golint} ./... 2>&1 | egrep -v '^vendor/|\s+vendor/|/vendor/')
+if [ ! -z "$lintTest" ]; then
+	echo "golint    failed"
+	echo "$lintTest"
+	exit 1
 else
 	echo "golint    succeeded"
 fi
 
 ## check misspell ignoring git, vendor and 3rdparty
-if test $(find . -name '*' -not -path "./.git/*" -not -path "./vendor/*" -not -path "./3rdparty/*" | xargs ${misspell} 2>&1 | wc -l) -gt 0; then
-	echo "misspell  failed" && exit 1
+spellTest=$(find . -name '*' -not -path './.git/*' -not -path './vendor/*' -not -path './3rdparty/*' | xargs ${misspell} 2>&1 | echo)
+if [ ! -z "$spellTest" ]; then
+	echo "misspell  failed"
+	echo "$spellTest"
+	exit 1
 else
 	echo "misspell  succeeded"
 fi
 
 ## check gocyclo ignoring git and vendor
-if test $(find . -name '*.go' -not -path "./.git/*" -not -path "./vendor/*" | xargs ${gocyclo} -over 15 2>&1 | wc -l) -gt 0; then
-	echo "gocyclo   failed" && exit 1
+cycloTest=$(find . -name '*.go' -not -path './.git/*' -not -path './vendor/*' | xargs ${gocyclo} -over 15 2>&1 | echo)
+if [ ! -z "$cycloTest" ]; then
+	echo "gocyclo   failed"
+	echo "$cycloTest"
+	exit 1
 else
 	echo "gocyclo   succeeded"
 fi
