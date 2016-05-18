@@ -42,7 +42,7 @@ func (c *Command) Run(args []string) int {
 	}
 
 	// build client
-	if c.consulClient, err = c.config.consulConfig.New(); err != nil {
+	if c.consulClient, err = c.config.consulConfig.NewClient(); err != nil {
 		log.Printf("[Error] Failed initialize consul client: %s", err.Error())
 		return 1
 	}

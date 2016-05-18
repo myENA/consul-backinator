@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/myENA/consul-backinator)](https://goreportcard.com/report/github.com/myENA/consul-backinator) [![Mozilla Public License](https://img.shields.io/badge/license-MPL-blue.svg)](https://www.mozilla.org/MPL/) [![GoDoc](https://godoc.org/github.com/myENA/consul-backinator/common?status.svg)](https://godoc.org/github.com/myENA/consul-backinator/common)
+
 # consul-backinator
 
 ## Summary
@@ -27,7 +29,7 @@ changed and any scripts which embedded this tool will need to be updated.
 With a proper Go environment simply run:
 
 ```
-go get github.com/myENA/consul-backinator
+go get -u github.com/myENA/consul-backinator
 ```
 
 If you have glide (https://github.com/Masterminds/glide) ...

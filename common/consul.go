@@ -14,8 +14,8 @@ type ConsulClient struct {
 	*api.Client
 }
 
-// New returns an initialized consul client
-func (cc *ConsulConfig) New() (*ConsulClient, error) {
+// NewClient returns an initialized consul client
+func (cc *ConsulConfig) NewClient() (*ConsulClient, error) {
 	var c *api.Config        // upstream client configuration
 	var client *ConsulClient // client wrapper
 	var err error            // general error holder
