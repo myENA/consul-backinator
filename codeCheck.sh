@@ -2,33 +2,33 @@
 
 ## ensure we have the golint tool
 ## https://github.com/golang/lint
-if ! golint="$(type -p "${GOPATH}/bin/golint")"; then
+if ! golint=$(type -p "${GOPATH}/bin/golint"); then
 	echo -n "Installing golint ... "
 	go get -u github.com/golang/lint/golint
 	echo "done"
-	golint="$(type -p "${GOPATH}/bin/golint")"
+	golint=$(type -p "${GOPATH}/bin/golint")
 fi
 
 ## ensure we have the misspell tool
 ## https://github.com/client9/misspell
-if ! misspell="$(type -p "${GOPATH}/bin/misspell")"; then
+if ! misspell=$(type -p "${GOPATH}/bin/misspell"); then
 	echo -n "Installing misspell ... "
 	go get -u github.com/client9/misspell/cmd/misspell
 	echo "done"
-	misspell="$(type -p "${GOPATH}/bin/misspell")"
+	misspell=$(type -p "${GOPATH}/bin/misspell")
 fi
 
 ## ensure we have the gocyclo tool
 ## https://github.com/fzipp/gocyclo
-if ! gocyclo="$(type -p "${GOPATH}/bin/gocyclo")"; then
+if ! gocyclo=$(type -p "${GOPATH}/bin/gocyclo"); then
 	echo -n "Installing gocyclo ... "
 	go get -u github.com/fzipp/gocyclo
 	echo "done"
-	gocyclo="$(type -p "${GOPATH}/bin/gocyclo")"
+	gocyclo=$(type -p "${GOPATH}/bin/gocyclo")
 fi
 
 ## check formatting ignoring git and vendor
-fmtTest="$(find . -name '*.go' -not -path './.git/*' -not -path './vendor/*' | xargs gofmt -l -s 2>&1)"
+fmtTest=$(find . -name '*.go' -not -path './.git/*' -not -path './vendor/*' | xargs gofmt -l -s 2>&1)
 if [ ! -z "$fmtTest" ]; then
 	echo "gofmt     failed"
 	echo "$fmtTest"
@@ -39,7 +39,7 @@ fi
 
 ## run go vet ignoring vendor and the silly "Error" bug/feature
 ## https://github.com/golang/go/issues/6407
-vetTest="$(go vet ./... 2>&1 | egrep -v '^vendor/|\s+vendor/|/vendor/|^exit\ status|\ possible\ formatting\ directive\ in\ Error\ call')"
+vetTest=$(go vet ./... 2>&1 | egrep -v '^vendor/|\s+vendor/|/vendor/|^exit\ status|\ possible\ formatting\ directive\ in\ Error\ call')
 if [ ! -z "$vetTest" ]; then
 	echo "go vet    failed"
 	echo "$vetTest"
