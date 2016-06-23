@@ -7,5 +7,6 @@
 ?
 *.bak
 *.sig
+dist/
 vendor/
 consul-backinator

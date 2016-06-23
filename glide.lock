@@ -1,10 +1,10 @@
 hash: 36a17d71075a1cf56525a585501fb6d7063c82bff4b697dc2a3865c5fc55a950
-updated: 2016-05-09T16:59:29.769303134-05:00
+updated: 2016-06-23T15:09:50.371218283-05:00
 imports:
 - name: github.com/armon/go-radix
   version: 4239b77079c7b5d1243b7b4736304ce8ddb6f0f2
 - name: github.com/bgentry/speakeasy
-  version: 36e9cfdd690967f4f690c6edcc9ffacd006014a0
+  version: e1439544d8ecd0f3e9373a636d447668096a8f81
 - name: github.com/hashicorp/consul
   version: 26a0ef8c41aa2252ab4cf0844fc6470c8e1d8256
   subpackages:

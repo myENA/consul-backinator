@@ -1,7 +1,7 @@
 package main
 
 // app name and version
-const (
+var (
 	appName    = "consul-backinator"
 	appVersion = "1.0-dev"
 )
