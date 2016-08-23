@@ -4,7 +4,8 @@
 
 ## Summary
 
-Flexible Consul KV pair backup and restore tool with a few unique features.
+Flexible Consul KV pair backup and restore tool with a few unique features
+including ACL token backup and restoration.
 This was written for and tested in a production environment.
 
 ## Note
