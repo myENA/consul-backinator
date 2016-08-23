@@ -18,7 +18,9 @@ func (c *Command) setupFlags(args []string) error {
 	cmdFlags.StringVar(&c.config.cryptKey, "key", "password",
 		"Passphrase for data encryption and signature validation")
 	cmdFlags.BoolVar(&c.config.plainDump, "plain", false,
-		"Dump the key and decoded value")
+		"Dump a reduced set of information")
+	cmdFlags.BoolVar(&c.config.acls, "acls", false,
+		"Specified file is an ACL token backup file")
 
 	// parse flags and ignore error
 	if err := cmdFlags.Parse(args); err != nil {

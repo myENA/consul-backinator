@@ -61,6 +61,8 @@ Available commands are:
 |-------------|-------------|
 | `file`      | The backup file target.  The signature will be the same with a `.sig` extension appended.  The default names are `consul.bak` and `consul.bak.sig`
 | `key`       | The passphrase used for data encryption and signature generation.  The default string `password` will be used if none specified.  This should be a secure pseudo random string.
+| `nokv`      | Do not attempt to backup kv data.  This only makes sense if also passing the `acls` option below.
+| `acls`      | Optional backup filename for acl tokens.
 | `transform` | Optional argument that affects the key paths written to the backup file.  See the transformation notes below for more information.
 | `prefix`    | Optional argument that specifies the starting point for the backup tree.  The default prefix is the root `/` prefix.  To perform a partial tree backup specify a prefix.
 
@@ -70,6 +72,8 @@ Available commands are:
 |----------|-------------|
 | `file`   | The source file. The default is `consul.bak`
 | `key`    | The passphrase used for data decryption and signature validation.  This must match the key used when the backup was created.
+| `nokv`   | Do not attempt to restore kv data.  This only makes sense if also passing the `acls` option below.
+| `acls`   | Optional source filename for acl tokens.
 | `delete` | Optionally delete all keys under the specified prefix prior to restoring the backup file.  The default is false.
 | `prefix` | The prefix with the `delete` option.  The default is `/` root.  __THIS WILL DELETE ALL DATA IN YOUR KEYSTORE__ if not changed when using `-delete`.
 
@@ -86,9 +90,10 @@ Available commands are:
 
 | Option   | Description |
 |----------|-------------|
-| `file`   | The source file.  The default is `consul.bak`
+| `file`   | The source file.  The default `consul.bak` will be used if not specified.
 | `key`    | The passphrase for the backup file to be dumped.  The default is `password` if not passed.
-| `plain`  | Optionally decode the backed up key values and only display the key name and decoded values without showing any metadata.
+| `plain`  | Optionally dump and decode a reduced set of information omitting metadata, timestamps and other lesser used information.
+| `acls`   | Specified file is an ACL token backup file.  This option is only relevant if using the `plain` option above.
 
 ## Transformations
 

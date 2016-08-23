@@ -8,11 +8,12 @@ import (
 	"os"
 )
 
-// read keys from a backup file and restore to consul
+// read data from a backup file
 func (c *Command) dumpData() error {
-	var kvps api.KVPairs // decoded kv pairs
-	var data []byte      // read json data
-	var err error        // general error holder
+	var kvps api.KVPairs     // decoded kv pairs
+	var acls []*api.ACLEntry // decoded acl entries
+	var data []byte          // read json data
+	var err error            // general error holder
 
 	// read json data from file
 	if data, err = common.ReadFile(c.config.fileName, c.config.cryptKey); err != nil {
@@ -29,14 +30,25 @@ func (c *Command) dumpData() error {
 		return nil
 	}
 
-	// decode data
-	if err = json.Unmarshal(data, &kvps); err != nil {
-		return err
-	}
-
-	// loop through and print data
-	for _, kv := range kvps {
-		fmt.Printf("Key: %s\n%s\n", kv.Key, kv.Value)
+	// acls
+	if c.config.acls {
+		// decode acl data
+		if err = json.Unmarshal(data, &acls); err != nil {
+			return err
+		}
+		// loop through and print acls
+		for _, acl := range acls {
+			fmt.Printf("Token: %s (%s)\n%s\n", acl.Name, acl.Type, acl.Rules)
+		}
+	} else {
+		// decode kv data
+		if err = json.Unmarshal(data, &kvps); err != nil {
+			return err
+		}
+		// loop through and print keys
+		for _, kv := range kvps {
+			fmt.Printf("Key: %s\n%s\n", kv.Key, kv.Value)
+		}
 	}
 
 	// okay

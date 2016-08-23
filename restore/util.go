@@ -14,9 +14,13 @@ func (c *Command) setupFlags(args []string) error {
 
 	// declare flags
 	cmdFlags.StringVar(&c.config.fileName, "file", "consul.bak",
-		"Destination file target")
+		"Source filename")
 	cmdFlags.StringVar(&c.config.cryptKey, "key", "password",
 		"Passphrase for data encryption and signature validation")
+	cmdFlags.BoolVar(&c.config.noKV, "nokv", false,
+		"Do not attempt to restore kv data")
+	cmdFlags.StringVar(&c.config.aclFileName, "acls", "",
+		"Optional source filename for acl tokens")
 	cmdFlags.StringVar(&c.config.pathTransform, "transform", "",
 		"Optional path transformation")
 	cmdFlags.BoolVar(&c.config.delTree, "delete", false,

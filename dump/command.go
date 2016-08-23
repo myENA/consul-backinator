@@ -11,6 +11,7 @@ type config struct {
 	cryptKey      string
 	pathTransform string
 	plainDump     bool
+	acls          bool
 }
 
 // Command is a Command implementation that runs the backup operation
@@ -32,7 +33,7 @@ func (c *Command) Run(args []string) int {
 		return 1
 	}
 
-	// dump data
+	// dump data or acls
 	if err = c.dumpData(); err != nil {
 		log.Printf("[Error] Failed to dump data: %s", err.Error())
 		return 1
@@ -51,13 +52,14 @@ func (c *Command) Synopsis() string {
 func (c *Command) Help() string {
 	return fmt.Sprintf(`Usage: %s dump [options]
 
-	Dump and optionally decode the contents of a backup file to stdout.
+	Dump the contents of a backup file to stdout.
 
 Options:
 
 	-file         Source filename (default: "consul.bak")
 	-key          Passphrase for data encryption and signature validation (default: "password")
-	-plain        Dump only the key and decoded value
+	-plain        Dump a reduced set of information
+	-acls         Specified file is an ACL token backup file (only applicable if decoding)
 
 `, c.Self)
 }

@@ -17,6 +17,10 @@ func (c *Command) setupFlags(args []string) error {
 		"Backup filename")
 	cmdFlags.StringVar(&c.config.cryptKey, "key", "password",
 		"Passphrase for data encryption and signature validation")
+	cmdFlags.BoolVar(&c.config.noKV, "nokv", false,
+		"Do not attempt to backup kv data")
+	cmdFlags.StringVar(&c.config.aclFileName, "acls", "",
+		"Optional backup filename for acl tokens")
 	cmdFlags.StringVar(&c.config.pathTransform, "transform", "",
 		"Optional path transformation")
 	cmdFlags.StringVar(&c.config.consulPrefix, "prefix", "/",
