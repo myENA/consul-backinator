@@ -2,11 +2,8 @@
 #
 ## package declarations
 BUILD_NAME="consul-backinator"
-RELEASE_VERSION="1.0"
+RELEASE_VERSION="1.1"
 RELEASE_BUILD=0
-
-## required for glide
-export GO15VENDOREXPERIMENT=1
 
 ## simple usage example
 showUsage() {
@@ -18,15 +15,33 @@ showUsage() {
 	exit 0
 }
 
+## install glide if needed
+ensureGlide() {
+	if [[ ! -x $(which glide) ]]; then
+		printf "Installing glide ... "
+		go get github.com/Masterminds/glide
+	fi
+}
+
+## install gox if needed
+ensureGox() {
+	if [[ ! -x $(which gox) ]]; then
+		printf "Installing gox ... "
+		go get github.com/mitchellh/gox
+	fi
+}
+
 ## read options
 while getopts ":uidr" opt; do
 	case $opt in
 		u)
+			ensureGlide
 			printf "Updating vendor directory ... "
 			glide -q up > /dev/null 2>&1
 		;;
 		i)
-			printf "Installing from glide.lock ..."
+			ensureGlide
+			printf "Installing from glide.lock ... "
 			glide -q install > /dev/null 2>&1
 		;;
 		d)
@@ -35,7 +50,7 @@ while getopts ":uidr" opt; do
 			exit 0
 		;;
 		r)
-			## toggle release building
+			ensureGox
 			RELEASE_BUILD=1
 		;;
 		*)
@@ -52,20 +67,15 @@ if [[ $RELEASE_BUILD -eq 1 ]]; then
 	## clean dist directory
 	rm -rf ./dist/
 
-	## check for gox
-	if [[ ! -x $(which gox) ]]; then
-		printf "Installing gox ... "
-		go get github.com/mitchellh/gox
-	fi
-
 	## build release
-	printf "Building release ... \n"
+	printf "Building release ... "
 
 	## call gox to build our binaries
 	gox \
-	-osarch="linux/amd64 darwin/amd64 freebsd/amd64 openbsd/amd64 windows/386 windows/amd64" \
+	-osarch="linux/amd64 darwin/amd64 freebsd/amd64 windows/amd64 windows/386" \
 	-ldflags="-X main.appVersion=${RELEASE_VERSION}" \
-	-output="./dist/${BUILD_NAME}-${RELEASE_VERSION}-{{.Arch}}-{{.OS}}/${BUILD_NAME}-${RELEASE_VERSION}"
+	-output="./dist/${BUILD_NAME}-${RELEASE_VERSION}-{{.Arch}}-{{.OS}}/${BUILD_NAME}-${RELEASE_VERSION}" \
+	> /dev/null 2>&1
 
 	## gox return
 	RETVAL=$?
@@ -91,12 +101,12 @@ fi
 ## check release option
 if [[ $RELEASE_BUILD -eq 1 ]]; then
 	## package binaries
-	printf "Packaging ... \n"
+	printf "Packaging ... "
 
 	## package files
 	pushd ./dist/ > /dev/null 2>&1
 	find . -type d -name \*-\* -maxdepth 1 \
-	-exec zip -m -r {}.zip {}/ \;
+	-exec tar -czf {}.tar.gz {}/ \;
 	popd > /dev/null 2>&1
 
 	## all done

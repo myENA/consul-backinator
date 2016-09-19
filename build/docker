@@ -1,0 +1,4 @@
+FROM alpine:latest
+RUN apk add --no-cache --no-progress ca-certificates
+ADD dist/consul-backinator-*-amd64-linux/consul-backinator-* /usr/local/bin/consul-backinator
+ENTRYPOINT ["/usr/local/bin/consul-backinator"]

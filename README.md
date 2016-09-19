@@ -27,7 +27,7 @@ changed and any scripts which embedded this tool will need to be updated.
 
 ## Installing
 
-With a proper Go environment simply run:
+With a proper Go environment simply run ...
 
 ```
 go get -u github.com/myENA/consul-backinator
@@ -38,7 +38,14 @@ If you have glide (https://github.com/Masterminds/glide) ...
 ```
 git clone https://github.com/myENA/consul-backinator.git
 cd consul-backinator
-./build.sh -i
+make
+```
+
+To build as a docker container ...
+```
+git clone https://github.com/myENA/consul-backinator.git
+cd consul-backinator
+make docker
 ```
 
 ## Usage
