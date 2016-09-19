@@ -10,7 +10,7 @@ build:
 	@build/build.sh -i
 
 release:
-	@build/build.sh -ri
+	@build/build.sh -ir
 
 docker: release
 	$(sudo) docker build -t my-ena/consul-backinator -f build/docker .

@@ -17,7 +17,7 @@ showUsage() {
 
 ## install glide if needed
 ensureGlide() {
-	if [[ ! -x $(which glide) ]]; then
+	if [[ ! -x $(which glide > /dev/null 2>&1) ]]; then
 		printf "Installing glide ... "
 		go get github.com/Masterminds/glide
 	fi
@@ -25,7 +25,7 @@ ensureGlide() {
 
 ## install gox if needed
 ensureGox() {
-	if [[ ! -x $(which gox) ]]; then
+	if [[ ! -x $(which gox > /dev/null 2>&1) ]]; then
 		printf "Installing gox ... "
 		go get github.com/mitchellh/gox
 	fi
@@ -71,9 +71,9 @@ if [[ $RELEASE_BUILD -eq 1 ]]; then
 	printf "Building release ... "
 
 	## call gox to build our binaries
-	gox \
+	CGO_ENABLED=0 gox \
 	-osarch="linux/amd64 darwin/amd64 freebsd/amd64 windows/amd64 windows/386" \
-	-ldflags="-X main.appVersion=${RELEASE_VERSION} -s" \
+	-ldflags="-X main.appVersion=${RELEASE_VERSION} -s -w" \
 	-output="./dist/${BUILD_NAME}-${RELEASE_VERSION}-{{.Arch}}-{{.OS}}/${BUILD_NAME}-${RELEASE_VERSION}" \
 	> /dev/null 2>&1
 
@@ -105,7 +105,7 @@ if [[ $RELEASE_BUILD -eq 1 ]]; then
 
 	## package files
 	pushd ./dist/ > /dev/null 2>&1
-	find . -type d -name \*-\* -maxdepth 1 \
+	find . -maxdepth 1 -type d -name \*-\* \
 	-exec tar -czf {}.tar.gz {}/ \;
 	popd > /dev/null 2>&1
 
