@@ -13,4 +13,4 @@ release:
 	@build/build.sh -ir
 
 docker: release
-	$(sudo) docker build -t my-ena/consul-backinator -f build/docker .
+	$(sudo) docker build -t ena/consul-backinator -f build/docker .

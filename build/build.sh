@@ -17,7 +17,8 @@ showUsage() {
 
 ## install glide if needed
 ensureGlide() {
-	if [[ ! -x $(which glide > /dev/null 2>&1) ]]; then
+	which glide > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
 		printf "Installing glide ... "
 		go get github.com/Masterminds/glide
 	fi
@@ -25,7 +26,8 @@ ensureGlide() {
 
 ## install gox if needed
 ensureGox() {
-	if [[ ! -x $(which gox > /dev/null 2>&1) ]]; then
+	which gox > /dev/null 2>&1
+	if [ $? -ne 0 ]; then
 		printf "Installing gox ... "
 		go get github.com/mitchellh/gox
 	fi
@@ -63,7 +65,7 @@ done
 shift $((OPTIND-1))
 
 ## check release option
-if [[ $RELEASE_BUILD -eq 1 ]]; then
+if [ $RELEASE_BUILD -eq 1 ]; then
 	## clean dist directory
 	rm -rf ./dist/
 
@@ -99,7 +101,7 @@ if [ $RETVAL -ne 0 ]; then
 fi
 
 ## check release option
-if [[ $RELEASE_BUILD -eq 1 ]]; then
+if [ $RELEASE_BUILD -eq 1 ]; then
 	## package binaries
 	printf "Packaging ... "
 
