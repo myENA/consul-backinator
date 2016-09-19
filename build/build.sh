@@ -73,7 +73,7 @@ if [[ $RELEASE_BUILD -eq 1 ]]; then
 	## call gox to build our binaries
 	gox \
 	-osarch="linux/amd64 darwin/amd64 freebsd/amd64 windows/amd64 windows/386" \
-	-ldflags="-X main.appVersion=${RELEASE_VERSION}" \
+	-ldflags="-X main.appVersion=${RELEASE_VERSION} -s" \
 	-output="./dist/${BUILD_NAME}-${RELEASE_VERSION}-{{.Arch}}-{{.OS}}/${BUILD_NAME}-${RELEASE_VERSION}" \
 	> /dev/null 2>&1
 
