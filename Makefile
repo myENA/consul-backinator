@@ -4,7 +4,7 @@ ifeq ($(SUDO),true)
 	sudo = sudo
 endif
 
-.PHONY: build check release docker
+.PHONY: build release docker
 
 build:
 	@build/build.sh -i
