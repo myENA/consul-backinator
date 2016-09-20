@@ -48,6 +48,8 @@ cd consul-backinator
 make docker
 ```
 
+See [DOCKER.md](DOCKER.md) for some use cases on why docker.
+
 ## Usage
 
 ### Summary
