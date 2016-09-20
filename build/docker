@@ -1,4 +1,8 @@
 FROM alpine:latest
 RUN apk add --no-cache --no-progress ca-certificates
-ADD dist/consul-backinator-*-amd64-linux/consul-backinator-* /usr/local/bin/consul-backinator
-ENTRYPOINT ["/usr/local/bin/consul-backinator"]
+ENV BIN /usr/local/bin/consul-backinator
+COPY dist/consul-backinator-*-amd64-linux.tar.gz /consul-backinator.tar.gz
+RUN tar xzf consul-backinator.tar.gz && \
+        mv consul-backinator*/consul-backinator* $BIN && \
+        rm -rf consul-backinator*
+ENTRYPOINT $BIN
