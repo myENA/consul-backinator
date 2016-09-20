@@ -41,14 +41,14 @@ cd consul-backinator
 make
 ```
 
-To build as a docker container ...
+To build as a Docker container ...
 ```
 git clone https://github.com/myENA/consul-backinator.git
 cd consul-backinator
 make docker
 ```
 
-See [DOCKER.md](DOCKER.md) for some use cases on why docker.
+See [DOCKER.md](DOCKER.md) for some Docker use cases.
 
 ## Usage
 
@@ -128,3 +128,9 @@ ahurt$ ls -la *.sig *.bak
 -rw-------  1 ahurt  staff  11167 May  9 17:14 consul.bak
 -rw-------  1 ahurt  staff     44 May  9 17:14 consul.bak.sig
 ```
+
+## Thanks
+
+* The [HashiCorp](https://github.com/hashicorp) folks for the excellent Consul service discovery daemon and the excellent embedded API and golang package.  In addition to some very nice references back to this utility in a few issues.
+* [Adam Avilla](https://github.com/hekaldama) for his time and contributions to the Docker portions of the build.
+* All the other contributors, testers and stargazers.
