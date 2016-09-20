@@ -4,13 +4,16 @@ ifeq ($(SUDO),true)
 	sudo = sudo
 endif
 
-.PHONY: build release clean docker
+.PHONY: build release check clean docker
 
 build:
 	@build/build.sh -i
 
 release:
 	@build/build.sh -ir
+
+check:
+	@build/codeCheck.sh
 
 clean:
 	@build/build.sh -d

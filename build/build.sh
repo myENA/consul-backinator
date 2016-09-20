@@ -47,8 +47,9 @@ while getopts ":uidr" opt; do
 			glide -q install > /dev/null 2>&1
 		;;
 		d)
-			printf "Removing glide.lock and vendor directory ...\n"
-			rm -rf glide.lock vendor
+			printf "Removing binary, glide.lock and vendor directory ... "
+			rm -rf "${BUILD_NAME}" glide.lock vendor
+			printf "done.\n"
 			exit 0
 		;;
 		r)
@@ -108,11 +109,12 @@ if [ $RELEASE_BUILD -eq 1 ]; then
 	## package files
 	pushd ./dist/ > /dev/null 2>&1
 	find . -maxdepth 1 -type d -name \*-\* \
-	-exec tar -czf {}.tar.gz {}/ \;
+	-exec tar -czf {}.tar.gz {} > /dev/null 2>&1 \; \
+	-exec zip -m -r {}.zip {} > /dev/null 2>&1 \;
 	popd > /dev/null 2>&1
 
 	## all done
-	printf "done\n"
+	printf "done.\nRelease files may be found in the ./dist/ directory.\n"
 else
 	## all done
 	printf "done.\nUsage: ./${BUILD_NAME} -h\n"
