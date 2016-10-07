@@ -2,6 +2,7 @@ package backup
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/hashicorp/consul/api"
 	"github.com/myENA/consul-backinator/common"
 )
@@ -30,6 +31,11 @@ func (c *Command) backupKeys() (int, error) {
 
 	// set count
 	count = len(kvps)
+
+	// check count
+	if count == 0 {
+		return 0, errors.New("No keys found")
+	}
 
 	// encode and return
 	if data, err = json.MarshalIndent(kvps, "", "  "); err != nil {
@@ -66,6 +72,11 @@ func (c *Command) backupAcls() (int, error) {
 
 	// set count
 	count = len(acls)
+
+	// check count
+	if count == 0 {
+		return 0, errors.New("No tokens found")
+	}
 
 	// encode and return
 	if data, err = json.MarshalIndent(acls, "", "  "); err != nil {

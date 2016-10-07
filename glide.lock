@@ -1,12 +1,12 @@
-hash: d7417dad39a6aa0a4b3d540cde4e1d3a14a8e47c49f58f5b274482463bf2f65e
-updated: 2016-09-19T19:09:01.827649696-05:00
+hash: 36a17d71075a1cf56525a585501fb6d7063c82bff4b697dc2a3865c5fc55a950
+updated: 2016-10-07T16:49:24.699773878-05:00
 imports:
 - name: github.com/armon/go-radix
   version: 4239b77079c7b5d1243b7b4736304ce8ddb6f0f2
 - name: github.com/bgentry/speakeasy
   version: a1ccbf2c40dfc8ce514b5c5c6e6d1429ea6880da
 - name: github.com/hashicorp/consul
-  version: a189091a3530051285c12c726ca28ea55e015336
+  version: 26a0ef8c41aa2252ab4cf0844fc6470c8e1d8256
   subpackages:
   - api
 - name: github.com/hashicorp/go-cleanhttp
@@ -15,6 +15,7 @@ imports:
   version: e4ec8cc423bbe20d26584b96efbeb9102e16d05f
   subpackages:
   - coordinate
+  - serf
 - name: github.com/mattn/go-isatty
   version: 66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8
 - name: github.com/mitchellh/cli
