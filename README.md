@@ -27,13 +27,19 @@ changed and any scripts which embedded this tool will need to be updated.
 
 ## Installing
 
-With a proper Go environment simply run ...
+OS X/macOS Homebrew users ...
+
+```
+brew install consul-backinator
+```
+
+Users with a proper Go environment ...
 
 ```
 go get -u github.com/myENA/consul-backinator
 ```
 
-To take advantage of the vendoring and other options ...
+Developers that wish to take advantage of vendoring and other options ...
 
 ```
 git clone https://github.com/myENA/consul-backinator.git
