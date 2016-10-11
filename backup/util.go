@@ -3,6 +3,7 @@ package backup
 import (
 	"flag"
 	"fmt"
+	"github.com/myENA/consul-backinator/common"
 	"os"
 )
 
@@ -25,14 +26,9 @@ func (c *Command) setupFlags(args []string) error {
 		"Optional path transformation")
 	cmdFlags.StringVar(&c.config.consulPrefix, "prefix", "/",
 		"Optional prefix from under which all keys will be fetched")
-	cmdFlags.StringVar(&c.config.consulConfig.Address, "addr", "",
-		"Optional consul address and port")
-	cmdFlags.StringVar(&c.config.consulConfig.Scheme, "scheme", "",
-		"Optional consul scheme")
-	cmdFlags.StringVar(&c.config.consulConfig.Datacenter, "dc", "",
-		"Optional consul datacenter")
-	cmdFlags.StringVar(&c.config.consulConfig.Token, "token", "",
-		"Optional consul access token")
+
+	// Add shared Consul flags
+	common.AddSharedConsulFlags(cmdFlags, c.config.consulConfig)
 
 	// parse flags and ignore error
 	if err := cmdFlags.Parse(args); err != nil {
