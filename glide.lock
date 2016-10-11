@@ -1,5 +1,5 @@
-hash: 36a17d71075a1cf56525a585501fb6d7063c82bff4b697dc2a3865c5fc55a950
-updated: 2016-10-07T16:49:24.699773878-05:00
+hash: 087063c09cad8da74f0f00d1e34c4cb6aa0b738505b1691843a605b23f681e64
+updated: 2016-10-11T16:31:06.794469552-07:00
 imports:
 - name: github.com/armon/go-radix
   version: 4239b77079c7b5d1243b7b4736304ce8ddb6f0f2
@@ -11,6 +11,8 @@ imports:
   - api
 - name: github.com/hashicorp/go-cleanhttp
   version: 875fb671b3ddc66f8e2f0acc33829c8cb989a38d
+- name: github.com/hashicorp/go-rootcerts
+  version: 6bb64b370b90e7ef1fa532be9e591a81c3493e00
 - name: github.com/hashicorp/serf
   version: e4ec8cc423bbe20d26584b96efbeb9102e16d05f
   subpackages:
@@ -20,6 +22,8 @@ imports:
   version: 66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8
 - name: github.com/mitchellh/cli
   version: fcf521421aa29bde1d93b6920dfce826d7932208
+- name: github.com/mitchellh/go-homedir
+  version: 756f7b183b7ab78acdbbee5c7f392838ed459dda
 - name: golang.org/x/sys
   version: 20457ee8ea8546920d3f4e19e405da45250dc5a5
   subpackages:

@@ -4,6 +4,7 @@ import (
 	"flag"
 )
 
+// AddSharedConsulFlags adds shared flags for Consul related options
 func AddSharedConsulFlags(cmdFlags *flag.FlagSet, consulConfig *ConsulConfig) {
 	cmdFlags.StringVar(&consulConfig.Address, "addr", "",
 		"Optional consul address and port")
