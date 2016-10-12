@@ -112,16 +112,21 @@ func (c *Command) Help() string {
 
 Options:
 
-	-file         Sets the backup filename (default: "consul.bak")
-	-key          Passphrase for data encryption and signature validation (default: "password")
-	-nokv         Do not attempt to backup kv data
-	-acls         Optional backup filename for acl tokens
-	-transform    Optional path transformation (oldPath,newPath...)
-	-prefix       Optional prefix from under which all keys will be fetched
-	-addr         Optional consul address and port (default: "127.0.0.1:8500")
-	-scheme       Optional consul scheme ("http" or "https")
-	-dc           Optional consul datacenter
-	-token        Optional consul access token
+	-file            Sets the backup filename (default: "consul.bak")
+	-key             Passphrase for data encryption and signature validation (default: "password")
+	-nokv            Do not attempt to backup kv data
+	-acls            Optional backup filename for acl tokens
+	-transform       Optional path transformation (oldPath,newPath...)
+	-prefix          Optional prefix from under which all keys will be fetched
+	-addr            Optional consul address and port (default: "127.0.0.1:8500")
+	-scheme          Optional consul scheme ("http" or "https")
+	-dc              Optional consul datacenter
+	-token           Optional consul access token
+	-ca-cert         Optional path to a PEM encoded CA cert file to use to verify consul
+	-ca-path         Optional path to a directory of PEM encoded CA cert files to verify consul
+	-client-cert     Optional path to a PEM encoded client certificate for TLS authentication to consul
+	-client-key      Optional path to an unencrypted PEM encoded private key matching the client certificate from -client-cert
+	-tls-skip-verify Optional bool for verifying a TLS certificate. This is highly not recommended
 
 `, c.Self)
 }
