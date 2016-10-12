@@ -97,10 +97,14 @@ Available commands are:
 
 | Option   | Description |
 |----------|-------------|
-| `addr`   | Optional consul agent address and port.  The default is read from the `CONSUL_HTTP_ADDR` environment variable if specified or set to `127.0.0.1:8500`.
-| `scheme` | Optional scheme `http` or `https` used when connecting to the consul agent.  The default is set to `https` if the `CONSUL_HTTP_SSL` environment variable is set to `true` otherwise the default is `http`.
-| `dc`     | Optional datacenter specification.  The default value is the datacenter of the agent to which you are connecting.
-| `token`  | Optional consul access token.  The default value is read from the `CONSUL_HTTP_TOKEN` environment variable if specified.
+| `addr`            | Optional consul agent address and port.  The default is read from the `CONSUL_HTTP_ADDR` environment variable if specified or set to `127.0.0.1:8500`.
+| `scheme`          | Optional scheme `http` or `https` used when connecting to the consul agent.  The default is set to `https` if the `CONSUL_HTTP_SSL` environment variable is set to `true` otherwise the default is `http`.
+| `dc`              | Optional datacenter specification.  The default value is the datacenter of the agent to which you are connecting.
+| `token`           | Optional consul access token.  The default value is read from the `CONSUL_HTTP_TOKEN` environment variable if specified.
+| `ca-cert`         | Optional path to a PEM encoded CA cert file.  This may also be a certificate bundle (concatenation of CA certificates).
+| `client-cert`     | Optional path to a PEM encoded client certificate.  This certificate must match the client key.
+| `client-key`      | Optional path to an unencrypted PEM encoded private key. This key should obviously match the client cert.  Passing this or `client-cert` alone will probably not work.
+| `tls-skip-verify` | Optional bool for verifying a TLS certificate.  This is a very clear security risk and is not reccomended.  This option alone has the same affect as the `CONSUL_HTTP_SSL_VERIFY` environment variable.
 
 ### Dump Options
 

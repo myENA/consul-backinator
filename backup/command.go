@@ -122,11 +122,10 @@ Options:
 	-scheme          Optional consul scheme ("http" or "https")
 	-dc              Optional consul datacenter
 	-token           Optional consul access token
-	-ca-cert         Optional path to a PEM encoded CA cert file to use to verify consul
-	-ca-path         Optional path to a directory of PEM encoded CA cert files to verify consul
-	-client-cert     Optional path to a PEM encoded client certificate for TLS authentication to consul
-	-client-key      Optional path to an unencrypted PEM encoded private key matching the client certificate from -client-cert
-	-tls-skip-verify Optional bool for verifying a TLS certificate. This is highly not recommended
+	-ca-cert         Optional path to a PEM encoded CA cert file
+	-client-cert     Optional path to a PEM encoded client certificate
+	-client-key      Optional path to an unencrypted PEM encoded private key
+	-tls-skip-verify Optional bool for verifying a TLS certificate (not reccomended)
 
 `, c.Self)
 }

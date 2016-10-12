@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/myENA/consul-backinator/common"
 	"os"
+	"strings"
 )
 
 // init instance configuration
@@ -29,13 +30,18 @@ func (c *Command) setupFlags(args []string) error {
 	cmdFlags.StringVar(&c.config.consulPrefix, "prefix", "/",
 		"Prefix for delete operation")
 
-	// Add shared Consul flags
+	// add shared flags
 	common.AddSharedConsulFlags(cmdFlags, c.config.consulConfig)
 
 	// parse flags and ignore error
 	if err := cmdFlags.Parse(args); err != nil {
 		return nil
 	}
+
+	// fixup prefix per upstream issue 2403
+	// https://github.com/hashicorp/consul/issues/2403
+	c.config.consulPrefix = strings.TrimPrefix(c.config.consulPrefix,
+		common.ConsulSeparator)
 
 	// always okay
 	return nil
