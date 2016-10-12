@@ -67,7 +67,7 @@ usage: consul-backinator [--version] [--help] <command> [<args>]
 Available commands are:
     backup     Perform a backup operation
     dump       Dump a backup file
-    restore    Perform a backup operation
+    restore    Perform a restore operation
 
 ```
 
