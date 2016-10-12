@@ -2,6 +2,7 @@ package common
 
 import (
 	"flag"
+	"github.com/hashicorp/consul/api"
 )
 
 // AddSharedConsulFlags adds flags shared by multiple command implementations
@@ -15,6 +16,9 @@ func AddSharedConsulFlags(cmdFlags *flag.FlagSet, consulConfig *ConsulConfig) {
 		"Optional consul datacenter")
 	cmdFlags.StringVar(&consulConfig.Token, "token", "",
 		"Optional consul access token")
+
+	// init tls struct
+	consulConfig.tls = new(api.TLSConfig)
 
 	// TLS settings
 	cmdFlags.StringVar(&consulConfig.tls.CAFile, "ca-cert", "",
