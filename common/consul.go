@@ -60,6 +60,8 @@ func (cc *ConsulConfig) NewClient() (*ConsulClient, error) {
 		httpClient := cleanhttp.DefaultClient()
 		httpTransport := cleanhttp.DefaultTransport()
 		httpTransport.TLSClientConfig = tlsConfig
+		httpClient.Transport = httpTransport
+
 		// set client
 		c.HttpClient = httpClient
 	}
