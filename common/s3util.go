@@ -12,9 +12,6 @@ var (
 	ErrS3MissingKey = errors.New("Missing S3 access key.  " +
 		"They keys should be passed in the URI or set in the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables.  " +
 		"Example: s3://access-key:secret-key@my-bucket/path/to/object")
-	ErrS3MissingRegion = errors.New("Missing S3 region.  " +
-		"The region should be passed in the URI or set in the AWS_REGION environment variable.  " +
-		"Example: s3://my-bucket/path/to/object?region=us-east-1")
 	ErrS3MissingBucketPath = errors.New("Missing S3 bucket or path.  " +
 		"The bucket and path should be passed in the URI specification.  " +
 		"Example: s3://my-bucket/path/to/object")
@@ -84,7 +81,7 @@ func GetS3Info(s3uri string) (*S3Info, error) {
 	// get region
 	if info.region = u.Query().Get("region"); info.region == "" {
 		if info.region = os.Getenv("AWS_REGION"); info.region == "" {
-			return nil, ErrS3MissingRegion
+			info.region = "us-east-1"
 		}
 	}
 

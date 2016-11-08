@@ -24,6 +24,7 @@ changed and any scripts which embedded this tool will need to be updated.
 * Data integrity validation via HMAC-SHA256 signature of the raw data
 * Optional path transformation (path replacement) on backup and/or restore
 * Clean well documented code that's simple to follow
+* Direct AWS/S3 support for backup and restoration of KVs and ACLs
 
 ## Installing
 
@@ -123,6 +124,28 @@ there is a match.  For example, passing `-transform="foo,bar"` would rewrite
 To avoid potential errors in transformations you should always use the most exact path possible.
 Using the previous example if you only wanted to affect keys under `apple` you should pass
 `-transform="apple/foo,apple/bar"` to prevent other paths from being modified inadvertently.
+
+## S3 Support
+
+Support for S3 is implemented by passing an S3 URI to the standard ```-file``` option.  The full format for the URI is as follows:
+
+```
+s3://access-key:secret-key@my-bucket/path/to/object?region=us-east-1&endpoint=my-s3gw:9000&secure=false
+```
+
+The minimal URI when using environment variables would be: ```s3://my-bucket/path/object```
+
+The current URI parsing accepts `s3://` and `s3n://` scheme prefixes.
+
+This table describes all the S3 URI options and corresponding environment variables.
+
+| Paramater    | Environment             | Required    | Description            | Default          |
+|--------------|-------------------------|-------------|------------------------|------------------|
+| `access-key` | `AWS_ACCESS_KEY_ID`     | yes         | Your S3/AWS access key |                  |
+| `secret-key` | `AWS_SECRET_ACCESS_KEY` | yes         | Your S3/AWS secret key |                  |
+| `region`     | `AWS_REGION`            | no          | Your S3/AWS region     | us-east-1        |
+| `endpoint`   |                         | no          | Optional endpoint      | s3.amazonaws.com |
+| `secure`     |                         | no          | Optional secure flag   | true             |
 
 ## Example
 
