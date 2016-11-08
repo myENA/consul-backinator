@@ -70,7 +70,7 @@ func (c *Command) Run(args []string) int {
 		}
 
 		// show success
-		log.Printf("[Success] Backed up %d keys from %s%s to %s",
+		log.Printf("[Success] Backed up %d keys from %s/%s to %s",
 			count,
 			c.config.consulConfig.Address,
 			c.config.consulPrefix,
@@ -112,10 +112,10 @@ func (c *Command) Help() string {
 
 Options:
 
-	-file            Sets the backup filename (default: "consul.bak")
+	-file            Destination filename or S3 location (default: "consul.bak")
 	-key             Passphrase for data encryption and signature validation (default: "password")
 	-nokv            Do not attempt to backup kv data
-	-acls            Optional backup filename for acl tokens
+	-acls            Optional backup filename or S3 location for acl tokens
 	-transform       Optional path transformation (oldPath,newPath...)
 	-prefix          Optional prefix from under which all keys will be fetched
 	-addr            Optional consul address and port (default: "127.0.0.1:8500")
@@ -126,6 +126,9 @@ Options:
 	-client-cert     Optional path to a PEM encoded client certificate
 	-client-key      Optional path to an unencrypted PEM encoded private key
 	-tls-skip-verify Optional bool for verifying a TLS certificate (not reccomended)
+
+Please see documentation on GitHub for a detailed explanation of all options.
+https://github.com/myENA/consul-backinator
 
 `, c.Self)
 }

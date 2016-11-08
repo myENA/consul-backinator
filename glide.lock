@@ -1,5 +1,5 @@
-hash: 714d28211759047c78f473d2b0be41345ce3bb94e1155c87ddd431e3dc533f0d
-updated: 2016-10-12T17:37:43.480713926-05:00
+hash: d97950419161d614518e06d18c13d9b1085fb89bf79c6a3a45de8790b42007c6
+updated: 2016-11-08T11:10:28.727423535-06:00
 imports:
 - name: github.com/armon/go-radix
   version: 4239b77079c7b5d1243b7b4736304ce8ddb6f0f2
@@ -17,6 +17,12 @@ imports:
   - coordinate
 - name: github.com/mattn/go-isatty
   version: 66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8
+- name: github.com/minio/minio-go
+  version: c040578255dbb1a1f41cbdc5bd944de4140b4149
+  subpackages:
+  - minio
+  - pkg/policy
+  - pkg/set
 - name: github.com/mitchellh/cli
   version: fcf521421aa29bde1d93b6920dfce826d7932208
 - name: golang.org/x/sys

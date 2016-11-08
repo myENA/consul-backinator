@@ -16,7 +16,7 @@ func (c *Command) setupFlags(args []string) error {
 
 	// declare flags
 	cmdFlags.StringVar(&c.config.fileName, "file", "consul.bak",
-		"Backup filename")
+		"Destination")
 	cmdFlags.StringVar(&c.config.cryptKey, "key", "password",
 		"Passphrase for data encryption and signature validation")
 	cmdFlags.BoolVar(&c.config.noKV, "nokv", false,
@@ -35,6 +35,9 @@ func (c *Command) setupFlags(args []string) error {
 	if err := cmdFlags.Parse(args); err != nil {
 		return nil
 	}
+
+	// populate potentially missing config items
+	common.AddEnvDefaults(c.config.consulConfig)
 
 	// fixup prefix per upstream issue 2403
 	// https://github.com/hashicorp/consul/issues/2403

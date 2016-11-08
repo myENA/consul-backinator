@@ -71,7 +71,7 @@ func (c *Command) Run(args []string) int {
 		}
 
 		// show success
-		log.Printf("[Success] Restored %d keys from %s to %s%s",
+		log.Printf("[Success] Restored %d keys from %s to %s/%s",
 			count,
 			c.config.fileName,
 			c.config.consulConfig.Address,
@@ -109,10 +109,10 @@ func (c *Command) Help() string {
 
 Options:
 
-	-file            Source filename for kv data (default: "consul.bak")
+	-file            Source filename or S3 location (default: "consul.bak")
 	-key             Passphrase for data encryption and signature validation (default: "password")
 	-nokv            Do not attempt to restore kv data
-	-acls            Optional source filename for acl tokens
+	-acls            Optional source filename S3 location for acl tokens
 	-transform       Optional path transformation (oldPath,newPath...)
 	-delete          Delete all keys under specified prefix prior to restoration (default: false)
 	-prefix          Prefix for delete operation
@@ -124,6 +124,9 @@ Options:
 	-client-cert     Optional path to a PEM encoded client certificate
 	-client-key      Optional path to an unencrypted PEM encoded private key
 	-tls-skip-verify Optional bool for verifying a TLS certificate (not reccomended)
+
+Please see documentation on GitHub for a detailed explanation of all options.
+https://github.com/myENA/consul-backinator
 
 `, c.Self)
 }

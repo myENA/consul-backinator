@@ -61,5 +61,8 @@ Options:
 	-plain        Dump a reduced set of information
 	-acls         Specified file is an ACL token backup file (only applicable if decoding)
 
+Please see documentation on GitHub for a detailed explanation of all options.
+https://github.com/myENA/consul-backinator
+
 `, c.Self)
 }

@@ -12,12 +12,21 @@ import (
 func (c *Command) dumpData() error {
 	var kvps api.KVPairs     // decoded kv pairs
 	var acls []*api.ACLEntry // decoded acl entries
+	var s3 *common.S3Info    // s3 info struct
 	var data []byte          // read json data
 	var err error            // general error holder
 
-	// read json data from file
-	if data, err = common.ReadFile(c.config.fileName, c.config.cryptKey); err != nil {
-		return err
+	// check filename
+	if s3, err = common.GetS3Info(c.config.fileName); err == nil {
+		// read data from s3
+		if data, err = s3.Read(c.config.cryptKey); err != nil {
+			return err
+		}
+	} else {
+		// read json data from file
+		if data, err = common.ReadFile(c.config.fileName, c.config.cryptKey); err != nil {
+			return err
+		}
 	}
 
 	// check plain
