@@ -3,7 +3,8 @@ package backup
 import (
 	"flag"
 	"fmt"
-	"github.com/myENA/consul-backinator/common"
+	cc "github.com/myENA/consul-backinator/common/config"
+	ccns "github.com/myENA/consul-backinator/common/consul"
 	"os"
 	"strings"
 )
@@ -29,7 +30,7 @@ func (c *Command) setupFlags(args []string) error {
 		"Optional prefix from under which all keys will be fetched")
 
 	// add shared flags
-	common.AddSharedConsulFlags(cmdFlags, c.config.consulConfig)
+	cc.AddSharedConsulFlags(cmdFlags, c.config.consulConfig)
 
 	// parse flags and ignore error
 	if err := cmdFlags.Parse(args); err != nil {
@@ -37,12 +38,12 @@ func (c *Command) setupFlags(args []string) error {
 	}
 
 	// populate potentially missing config items
-	common.AddEnvDefaults(c.config.consulConfig)
+	cc.AddEnvDefaults(c.config.consulConfig)
 
 	// fixup prefix per upstream issue 2403
 	// https://github.com/hashicorp/consul/issues/2403
 	c.config.consulPrefix = strings.TrimPrefix(c.config.consulPrefix,
-		common.ConsulSeparator)
+		ccns.ConsulSeparator)
 
 	// always okay
 	return nil

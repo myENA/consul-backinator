@@ -1,4 +1,4 @@
-package common
+package consul
 
 import (
 	"crypto/tls"
@@ -12,7 +12,7 @@ const ConsulSeparator = "/"
 // ConsulConfig contains consul client configuration and TLSConfig in a single struct
 type ConsulConfig struct {
 	api.Config
-	tls *api.TLSConfig
+	TLS *api.TLSConfig
 }
 
 // ConsulClient contains a consul client implementation
@@ -20,8 +20,8 @@ type ConsulClient struct {
 	*api.Client
 }
 
-// NewClient returns an initialized consul client
-func (cc *ConsulConfig) NewClient() (*ConsulClient, error) {
+// New returns an initialized consul client
+func (cc *ConsulConfig) New() (*ConsulClient, error) {
 	var c *api.Config        // upstream client configuration
 	var client *ConsulClient // client wrapper
 	var err error            // general error holder
@@ -50,10 +50,10 @@ func (cc *ConsulConfig) NewClient() (*ConsulClient, error) {
 	}
 
 	// configure if any TLS specific options were passed
-	if cc.tls.CAFile != "" || cc.tls.CertFile != "" || cc.tls.KeyFile != "" || cc.tls.InsecureSkipVerify {
+	if cc.TLS.CAFile != "" || cc.TLS.CertFile != "" || cc.TLS.KeyFile != "" || cc.TLS.InsecureSkipVerify {
 		var tlsConfig *tls.Config // client TLS config
 		// attempt to build tls config from passed options
-		if tlsConfig, err = api.SetupTLSConfig(cc.tls); err != nil {
+		if tlsConfig, err = api.SetupTLSConfig(cc.TLS); err != nil {
 			return nil, err
 		}
 		// build a new http client and transport

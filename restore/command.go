@@ -2,7 +2,8 @@ package restore
 
 import (
 	"fmt"
-	"github.com/myENA/consul-backinator/common"
+	ccns "github.com/myENA/consul-backinator/common/consul"
+	ct "github.com/myENA/consul-backinator/common/transformer"
 	"log"
 )
 
@@ -15,15 +16,15 @@ type config struct {
 	pathTransform string
 	delTree       bool
 	consulPrefix  string
-	consulConfig  *common.ConsulConfig
+	consulConfig  *ccns.ConsulConfig
 }
 
 // Command is a Command implementation that runs the backup operation
 type Command struct {
 	Self            string
 	config          *config
-	consulClient    *common.ConsulClient
-	pathTransformer *common.PathTransformer
+	consulClient    *ccns.ConsulClient
+	pathTransformer *ct.PathTransformer
 }
 
 // Run is a function to run the command
@@ -35,7 +36,7 @@ func (c *Command) Run(args []string) int {
 	c.config = new(config)
 
 	// init consul config
-	c.config.consulConfig = new(common.ConsulConfig)
+	c.config.consulConfig = new(ccns.ConsulConfig)
 
 	// setup flags
 	if err = c.setupFlags(args); err != nil {
@@ -52,13 +53,13 @@ func (c *Command) Run(args []string) int {
 	}
 
 	// build client
-	if c.consulClient, err = c.config.consulConfig.NewClient(); err != nil {
+	if c.consulClient, err = c.config.consulConfig.New(); err != nil {
 		log.Printf("[Error] Failed initialize consul client: %s", err.Error())
 		return 1
 	}
 
 	// build transformer if needed
-	if c.pathTransformer, err = common.NewTransformer(c.config.pathTransform); err != nil {
+	if c.pathTransformer, err = ct.New(c.config.pathTransform); err != nil {
 		log.Printf("[Error] Failed to initialize path transformer: %s", err.Error())
 		return 1
 	}

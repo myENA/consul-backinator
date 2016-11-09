@@ -1,8 +1,9 @@
-package common
+package transformer
 
 import (
 	"errors"
 	"github.com/hashicorp/consul/api"
+	ccns "github.com/myENA/consul-backinator/common/consul"
 	"log"
 	"strings"
 )
@@ -16,8 +17,8 @@ type PathTransformer struct {
 	pathReplacer *strings.Replacer
 }
 
-// NewTransformer returns a new path transformer
-func NewTransformer(str string) (*PathTransformer, error) {
+// New returns a new path transformer
+func New(str string) (*PathTransformer, error) {
 	// build replacer instance
 	t := new(PathTransformer)
 
@@ -52,14 +53,14 @@ func (t *PathTransformer) Transform(kvps api.KVPairs) {
 		// split path and key with strings because
 		// the path package will trim a trailing / which
 		// breaks empty folders present in the kvp store
-		split := strings.Split(kv.Key, ConsulSeparator)
+		split := strings.Split(kv.Key, ccns.ConsulSeparator)
 		// get and check length ... only continue if we actually
 		// have a path we may want to transform
 		if length := len(split); length > 1 {
 			// isolate and replace path
-			rpath := t.pathReplacer.Replace(strings.Join(split[:length-1], ConsulSeparator))
+			rpath := t.pathReplacer.Replace(strings.Join(split[:length-1], ccns.ConsulSeparator))
 			// join replaced path with key
-			newKey := strings.Join([]string{rpath, split[length-1]}, ConsulSeparator)
+			newKey := strings.Join([]string{rpath, split[length-1]}, ccns.ConsulSeparator)
 			// check keys
 			if kv.Key != newKey {
 				// log change
