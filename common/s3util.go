@@ -5,12 +5,13 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"strings"
 )
 
 // Exported error messages
 var (
-	ErrS3MissingKey = errors.New("Missing S3 access key.  " +
-		"They keys should be passed in the URI or set in the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables.  " +
+	ErrS3MissingKey = errors.New("Missing S3 access and/or secret key.  " +
+		"The keys should be passed in the URI or set in the AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY environment variables.  " +
 		"Example: s3://access-key:secret-key@my-bucket/path/to/object")
 	ErrS3MissingBucketPath = errors.New("Missing S3 bucket or path.  " +
 		"The bucket and path should be passed in the URI specification.  " +
@@ -19,9 +20,9 @@ var (
 	ErrCreateUnknownError = errors.New("Failed to create bucket on S3 datastore.") // This shouldn't happen
 )
 
-// S3Info contains the information needed to connect to an S3
+// s3Info contains the information needed to connect to an S3
 // datastore and create or retrieve objects
-type S3Info struct {
+type s3Info struct {
 	accessKey string
 	secretKey string
 	region    string
@@ -31,11 +32,16 @@ type S3Info struct {
 	secure    bool
 }
 
-// GetS3Info returns a struct containing all the information needed to connect
+// isS3 does a very basic check if the given string *could* be an S3 URI
+func isS3(s string) bool {
+	return strings.HasPrefix(s, "s3://") || strings.HasPrefix(s, "s3n://")
+}
+
+// parseS3URI returns a struct containing all the information needed to connect
 // to an S3 endpoing and create or retrieve objects.  The data is collected from
 // parsing the passed s3uri and environment variables.
-func GetS3Info(s3uri string) (*S3Info, error) {
-	var info *S3Info // parsed info
+func parseS3URI(s3uri string) (*s3Info, error) {
+	var info *s3Info // parsed info
 	var u *url.URL   // parsed uri
 	var err error    // general error holder
 
@@ -44,13 +50,13 @@ func GetS3Info(s3uri string) (*S3Info, error) {
 		return nil, err
 	}
 
-	// very basic validation test
+	// check scheme for giggles
 	if u.Scheme != "s3" && u.Scheme != "s3n" {
 		return nil, ErrS3UnknownScheme
 	}
 
 	// init info
-	info = new(S3Info)
+	info = new(s3Info)
 
 	// get access key
 	if u.User != nil && u.User.Username() != "" {

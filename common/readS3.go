@@ -4,8 +4,8 @@ import (
 	"github.com/minio/minio-go"
 )
 
-// ReadS3 writes an encrypted/compressed object and signature to an s3 datastore
-func (info *S3Info) Read(key string) ([]byte, error) {
+// read reads an encrypted/compressed object from an S3 datastore and validates checksums
+func (info *s3Info) read(key string) ([]byte, error) {
 	var mc *minio.Client         // minio s3 client
 	var dataObject *minio.Object // fetched data object
 	var sigObject *minio.Object  // fetched signature object

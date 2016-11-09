@@ -47,8 +47,8 @@ func readBytes(in io.Reader, key string) ([]byte, error) {
 	return outBytes.Bytes(), err
 }
 
-// ReadFile reads an encrypted/compressed file and validates checksums
-func ReadFile(fname, key string) ([]byte, error) {
+// readFile reads an encrypted/compressed file and validates checksums
+func readFile(fname, key string) ([]byte, error) {
 	var in *os.File     // input file
 	var outBytes []byte // output buffer
 	var err error       // general error handler

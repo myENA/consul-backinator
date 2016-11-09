@@ -9,23 +9,14 @@ import (
 
 // read keys from a backup file and restore to consul
 func (c *Command) restoreKeys() (int, error) {
-	var kvps api.KVPairs  // decoded kv pairs
-	var count int         // key count
-	var data []byte       // read json data
-	var s3 *common.S3Info // s3 info struct
-	var err error         // general error holder
+	var kvps api.KVPairs // decoded kv pairs
+	var count int        // key count
+	var data []byte      // read json data
+	var err error        // general error holder
 
-	// check filename
-	if s3, err = common.GetS3Info(c.config.fileName); err == nil {
-		// read data from s3
-		if data, err = s3.Read(c.config.cryptKey); err != nil {
-			return 0, err
-		}
-	} else {
-		// read json data from file
-		if data, err = common.ReadFile(c.config.fileName, c.config.cryptKey); err != nil {
-			return 0, err
-		}
+	// read json data from source
+	if data, err = common.ReadData(c.config.fileName, c.config.cryptKey); err != nil {
+		return 0, err
 	}
 
 	// decode data
@@ -71,20 +62,11 @@ func (c *Command) restoreAcls() (int, error) {
 	var acls []*api.ACLEntry // decoded acl tokens
 	var count int            // key count
 	var data []byte          // read json data
-	var s3 *common.S3Info    // s3 info struct
 	var err error            // general error holder
 
-	// check filename
-	if s3, err = common.GetS3Info(c.config.aclFileName); err == nil {
-		// read data from s3
-		if data, err = s3.Read(c.config.cryptKey); err != nil {
-			return 0, err
-		}
-	} else {
-		// read json data from file
-		if data, err = common.ReadFile(c.config.aclFileName, c.config.cryptKey); err != nil {
-			return 0, err
-		}
+	// read json data from source
+	if data, err = common.ReadData(c.config.aclFileName, c.config.cryptKey); err != nil {
+		return 0, err
 	}
 
 	// decode data

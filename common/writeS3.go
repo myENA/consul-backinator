@@ -5,8 +5,8 @@ import (
 	"github.com/minio/minio-go"
 )
 
-// WriteS3 writes an encrypted/compressed object and signature to an s3 datastore
-func (info *S3Info) Write(key string, data []byte) error {
+// write writes an encrypted/compressed object and signature to an S3 datastore
+func (info *s3Info) write(key string, data []byte) error {
 	var mc *minio.Client  // minio s3 client
 	var buf *bytes.Buffer // data buffer
 	var err error         // general error holder

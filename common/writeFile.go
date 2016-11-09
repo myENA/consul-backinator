@@ -43,8 +43,8 @@ func writeBytes(out io.Writer, key string, data []byte) error {
 	return err
 }
 
-// WriteFile writes an encrypted/compressed file and signature
-func WriteFile(fname, key string, data []byte) error {
+// writeFile writes an encrypted/compressed file and signature
+func writeFile(fname, key string, data []byte) error {
 	var out *os.File // destination file
 	var err error    // general error holder
 
