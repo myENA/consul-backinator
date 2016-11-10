@@ -89,8 +89,8 @@ else
 	printf "Building ... "
 
 	## build it
-	go build -o "${BUILD_NAME}" \
-	-ldflags="-X main.appVersion=${RELEASE_VERSION}"
+	CGO_ENABLED=0 go build -o "${BUILD_NAME}" \
+	-ldflags="-X main.appVersion=${RELEASE_VERSION} -s -w"
 
 	## go build return
 	RETVAL=$?
