@@ -43,7 +43,7 @@ func (c *Command) setupFlags(args []string) error {
 	// fixup prefix per upstream issue 2403
 	// https://github.com/hashicorp/consul/issues/2403
 	c.config.consulPrefix = strings.TrimPrefix(c.config.consulPrefix,
-		ccns.ConsulSeparator)
+		ccns.Separator)
 
 	// always okay
 	return nil

@@ -6,25 +6,25 @@ import (
 	"github.com/hashicorp/go-cleanhttp"
 )
 
-// ConsulSeparator is the consul kvp separator
-const ConsulSeparator = "/"
+// Separator is the consul kvp separator
+const Separator = "/"
 
-// ConsulConfig contains consul client configuration and TLSConfig in a single struct
-type ConsulConfig struct {
+// Config contains consul client configuration and TLSConfig in a single struct
+type Config struct {
 	api.Config
 	TLS *api.TLSConfig
 }
 
-// ConsulClient contains a consul client implementation
-type ConsulClient struct {
+// Client contains a consul client implementation
+type Client struct {
 	*api.Client
 }
 
 // New returns an initialized consul client
-func (cc *ConsulConfig) New() (*ConsulClient, error) {
-	var c *api.Config        // upstream client configuration
-	var client *ConsulClient // client wrapper
-	var err error            // general error holder
+func (cc *Config) New() (*Client, error) {
+	var c *api.Config  // upstream client configuration
+	var client *Client // client wrapper
+	var err error      // general error holder
 
 	// init upstream config
 	c = api.DefaultConfig()
@@ -67,7 +67,7 @@ func (cc *ConsulConfig) New() (*ConsulClient, error) {
 	}
 
 	// init client wrapper
-	client = new(ConsulClient)
+	client = new(Client)
 	client.Client, err = api.NewClient(c)
 
 	// return client and error

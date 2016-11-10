@@ -16,14 +16,14 @@ type config struct {
 	pathTransform string
 	delTree       bool
 	consulPrefix  string
-	consulConfig  *ccns.ConsulConfig
+	consulConfig  *ccns.Config
 }
 
 // Command is a Command implementation that runs the backup operation
 type Command struct {
 	Self            string
 	config          *config
-	consulClient    *ccns.ConsulClient
+	consulClient    *ccns.Client
 	pathTransformer *ct.PathTransformer
 }
 
@@ -36,7 +36,7 @@ func (c *Command) Run(args []string) int {
 	c.config = new(config)
 
 	// init consul config
-	c.config.consulConfig = new(ccns.ConsulConfig)
+	c.config.consulConfig = new(ccns.Config)
 
 	// setup flags
 	if err = c.setupFlags(args); err != nil {
@@ -124,7 +124,7 @@ Options:
 	-ca-cert         Optional path to a PEM encoded CA cert file
 	-client-cert     Optional path to a PEM encoded client certificate
 	-client-key      Optional path to an unencrypted PEM encoded private key
-	-tls-skip-verify Optional bool for verifying a TLS certificate (not reccomended)
+	-tls-skip-verify Optional bool for verifying a TLS certificate (not recommended)
 
 Please see documentation on GitHub for a detailed explanation of all options.
 https://github.com/myENA/consul-backinator

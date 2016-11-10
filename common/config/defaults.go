@@ -6,7 +6,7 @@ import (
 )
 
 // AddEnvDefaults attempts to populates missing config information from environment variables
-func AddEnvDefaults(consulConfig *ccns.ConsulConfig) {
+func AddEnvDefaults(consulConfig *ccns.Config) {
 	// this is used in a few print statements - so we want it populated
 	if consulConfig.Address == "" {
 		consulConfig.Address = os.Getenv("CONSUL_HTTP_ADDR")

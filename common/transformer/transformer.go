@@ -53,14 +53,14 @@ func (t *PathTransformer) Transform(kvps api.KVPairs) {
 		// split path and key with strings because
 		// the path package will trim a trailing / which
 		// breaks empty folders present in the kvp store
-		split := strings.Split(kv.Key, ccns.ConsulSeparator)
+		split := strings.Split(kv.Key, ccns.Separator)
 		// get and check length ... only continue if we actually
 		// have a path we may want to transform
 		if length := len(split); length > 1 {
 			// isolate and replace path
-			rpath := t.pathReplacer.Replace(strings.Join(split[:length-1], ccns.ConsulSeparator))
+			rpath := t.pathReplacer.Replace(strings.Join(split[:length-1], ccns.Separator))
 			// join replaced path with key
-			newKey := strings.Join([]string{rpath, split[length-1]}, ccns.ConsulSeparator)
+			newKey := strings.Join([]string{rpath, split[length-1]}, ccns.Separator)
 			// check keys
 			if kv.Key != newKey {
 				// log change

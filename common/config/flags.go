@@ -7,7 +7,7 @@ import (
 )
 
 // AddSharedConsulFlags adds flags shared by multiple command implementations
-func AddSharedConsulFlags(cmdFlags *flag.FlagSet, consulConfig *ccns.ConsulConfig) {
+func AddSharedConsulFlags(cmdFlags *flag.FlagSet, consulConfig *ccns.Config) {
 	// client flags
 	cmdFlags.StringVar(&consulConfig.Address, "addr", "",
 		"Optional consul address and port")
@@ -29,5 +29,5 @@ func AddSharedConsulFlags(cmdFlags *flag.FlagSet, consulConfig *ccns.ConsulConfi
 	cmdFlags.StringVar(&consulConfig.TLS.KeyFile, "client-key", "",
 		"Optional path to an unencrypted PEM encoded private key")
 	cmdFlags.BoolVar(&consulConfig.TLS.InsecureSkipVerify, "tls-skip-verify", false,
-		"Optional bool for verifying a TLS certificate (not reccomended)")
+		"Optional bool for verifying a TLS certificate (not recommended)")
 }
