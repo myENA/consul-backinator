@@ -2,7 +2,7 @@
 #
 ## package declarations
 BUILD_NAME="consul-backinator"
-RELEASE_VERSION="1.3"
+RELEASE_VERSION="1.4-dev"
 RELEASE_BUILD=0
 
 ## simple usage example
