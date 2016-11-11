@@ -1,12 +1,12 @@
-hash: d97950419161d614518e06d18c13d9b1085fb89bf79c6a3a45de8790b42007c6
-updated: 2016-11-08T11:10:28.727423535-06:00
+hash: ec3dc5d64407d98fc5a1b518d87f9fb41d0b87b7b44498bb673a80040a0486aa
+updated: 2016-11-11T16:38:50.566958187-06:00
 imports:
 - name: github.com/armon/go-radix
   version: 4239b77079c7b5d1243b7b4736304ce8ddb6f0f2
 - name: github.com/bgentry/speakeasy
   version: a1ccbf2c40dfc8ce514b5c5c6e6d1429ea6880da
 - name: github.com/hashicorp/consul
-  version: a189091a3530051285c12c726ca28ea55e015336
+  version: a9455cd4fc2809570ff1855c37d6ffc2449bd42f
   subpackages:
   - api
 - name: github.com/hashicorp/go-cleanhttp
