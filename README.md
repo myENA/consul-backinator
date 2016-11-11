@@ -1,4 +1,4 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/myENA/consul-backinator)](https://goreportcard.com/report/github.com/myENA/consul-backinator) [![Mozilla Public License](https://img.shields.io/badge/license-MPL-blue.svg)](https://www.mozilla.org/MPL/) [![GoDoc](https://godoc.org/github.com/myENA/consul-backinator/common?status.svg)](https://godoc.org/github.com/myENA/consul-backinator/common) [![Docker Automated Build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/leprechau/consul-backinator/)
+[![Go Report Card](https://goreportcard.com/badge/github.com/myENA/consul-backinator)](https://goreportcard.com/report/github.com/myENA/consul-backinator) [![Mozilla Public License](https://img.shields.io/badge/license-MPL-blue.svg)](https://www.mozilla.org/MPL/) [![GoDoc](https://godoc.org/github.com/myENA/consul-backinator/common?status.svg)](https://godoc.org/github.com/myENA/consul-backinator/common) [![Docker Automated Build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/myena/consul-backinator/)
 
 # consul-backinator
 
@@ -59,8 +59,8 @@ make docker
 To use the latest container from Docker Hub ...
 
 ```
-docker pull leprechau/consul-backinator
-docker run leprechau/consul-backinator
+docker pull myena/consul-backinator
+docker run myena/consul-backinator
 ```
 
 See [DOCKER.md](DOCKER.md) for some Docker use cases.
