@@ -16,16 +16,6 @@ to simplify the flag listings.  The functionality remains the same and previous
 backup files are __not affected__.  However the command options and structure have
 changed and any scripts which embedded this tool will need to be updated.
 
-Releases after 1.4 will be accompanied by a gpg signed SHA256SUM file.  The signing
-key is:
-
-````
-ENA R&D Team (ENA R&D code signing key) <r&d@ena.com> 73F17750
-````
-
-The public key has been uploaded to the public key servers.  You may also
-find a copy of this key at [gpg/r&d@ena.com.asc](gpg/r&d@ena.com.asc) in this repository.
-
 ## Key Features
 
 * Written in Golang using the official Consul API
@@ -74,6 +64,45 @@ docker run myena/consul-backinator
 ```
 
 See [DOCKER.md](DOCKER.md) for some Docker use cases.
+
+## Security
+
+Releases after 1.4 will be accompanied by a GPG signed SHA256SUM file.
+
+````
+ENA R&D Team (ENA R&D code signing key) <r&d@ena.com> 73F17750
+````
+
+The public key [62859FAD5BAEA13C3839D5053CA59EE673F17750](http://pgp.key-server.io/search/0x62859FAD5BAEA13C3839D5053CA59EE673F17750)
+is available via public servers and [gpg/r&d@ena.com.asc](gpg/r&d@ena.com.asc) in this repository.
+
+When verifying releases please note that only the SHA256SUM file is signed with the GPG key.
+The following process should be more than satisfactory to verify the authenticity of any release.
+
+### Verifying Releases
+
+Using the key downloaded from the public server or contained in this repository you
+should import the gpg key into your local key store.
+
+```
+gpg --import "r&d@ena.com.asc"
+```
+
+Next, with the release archive, shasum and signature file downloaded you should
+verify integrity of the checksum file using the GPG signature.
+
+```
+gpg --verify consul-backinator-1.5-SHA256SUMS.sig consul-backinator-1.5-SHA256SUMS
+```
+
+Finally, ensure the downloaded archive matches the verified checksums file.
+Only downloaded archives in the current directory will be checked.
+
+```
+shasum -a 256 -c consul-backinator-1.5-SHA256SUMS
+```
+
+If the above steps completed without error you have a verified release!
 
 ## Usage
 
