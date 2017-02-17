@@ -1,12 +1,12 @@
 package: github.com/myENA/consul-backinator
 import:
 - package: github.com/hashicorp/consul
-  version: v0.7.1
+  version: v0.7.5
   subpackages:
   - api
 - package: github.com/mitchellh/cli
 - package: github.com/hashicorp/go-cleanhttp
 - package: github.com/minio/minio-go
-  version: v2.0.2
+  version: v2.0.4
   subpackages:
   - minio

@@ -1,32 +1,34 @@
-hash: ec3dc5d64407d98fc5a1b518d87f9fb41d0b87b7b44498bb673a80040a0486aa
-updated: 2016-11-11T16:38:50.566958187-06:00
+hash: fe1ccc2dea8b4fc93a51ff659150bc5f8ddf3185e7e7bff188a0a7147633c408
+updated: 2017-02-16T22:15:39.315131846-06:00
 imports:
 - name: github.com/armon/go-radix
   version: 4239b77079c7b5d1243b7b4736304ce8ddb6f0f2
 - name: github.com/bgentry/speakeasy
-  version: a1ccbf2c40dfc8ce514b5c5c6e6d1429ea6880da
+  version: 675b82c74c0ed12283ee81ba8a534c8982c07b85
 - name: github.com/hashicorp/consul
-  version: a9455cd4fc2809570ff1855c37d6ffc2449bd42f
+  version: 21f2d5ad0c02af6c4b32d8fd04f7c81e9b002d41
   subpackages:
   - api
 - name: github.com/hashicorp/go-cleanhttp
-  version: 875fb671b3ddc66f8e2f0acc33829c8cb989a38d
+  version: 3573b8b52aa7b37b9358d966a898feb387f62437
 - name: github.com/hashicorp/serf
-  version: e4ec8cc423bbe20d26584b96efbeb9102e16d05f
+  version: 050c56d31a1ff2ebc50e3f4810fdff7e7563f6c8
   subpackages:
   - coordinate
 - name: github.com/mattn/go-isatty
-  version: 66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8
+  version: dda3de49cbfcec471bd7a70e6cc01fcc3ff90109
 - name: github.com/minio/minio-go
-  version: c040578255dbb1a1f41cbdc5bd944de4140b4149
+  version: dcaae9ec4d0b0a81d17f22f6d7a186491f6a55ec
   subpackages:
   - minio
   - pkg/policy
+  - pkg/s3signer
+  - pkg/s3utils
   - pkg/set
 - name: github.com/mitchellh/cli
-  version: fcf521421aa29bde1d93b6920dfce826d7932208
+  version: 494eb006fe29e9dc75fea6da4df4818f7e046b73
 - name: golang.org/x/sys
-  version: 20457ee8ea8546920d3f4e19e405da45250dc5a5
+  version: 075e574b89e4c2d22f2286a7e2b919519c6f3547
   subpackages:
   - unix
 testImports: []

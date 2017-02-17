@@ -16,6 +16,16 @@ to simplify the flag listings.  The functionality remains the same and previous
 backup files are __not affected__.  However the command options and structure have
 changed and any scripts which embedded this tool will need to be updated.
 
+Releases after 1.4 will be accompanied by a gpg signed SHA256SUM file.  The signing
+key is:
+
+````
+ENA R&D Team (ENA R&D code signing key) <r&d@ena.com> 73F17750
+````
+
+The public key has been uploaded to the public key servers.  You may also
+find a copy of this key at (gpg/r&d@ena.com.asc)[gpg/r&d@ena.com.asc] in this repository.
+
 ## Key Features
 
 * Written in Golang using the official Consul API

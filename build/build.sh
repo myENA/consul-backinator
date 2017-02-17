@@ -2,7 +2,7 @@
 #
 ## package declarations
 BUILD_NAME="consul-backinator"
-RELEASE_VERSION="1.4"
+RELEASE_VERSION="1.5-dev"
 RELEASE_BUILD=0
 
 ## simple usage example
@@ -112,6 +112,8 @@ if [ $RELEASE_BUILD -eq 1 ]; then
 	find . -maxdepth 1 -type d -name \*-\* \
 	-exec tar -czf {}.tar.gz {} > /dev/null 2>&1 \; \
 	-exec zip -m -r {}.zip {} > /dev/null 2>&1 \;
+	shasum -a256 *.tar.gz *.zip >> ${BUILD_NAME}-${RELEASE_VERSION}-SHA256SUMS 2>&1
+	gpg -u "r&d@ena.com" -s ${BUILD_NAME}-${RELEASE_VERSION}-SHA256SUMS 2>&1
 	popd > /dev/null 2>&1
 
 	## all done
