@@ -112,8 +112,8 @@ if [ $RELEASE_BUILD -eq 1 ]; then
 	find . -maxdepth 1 -type d -name \*-\* \
 	-exec tar -czf {}.tar.gz {} > /dev/null 2>&1 \; \
 	-exec zip -m -r {}.zip {} > /dev/null 2>&1 \;
-	shasum -a256 *.tar.gz *.zip >> ${BUILD_NAME}-${RELEASE_VERSION}-SHA256SUMS 2>&1
-	gpg2 -u "r&d@ena.com" -b ${BUILD_NAME}-${RELEASE_VERSION}-SHA256SUMS 2>&1
+	shasum -a256 *.tar.gz *.zip >> ${BUILD_NAME}-${RELEASE_VERSION}-SHA256SUMS
+	gpg2 -u "r&d@ena.com" -b ${BUILD_NAME}-${RELEASE_VERSION}-SHA256SUMS > /dev/null 2>&1
 	popd > /dev/null 2>&1
 
 	## all done
