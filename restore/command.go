@@ -13,6 +13,7 @@ type config struct {
 	cryptKey      string
 	noKV          bool
 	aclFileName   string
+	queryFileName string
 	pathTransform string
 	delTree       bool
 	consulPrefix  string
@@ -81,7 +82,7 @@ func (c *Command) Run(args []string) int {
 
 	// restore acls if requested
 	if c.config.aclFileName != "" {
-		if count, err = c.restoreAcls(); err != nil {
+		if count, err = c.restoreACLs(); err != nil {
 			log.Printf("[Error] Failed to restore ACL tokens: %s", err.Error())
 			return 1
 		}
@@ -113,7 +114,8 @@ Options:
 	-file            Source filename or S3 location (default: "consul.bak")
 	-key             Passphrase for data encryption and signature validation (default: "password")
 	-nokv            Do not attempt to restore kv data
-	-acls            Optional source filename S3 location for acl tokens
+	-acls            Optional source filename or S3 location for acl tokens
+	-queries         Optional source filename or S3 location for query definitions
 	-transform       Optional path transformation (oldPath,newPath...)
 	-delete          Delete all keys under specified prefix prior to restoration (default: false)
 	-prefix          Prefix for delete operation

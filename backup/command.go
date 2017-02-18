@@ -13,6 +13,7 @@ type config struct {
 	cryptKey      string
 	noKV          bool
 	aclFileName   string
+	queryFileName string
 	pathTransform string
 	consulPrefix  string
 	consulConfig  *ccns.Config
@@ -44,9 +45,9 @@ func (c *Command) Run(args []string) int {
 	}
 
 	// sanity check
-	if c.config.noKV && c.config.aclFileName == "" {
-		log.Printf("[Error] Passing 'nokv' and an empty 'acls' file " +
-			"doesn't make any sense.  You should specify an 'acls' file " +
+	if c.config.noKV && c.config.aclFileName == "" && c.config.queryFileName == "" {
+		log.Printf("[Error] Passing 'nokv' without an 'acls' or 'queries' file " +
+			"doesn't make any sense.  You should specify an 'acls' or 'queries' file " +
 			"when using the 'nokv' option.")
 		return 1
 	}
@@ -80,7 +81,7 @@ func (c *Command) Run(args []string) int {
 
 	// backup acls if requested
 	if c.config.aclFileName != "" {
-		if count, err = c.backupAcls(); err != nil {
+		if count, err = c.backupACLs(); err != nil {
 			log.Printf("[Error] Failed to backup ACL tokens: %s", err.Error())
 			return 1
 		}
@@ -90,6 +91,20 @@ func (c *Command) Run(args []string) int {
 			count,
 			c.config.consulConfig.Address,
 			c.config.aclFileName)
+	}
+
+	// backup query definitions if requested
+	if c.config.queryFileName != "" {
+		if count, err = c.backupQueries(); err != nil {
+			log.Printf("[Error] Failed to backup query definitions: %s", err.Error())
+			return 1
+		}
+
+		// show success
+		log.Printf("[Success] Backed up %d query definitions from %s to %s",
+			count,
+			c.config.consulConfig.Address,
+			c.config.queryFileName)
 	}
 
 	// make sure they know to keep the sig
@@ -117,6 +132,7 @@ Options:
 	-key             Passphrase for data encryption and signature validation (default: "password")
 	-nokv            Do not attempt to backup kv data
 	-acls            Optional backup filename or S3 location for acl tokens
+	-queries         Optional backup filename or S3 location for prepared queries
 	-transform       Optional path transformation (oldPath,newPath...)
 	-prefix          Optional prefix from under which all keys will be fetched
 	-addr            Optional consul address and port (default: "127.0.0.1:8500")

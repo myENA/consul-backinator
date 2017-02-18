@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// init instance configuration
+// setupFlags initializes the instance configuration
 func (c *Command) setupFlags(args []string) error {
 	// init flagset
 	cmdFlags := flag.NewFlagSet("backup", flag.ContinueOnError)
@@ -24,6 +24,8 @@ func (c *Command) setupFlags(args []string) error {
 		"Do not attempt to backup kv data")
 	cmdFlags.StringVar(&c.config.aclFileName, "acls", "",
 		"Optional backup filename for acl tokens")
+	cmdFlags.StringVar(&c.config.queryFileName, "queries", "",
+		"Optional backup filename for query definitions")
 	cmdFlags.StringVar(&c.config.pathTransform, "transform", "",
 		"Optional path transformation")
 	cmdFlags.StringVar(&c.config.consulPrefix, "prefix", "/",

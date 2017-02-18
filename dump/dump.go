@@ -8,12 +8,13 @@ import (
 	"os"
 )
 
-// read data from a backup file
+// dumpData reads data from a backup file and prints to stdout
 func (c *Command) dumpData() error {
-	var kvps api.KVPairs     // decoded kv pairs
-	var acls []*api.ACLEntry // decoded acl entries
-	var data []byte          // read json data
-	var err error            // general error holder
+	var kvps api.KVPairs                       // kv pairs
+	var acls []*api.ACLEntry                   // acl entries
+	var queries []*api.PreparedQueryDefinition // query definitions
+	var data []byte                            // read json data
+	var err error                              // general error holder
 
 	// read json data from source
 	if data, err = common.ReadData(c.config.fileName, c.config.cryptKey); err != nil {
@@ -30,8 +31,8 @@ func (c *Command) dumpData() error {
 		return nil
 	}
 
-	// acls
-	if c.config.acls {
+	switch {
+	case c.config.acls:
 		// decode acl data
 		if err = json.Unmarshal(data, &acls); err != nil {
 			return err
@@ -40,7 +41,16 @@ func (c *Command) dumpData() error {
 		for _, acl := range acls {
 			fmt.Printf("Token: %s (%s)\n%s\n", acl.Name, acl.Type, acl.Rules)
 		}
-	} else {
+	case c.config.queries:
+		// decode acl data
+		if err = json.Unmarshal(data, &queries); err != nil {
+			return err
+		}
+		// loop through and print query definitions (not very helpful...)
+		for _, query := range queries {
+			fmt.Printf("Query: %s %s\n", query.ID, query.Token)
+		}
+	default:
 		// decode kv data
 		if err = json.Unmarshal(data, &kvps); err != nil {
 			return err

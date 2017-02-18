@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// init instance configuration
+// setupFlags initializes the instance configuration
 func (c *Command) setupFlags(args []string) error {
 	// init flagset
 	cmdFlags := flag.NewFlagSet("restore", flag.ContinueOnError)
@@ -24,6 +24,8 @@ func (c *Command) setupFlags(args []string) error {
 		"Do not attempt to restore kv data")
 	cmdFlags.StringVar(&c.config.aclFileName, "acls", "",
 		"Optional source filename for acl tokens")
+	cmdFlags.StringVar(&c.config.queryFileName, "queries", "",
+		"Optional source filename for query definitions")
 	cmdFlags.StringVar(&c.config.pathTransform, "transform", "",
 		"Optional path transformation")
 	cmdFlags.BoolVar(&c.config.delTree, "delete", false,

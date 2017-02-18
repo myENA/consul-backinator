@@ -7,7 +7,7 @@ import (
 	"github.com/myENA/consul-backinator/common"
 )
 
-// fetch keys from the store and write to a backup file
+// backupKeys fetches key/value pairs from consul and writes them to a backup file
 func (c *Command) backupKeys() (int, error) {
 	var kvps api.KVPairs       // list of requested kv pairs
 	var opts *api.QueryOptions // client query options
@@ -51,12 +51,12 @@ func (c *Command) backupKeys() (int, error) {
 	return count, nil
 }
 
-// fetch acl tokens from the cluster and write to a backup file
-func (c *Command) backupAcls() (int, error) {
+// backupACLs fetches acl tokens consul and writes them to a backup file
+func (c *Command) backupACLs() (int, error) {
 	var acls []*api.ACLEntry   // list of acl tokens
 	var opts *api.QueryOptions // client query options
-	var count int              // key count
-	var data []byte            // read keys
+	var count int              // token count
+	var data []byte            // read tokens
 	var err error              // general error holder
 
 	// build query options
@@ -89,5 +89,46 @@ func (c *Command) backupAcls() (int, error) {
 	}
 
 	// return token count - no error
+	return count, nil
+}
+
+// backupQueries fetches prepared query definitions from consul and writes them to a backup file
+func (c *Command) backupQueries() (int, error) {
+	var queries []*api.PreparedQueryDefinition // list of query definitions
+	var opts *api.QueryOptions                 // client query options
+	var count int                              // query count
+	var data []byte                            // read definitions
+	var err error                              // general error holder
+
+	// build query options
+	opts = &api.QueryOptions{
+		AllowStale:        false,
+		RequireConsistent: true,
+	}
+
+	// get all query definitions
+	if queries, _, err = c.consulClient.PreparedQuery().List(opts); err != nil {
+		return 0, err
+	}
+
+	// set count
+	count = len(queries)
+
+	// check count
+	if count == 0 {
+		return 0, errors.New("No query definitions found")
+	}
+
+	// encode and return
+	if data, err = json.MarshalIndent(queries, "", "  "); err != nil {
+		return 0, err
+	}
+
+	// write data to destination
+	if err = common.WriteData(c.config.queryFileName, c.config.cryptKey, data); err != nil {
+		return 0, err
+	}
+
+	// return query count - no error
 	return count, nil
 }

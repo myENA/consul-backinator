@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-// init instance configuration
+// setupFlags initializes the instance configuration
 func (c *Command) setupFlags(args []string) error {
 	// init flagset
 	cmdFlags := flag.NewFlagSet("dump", flag.ContinueOnError)
@@ -21,6 +21,8 @@ func (c *Command) setupFlags(args []string) error {
 		"Dump a reduced set of information")
 	cmdFlags.BoolVar(&c.config.acls, "acls", false,
 		"Specified file is an ACL token backup file")
+	cmdFlags.BoolVar(&c.config.queries, "queries", false,
+		"Specified file is a prepared query backup file")
 
 	// parse flags and ignore error
 	if err := cmdFlags.Parse(args); err != nil {

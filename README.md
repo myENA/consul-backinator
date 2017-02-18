@@ -5,8 +5,7 @@
 ## Summary
 
 Flexible Consul KV pair backup and restore tool with a few unique features
-including ACL token backup and restoration.
-This was written for and tested in a production environment.
+including ACL token and prepared query backup and restoration.
 
 ## Note
 
@@ -22,9 +21,9 @@ changed and any scripts which embedded this tool will need to be updated.
 * No limits on the number of keys that can be backed up or restored
 * Backup files are written as gzip compressed and AES256 encrypted JSON data
 * Data integrity validation via HMAC-SHA256 signature of the raw data
-* Optional path transformation (path replacement) on backup and/or restore
+* Optional path transformation (path replacement) on key backup and/or restore
 * Clean well documented code that's simple to follow
-* Direct AWS/S3 support for backup and restoration of KVs and ACLs
+* Direct AWS/S3 support for backup and restoration of KVs, ACLs and queries
 
 ## Installing
 
@@ -125,21 +124,23 @@ Available commands are:
 |-------------|-------------|
 | `file`      | The backup file target.  The signature will be the same with a `.sig` extension appended.  The default names are `consul.bak` and `consul.bak.sig`
 | `key`       | The passphrase used for data encryption and signature generation.  The default string `password` will be used if none specified.  This should be a secure pseudo random string.
-| `nokv`      | Do not attempt to backup kv data.  This only makes sense if also passing the `acls` option below.
-| `acls`      | Optional backup filename for acl tokens.
+| `nokv`      | Do not attempt to backup kv data.  This only makes sense if also passing the `acls` and/or `queries` option below.
+| `acls`      | Optional backup filename or S3 location for acl tokens.
+| `queries`   | Optional backup filename or S3 location for prepared queries.
 | `transform` | Optional argument that affects the key paths written to the backup file.  See the transformation notes below for more information.
 | `prefix`    | Optional argument that specifies the starting point for the backup tree.  The default prefix is the root `/` prefix.  To perform a partial tree backup specify a prefix.
 
 ### Restore Options
 
-| Option   | Description |
-|----------|-------------|
-| `file`   | The source file. The default is `consul.bak`
-| `key`    | The passphrase used for data decryption and signature validation.  This must match the key used when the backup was created.
-| `nokv`   | Do not attempt to restore kv data.  This only makes sense if also passing the `acls` option below.
-| `acls`   | Optional source filename for acl tokens.
-| `delete` | Optionally delete all keys under the specified prefix prior to restoring the backup file.  The default is false.
-| `prefix` | The prefix with the `delete` option.  The default is `/` root.  __THIS WILL DELETE ALL DATA IN YOUR KEYSTORE__ if not changed when using `-delete`.
+| Option    | Description |
+|-----------|-------------|
+| `file`    | The source file. The default is `consul.bak`
+| `key`     | The passphrase used for data decryption and signature validation.  This must match the key used when the backup was created.
+| `nokv`    | Do not attempt to restore kv data.  This only makes sense if also passing the `acls` option below.
+| `acls`    | Optional source filename or S3 location for acl tokens.
+| `queries` | Optional source filename or S3 location for query definitions.
+| `delete`  | Optionally delete all keys under the specified prefix prior to restoring the backup file.  The default is false.
+| `prefix`  | The prefix with the `delete` option.  The default is `/` root.  __THIS WILL DELETE ALL DATA IN YOUR KEYSTORE__ if not changed when using `-delete`.
 
 ### Shared Consul Options (backup/restore)
 
@@ -156,12 +157,13 @@ Available commands are:
 
 ### Dump Options
 
-| Option   | Description |
-|----------|-------------|
-| `file`   | The source file.  The default `consul.bak` will be used if not specified.
-| `key`    | The passphrase for the backup file to be dumped.  The default is `password` if not passed.
-| `plain`  | Optionally dump and decode a reduced set of information omitting metadata, timestamps and other lesser used information.
-| `acls`   | Specified file is an ACL token backup file.  This option is only relevant if using the `plain` option above.
+| Option    | Description |
+|-----------|-------------|
+| `file`    | The source file.  The default `consul.bak` will be used if not specified.
+| `key`     | The passphrase for the backup file to be dumped.  The default is `password` if not passed.
+| `plain`   | Decrypt and dump the full raw payload contained within the backup file.
+| `acls`    | Dump a limited set of data in a more concise format than the `plain` option above.  This is only relevant for ACL backup files.
+| `queries` | Dump a limited set of data in a more concise format than the `plain` option above.  This is only relevant for query backup files. 
 
 ## Transformations
 
