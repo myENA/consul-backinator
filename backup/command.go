@@ -32,12 +32,6 @@ func (c *Command) Run(args []string) int {
 	var err error // error holder
 	var count int // key counter
 
-	// init config
-	c.config = new(config)
-
-	// init consul config
-	c.config.consulConfig = new(ccns.Config)
-
 	// setup flags
 	if err = c.setupFlags(args); err != nil {
 		log.Printf("[Error] Init failed: %s", err.Error())

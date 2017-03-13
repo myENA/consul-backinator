@@ -11,8 +11,20 @@ import (
 
 // setupFlags initializes the instance configuration
 func (c *Command) setupFlags(args []string) error {
+	var cmdFlags *flag.FlagSet // instance flagset
+
+	// init config if needed
+	if c.config == nil {
+		c.config = new(config)
+	}
+
+	// init consul config if needed
+	if c.config.consulConfig == nil {
+		c.config.consulConfig = new(ccns.Config)
+	}
+
 	// init flagset
-	cmdFlags := flag.NewFlagSet("restore", flag.ContinueOnError)
+	cmdFlags = flag.NewFlagSet("restore", flag.ContinueOnError)
 	cmdFlags.Usage = func() { fmt.Fprint(os.Stdout, c.Help()); os.Exit(0) }
 
 	// declare flags

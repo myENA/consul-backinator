@@ -25,9 +25,6 @@ type Command struct {
 func (c *Command) Run(args []string) int {
 	var err error // error holder
 
-	// init config
-	c.config = new(config)
-
 	// setup flags
 	if err = c.setupFlags(args); err != nil {
 		log.Printf("[Error] Init failed: %s", err.Error())
