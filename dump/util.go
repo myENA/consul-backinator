@@ -8,6 +8,7 @@ import (
 
 // setupFlags initializes the instance configuration
 func (c *Command) setupFlags(args []string) error {
+	var cmdFlags *flag.FlagSet // instance flagset
 
 	// init config if needed
 	if c.config == nil {
@@ -15,7 +16,7 @@ func (c *Command) setupFlags(args []string) error {
 	}
 
 	// init flagset
-	cmdFlags := flag.NewFlagSet("dump", flag.ContinueOnError)
+	cmdFlags = flag.NewFlagSet("dump", flag.ContinueOnError)
 	cmdFlags.Usage = func() { fmt.Fprint(os.Stdout, c.Help()); os.Exit(0) }
 
 	// declare flags
