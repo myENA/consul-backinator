@@ -22,7 +22,7 @@ func (c *Command) backupKeys() (int, error) {
 	}
 
 	// get all keys
-	if kvps, _, err = c.consulClient.KV().List(c.config.consulPrefix, opts); err != nil {
+	if kvps, _, err = c.consulClient.KV().List(config.consulPrefix, opts); err != nil {
 		return 0, err
 	}
 
@@ -43,7 +43,7 @@ func (c *Command) backupKeys() (int, error) {
 	}
 
 	// write data to destination
-	if err = common.WriteData(c.config.fileName, c.config.cryptKey, data); err != nil {
+	if err = common.WriteData(config.fileName, config.cryptKey, data); err != nil {
 		return 0, err
 	}
 
@@ -84,7 +84,7 @@ func (c *Command) backupACLs() (int, error) {
 	}
 
 	// write data to destination
-	if err = common.WriteData(c.config.aclFileName, c.config.cryptKey, data); err != nil {
+	if err = common.WriteData(config.aclFileName, config.cryptKey, data); err != nil {
 		return 0, err
 	}
 
@@ -125,7 +125,7 @@ func (c *Command) backupQueries() (int, error) {
 	}
 
 	// write data to destination
-	if err = common.WriteData(c.config.queryFileName, c.config.cryptKey, data); err != nil {
+	if err = common.WriteData(config.queryFileName, config.cryptKey, data); err != nil {
 		return 0, err
 	}
 

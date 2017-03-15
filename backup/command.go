@@ -8,7 +8,7 @@ import (
 )
 
 // primary configuration
-type config struct {
+type configStruct struct {
 	fileName      string
 	cryptKey      string
 	noKV          bool
@@ -22,10 +22,12 @@ type config struct {
 // Command is a Command implementation that runs the backup operation
 type Command struct {
 	Self            string
-	config          *config
 	consulClient    *ccns.Client
 	pathTransformer *ct.PathTransformer
 }
+
+// global config reference
+var config *configStruct
 
 // Run is a function to run the command
 func (c *Command) Run(args []string) int {
@@ -39,7 +41,7 @@ func (c *Command) Run(args []string) int {
 	}
 
 	// sanity check
-	if c.config.noKV && c.config.aclFileName == "" && c.config.queryFileName == "" {
+	if config.noKV && config.aclFileName == "" && config.queryFileName == "" {
 		log.Printf("[Error] Passing 'nokv' without an 'acls' or 'queries' file " +
 			"doesn't make any sense.  You should specify an 'acls' or 'queries' file " +
 			"when using the 'nokv' option.")
@@ -47,19 +49,19 @@ func (c *Command) Run(args []string) int {
 	}
 
 	// build client
-	if c.consulClient, err = c.config.consulConfig.New(); err != nil {
+	if c.consulClient, err = config.consulConfig.New(); err != nil {
 		log.Printf("[Error] Failed initialize consul client: %s", err.Error())
 		return 1
 	}
 
 	// build transformer if needed
-	if c.pathTransformer, err = ct.New(c.config.pathTransform); err != nil {
+	if c.pathTransformer, err = ct.New(config.pathTransform); err != nil {
 		log.Printf("[Error] Failed to initialize path transformer: %s", err.Error())
 		return 1
 	}
 
 	// backup keys unless otherwise requested
-	if !c.config.noKV {
+	if !config.noKV {
 		if count, err = c.backupKeys(); err != nil {
 			log.Printf("[Error] Failed to backup key data: %s", err.Error())
 			return 1
@@ -68,13 +70,13 @@ func (c *Command) Run(args []string) int {
 		// show success
 		log.Printf("[Success] Backed up %d keys from %s/%s to %s",
 			count,
-			c.config.consulConfig.Address,
-			c.config.consulPrefix,
-			c.config.fileName)
+			config.consulConfig.Address,
+			config.consulPrefix,
+			config.fileName)
 	}
 
 	// backup acls if requested
-	if c.config.aclFileName != "" {
+	if config.aclFileName != "" {
 		if count, err = c.backupACLs(); err != nil {
 			log.Printf("[Error] Failed to backup ACL tokens: %s", err.Error())
 			return 1
@@ -83,12 +85,12 @@ func (c *Command) Run(args []string) int {
 		// show success
 		log.Printf("[Success] Backed up %d ACL tokens from %s to %s",
 			count,
-			c.config.consulConfig.Address,
-			c.config.aclFileName)
+			config.consulConfig.Address,
+			config.aclFileName)
 	}
 
 	// backup query definitions if requested
-	if c.config.queryFileName != "" {
+	if config.queryFileName != "" {
 		if count, err = c.backupQueries(); err != nil {
 			log.Printf("[Error] Failed to backup query definitions: %s", err.Error())
 			return 1
@@ -97,8 +99,8 @@ func (c *Command) Run(args []string) int {
 		// show success
 		log.Printf("[Success] Backed up %d query definitions from %s to %s",
 			count,
-			c.config.consulConfig.Address,
-			c.config.queryFileName)
+			config.consulConfig.Address,
+			config.queryFileName)
 	}
 
 	// make sure they know to keep the sig

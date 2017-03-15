@@ -11,8 +11,8 @@ func (c *Command) setupFlags(args []string) error {
 	var cmdFlags *flag.FlagSet // instance flagset
 
 	// init config if needed
-	if c.config == nil {
-		c.config = new(config)
+	if config == nil {
+		config = new(configStruct)
 	}
 
 	// init flagset
@@ -20,15 +20,15 @@ func (c *Command) setupFlags(args []string) error {
 	cmdFlags.Usage = func() { fmt.Fprint(os.Stdout, c.Help()); os.Exit(0) }
 
 	// declare flags
-	cmdFlags.StringVar(&c.config.fileName, "file", "consul.bak",
+	cmdFlags.StringVar(&config.fileName, "file", "consul.bak",
 		"Destination file target")
-	cmdFlags.StringVar(&c.config.cryptKey, "key", "password",
+	cmdFlags.StringVar(&config.cryptKey, "key", "password",
 		"Passphrase for data encryption and signature validation")
-	cmdFlags.BoolVar(&c.config.plainDump, "plain", false,
+	cmdFlags.BoolVar(&config.plainDump, "plain", false,
 		"Dump a reduced set of information")
-	cmdFlags.BoolVar(&c.config.acls, "acls", false,
+	cmdFlags.BoolVar(&config.acls, "acls", false,
 		"Specified file is an ACL token backup file")
-	cmdFlags.BoolVar(&c.config.queries, "queries", false,
+	cmdFlags.BoolVar(&config.queries, "queries", false,
 		"Specified file is a prepared query backup file")
 
 	// parse flags and ignore error

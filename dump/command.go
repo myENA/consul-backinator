@@ -6,7 +6,7 @@ import (
 )
 
 // primary configuration
-type config struct {
+type configStruct struct {
 	fileName      string
 	cryptKey      string
 	pathTransform string
@@ -17,9 +17,11 @@ type config struct {
 
 // Command is a Command implementation that runs the backup operation
 type Command struct {
-	Self   string
-	config *config
+	Self string
 }
+
+// global config reference
+var config *configStruct
 
 // Run is a function to run the command
 func (c *Command) Run(args []string) int {

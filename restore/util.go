@@ -14,13 +14,13 @@ func (c *Command) setupFlags(args []string) error {
 	var cmdFlags *flag.FlagSet // instance flagset
 
 	// init config if needed
-	if c.config == nil {
-		c.config = new(config)
+	if config == nil {
+		config = new(configStruct)
 	}
 
 	// init consul config if needed
-	if c.config.consulConfig == nil {
-		c.config.consulConfig = new(ccns.Config)
+	if config.consulConfig == nil {
+		config.consulConfig = new(ccns.Config)
 	}
 
 	// init flagset
@@ -28,25 +28,25 @@ func (c *Command) setupFlags(args []string) error {
 	cmdFlags.Usage = func() { fmt.Fprint(os.Stdout, c.Help()); os.Exit(0) }
 
 	// declare flags
-	cmdFlags.StringVar(&c.config.fileName, "file", "consul.bak",
+	cmdFlags.StringVar(&config.fileName, "file", "consul.bak",
 		"Source")
-	cmdFlags.StringVar(&c.config.cryptKey, "key", "password",
+	cmdFlags.StringVar(&config.cryptKey, "key", "password",
 		"Passphrase for data encryption and signature validation")
-	cmdFlags.BoolVar(&c.config.noKV, "nokv", false,
+	cmdFlags.BoolVar(&config.noKV, "nokv", false,
 		"Do not attempt to restore kv data")
-	cmdFlags.StringVar(&c.config.aclFileName, "acls", "",
+	cmdFlags.StringVar(&config.aclFileName, "acls", "",
 		"Optional source filename for acl tokens")
-	cmdFlags.StringVar(&c.config.queryFileName, "queries", "",
+	cmdFlags.StringVar(&config.queryFileName, "queries", "",
 		"Optional source filename for query definitions")
-	cmdFlags.StringVar(&c.config.pathTransform, "transform", "",
+	cmdFlags.StringVar(&config.pathTransform, "transform", "",
 		"Optional path transformation")
-	cmdFlags.BoolVar(&c.config.delTree, "delete", false,
+	cmdFlags.BoolVar(&config.delTree, "delete", false,
 		"Delete all keys under specified prefix")
-	cmdFlags.StringVar(&c.config.consulPrefix, "prefix", "/",
+	cmdFlags.StringVar(&config.consulPrefix, "prefix", "/",
 		"Prefix for delete operation")
 
 	// add shared flags
-	cc.AddSharedConsulFlags(cmdFlags, c.config.consulConfig)
+	cc.AddSharedConsulFlags(cmdFlags, config.consulConfig)
 
 	// parse flags and ignore error
 	if err := cmdFlags.Parse(args); err != nil {
@@ -54,11 +54,11 @@ func (c *Command) setupFlags(args []string) error {
 	}
 
 	// populate potentially missing config items
-	cc.AddEnvDefaults(c.config.consulConfig)
+	cc.AddEnvDefaults(config.consulConfig)
 
 	// fixup prefix per upstream issue 2403
 	// https://github.com/hashicorp/consul/issues/2403
-	c.config.consulPrefix = strings.TrimPrefix(c.config.consulPrefix,
+	config.consulPrefix = strings.TrimPrefix(config.consulPrefix,
 		ccns.Separator)
 
 	// always okay
