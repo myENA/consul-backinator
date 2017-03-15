@@ -10,25 +10,20 @@ import (
 func (c *Command) setupFlags(args []string) error {
 	var cmdFlags *flag.FlagSet // instance flagset
 
-	// init config if needed
-	if config == nil {
-		config = new(configStruct)
-	}
-
 	// init flagset
 	cmdFlags = flag.NewFlagSet("dump", flag.ContinueOnError)
 	cmdFlags.Usage = func() { fmt.Fprint(os.Stdout, c.Help()); os.Exit(0) }
 
 	// declare flags
-	cmdFlags.StringVar(&config.fileName, "file", "consul.bak",
+	cmdFlags.StringVar(&kvFileName, "file", "consul.bak",
 		"Destination file target")
-	cmdFlags.StringVar(&config.cryptKey, "key", "password",
+	cmdFlags.StringVar(&cryptKey, "key", "password",
 		"Passphrase for data encryption and signature validation")
-	cmdFlags.BoolVar(&config.plainDump, "plain", false,
+	cmdFlags.BoolVar(&isPlain, "plain", false,
 		"Dump a reduced set of information")
-	cmdFlags.BoolVar(&config.acls, "acls", false,
+	cmdFlags.BoolVar(&isACL, "acls", false,
 		"Specified file is an ACL token backup file")
-	cmdFlags.BoolVar(&config.queries, "queries", false,
+	cmdFlags.BoolVar(&isQuery, "queries", false,
 		"Specified file is a prepared query backup file")
 
 	// parse flags and ignore error

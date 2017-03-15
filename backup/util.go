@@ -14,14 +14,9 @@ func (c *Command) setupFlags(args []string) error {
 	var cmdFlags *flag.FlagSet // instance flagset
 	var err error              // error holder
 
-	// init config if needed
-	if config == nil {
-		config = new(configStruct)
-	}
-
 	// init consul config if needed
-	if config.consulConfig == nil {
-		config.consulConfig = new(ccns.Config)
+	if consulConfig == nil {
+		consulConfig = new(ccns.Config)
 	}
 
 	// init flagset
@@ -29,23 +24,23 @@ func (c *Command) setupFlags(args []string) error {
 	cmdFlags.Usage = func() { fmt.Fprint(os.Stdout, c.Help()); os.Exit(0) }
 
 	// declare flags
-	cmdFlags.StringVar(&config.fileName, "file", "consul.bak",
+	cmdFlags.StringVar(&kvFileName, "file", "consul.bak",
 		"Destination")
-	cmdFlags.StringVar(&config.cryptKey, "key", "password",
+	cmdFlags.StringVar(&cryptKey, "key", "password",
 		"Passphrase for data encryption and signature validation")
-	cmdFlags.BoolVar(&config.noKV, "nokv", false,
+	cmdFlags.BoolVar(&skipKV, "nokv", false,
 		"Do not attempt to backup kv data")
-	cmdFlags.StringVar(&config.aclFileName, "acls", "",
+	cmdFlags.StringVar(&aclFileName, "acls", "",
 		"Optional backup filename for acl tokens")
-	cmdFlags.StringVar(&config.queryFileName, "queries", "",
+	cmdFlags.StringVar(&queryFileName, "queries", "",
 		"Optional backup filename for query definitions")
-	cmdFlags.StringVar(&config.pathTransform, "transform", "",
+	cmdFlags.StringVar(&pathTransformation, "transform", "",
 		"Optional path transformation")
-	cmdFlags.StringVar(&config.consulPrefix, "prefix", "/",
+	cmdFlags.StringVar(&consulPrefix, "prefix", "/",
 		"Optional prefix from under which all keys will be fetched")
 
 	// add shared flags
-	cc.AddSharedConsulFlags(cmdFlags, config.consulConfig)
+	cc.AddSharedConsulFlags(cmdFlags, consulConfig)
 
 	// parse flags and ignore error
 	if err = cmdFlags.Parse(args); err != nil {
@@ -53,11 +48,11 @@ func (c *Command) setupFlags(args []string) error {
 	}
 
 	// populate potentially missing config items
-	cc.AddEnvDefaults(config.consulConfig)
+	cc.AddEnvDefaults(consulConfig)
 
 	// fixup prefix per upstream issue 2403
 	// https://github.com/hashicorp/consul/issues/2403
-	config.consulPrefix = strings.TrimPrefix(config.consulPrefix,
+	consulPrefix = strings.TrimPrefix(consulPrefix,
 		ccns.Separator)
 
 	// always okay

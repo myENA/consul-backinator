@@ -5,23 +5,20 @@ import (
 	"log"
 )
 
-// primary configuration
-type configStruct struct {
-	fileName      string
-	cryptKey      string
-	pathTransform string
-	plainDump     bool
-	acls          bool
-	queries       bool
-}
+// global configuration variables
+var (
+	kvFileName         string
+	cryptKey           string
+	pathTransformation string
+	isPlain            bool
+	isACL              bool
+	isQuery            bool
+)
 
 // Command is a Command implementation that runs the backup operation
 type Command struct {
 	Self string
 }
-
-// global config reference
-var config *configStruct
 
 // Run is a function to run the command
 func (c *Command) Run(args []string) int {

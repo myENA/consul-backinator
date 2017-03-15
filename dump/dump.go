@@ -17,12 +17,12 @@ func (c *Command) dumpData() error {
 	var err error                              // general error holder
 
 	// read json data from source
-	if data, err = common.ReadData(config.fileName, config.cryptKey); err != nil {
+	if data, err = common.ReadData(kvFileName, cryptKey); err != nil {
 		return err
 	}
 
 	// check plain
-	if !config.plainDump {
+	if !isPlain {
 		// write payload
 		os.Stdout.Write(data)
 		// write a blank line
@@ -32,7 +32,7 @@ func (c *Command) dumpData() error {
 	}
 
 	switch {
-	case config.acls:
+	case isACL:
 		// decode acl data
 		if err = json.Unmarshal(data, &acls); err != nil {
 			return err
@@ -41,7 +41,7 @@ func (c *Command) dumpData() error {
 		for _, acl := range acls {
 			fmt.Printf("Token: %s (%s)\n%s\n", acl.Name, acl.Type, acl.Rules)
 		}
-	case config.queries:
+	case isQuery:
 		// decode acl data
 		if err = json.Unmarshal(data, &queries); err != nil {
 			return err

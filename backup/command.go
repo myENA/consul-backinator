@@ -7,17 +7,17 @@ import (
 	"log"
 )
 
-// primary configuration
-type configStruct struct {
-	fileName      string
-	cryptKey      string
-	noKV          bool
-	aclFileName   string
-	queryFileName string
-	pathTransform string
-	consulPrefix  string
-	consulConfig  *ccns.Config
-}
+// global configuration variables
+var (
+	kvFileName         string
+	cryptKey           string
+	skipKV             bool
+	aclFileName        string
+	queryFileName      string
+	pathTransformation string
+	consulPrefix       string
+	consulConfig       *ccns.Config
+)
 
 // Command is a Command implementation that runs the backup operation
 type Command struct {
@@ -25,9 +25,6 @@ type Command struct {
 	consulClient    *ccns.Client
 	pathTransformer *ct.PathTransformer
 }
-
-// global config reference
-var config *configStruct
 
 // Run is a function to run the command
 func (c *Command) Run(args []string) int {
@@ -41,7 +38,7 @@ func (c *Command) Run(args []string) int {
 	}
 
 	// sanity check
-	if config.noKV && config.aclFileName == "" && config.queryFileName == "" {
+	if skipKV && aclFileName == "" && queryFileName == "" {
 		log.Printf("[Error] Passing 'nokv' without an 'acls' or 'queries' file " +
 			"doesn't make any sense.  You should specify an 'acls' or 'queries' file " +
 			"when using the 'nokv' option.")
@@ -49,19 +46,19 @@ func (c *Command) Run(args []string) int {
 	}
 
 	// build client
-	if c.consulClient, err = config.consulConfig.New(); err != nil {
+	if c.consulClient, err = consulConfig.New(); err != nil {
 		log.Printf("[Error] Failed initialize consul client: %s", err.Error())
 		return 1
 	}
 
 	// build transformer if needed
-	if c.pathTransformer, err = ct.New(config.pathTransform); err != nil {
+	if c.pathTransformer, err = ct.New(pathTransformation); err != nil {
 		log.Printf("[Error] Failed to initialize path transformer: %s", err.Error())
 		return 1
 	}
 
 	// backup keys unless otherwise requested
-	if !config.noKV {
+	if !skipKV {
 		if count, err = c.backupKeys(); err != nil {
 			log.Printf("[Error] Failed to backup key data: %s", err.Error())
 			return 1
@@ -70,13 +67,13 @@ func (c *Command) Run(args []string) int {
 		// show success
 		log.Printf("[Success] Backed up %d keys from %s/%s to %s",
 			count,
-			config.consulConfig.Address,
-			config.consulPrefix,
-			config.fileName)
+			consulConfig.Address,
+			consulPrefix,
+			kvFileName)
 	}
 
 	// backup acls if requested
-	if config.aclFileName != "" {
+	if aclFileName != "" {
 		if count, err = c.backupACLs(); err != nil {
 			log.Printf("[Error] Failed to backup ACL tokens: %s", err.Error())
 			return 1
@@ -85,12 +82,12 @@ func (c *Command) Run(args []string) int {
 		// show success
 		log.Printf("[Success] Backed up %d ACL tokens from %s to %s",
 			count,
-			config.consulConfig.Address,
-			config.aclFileName)
+			consulConfig.Address,
+			aclFileName)
 	}
 
 	// backup query definitions if requested
-	if config.queryFileName != "" {
+	if queryFileName != "" {
 		if count, err = c.backupQueries(); err != nil {
 			log.Printf("[Error] Failed to backup query definitions: %s", err.Error())
 			return 1
@@ -99,8 +96,8 @@ func (c *Command) Run(args []string) int {
 		// show success
 		log.Printf("[Success] Backed up %d query definitions from %s to %s",
 			count,
-			config.consulConfig.Address,
-			config.queryFileName)
+			consulConfig.Address,
+			queryFileName)
 	}
 
 	// make sure they know to keep the sig
