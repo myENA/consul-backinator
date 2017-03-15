@@ -7,19 +7,6 @@ import (
 	"log"
 )
 
-// primary configuration
-type configStruct struct {
-	fileName      string
-	cryptKey      string
-	noKV          bool
-	aclFileName   string
-	queryFileName string
-	pathTransform string
-	delTree       bool
-	consulPrefix  string
-	consulConfig  *ccns.Config
-}
-
 // Command is a Command implementation that runs the backup operation
 type Command struct {
 	Self            string
@@ -27,8 +14,18 @@ type Command struct {
 	pathTransformer *ct.PathTransformer
 }
 
-// global config reference
-var config *configStruct
+// global configuration variables
+var (
+	kvFileName         string
+	cryptKey           string
+	skipKV             bool
+	aclFileName        string
+	queryFileName      string
+	pathTransformation string
+	delTree            bool
+	consulPrefix       string
+	consulConfig       *ccns.Config
+)
 
 // Run is a function to run the command
 func (c *Command) Run(args []string) int {
@@ -42,7 +39,7 @@ func (c *Command) Run(args []string) int {
 	}
 
 	// sanity check
-	if config.noKV && config.aclFileName == "" {
+	if skipKV && aclFileName == "" {
 		log.Printf("[Error] Passing 'nokv' and an empty 'acls' file " +
 			"doesn't make any sense.  You should specify an 'acls' file " +
 			"when using the 'nokv' option.")
@@ -50,19 +47,19 @@ func (c *Command) Run(args []string) int {
 	}
 
 	// build client
-	if c.consulClient, err = config.consulConfig.New(); err != nil {
+	if c.consulClient, err = consulConfig.New(); err != nil {
 		log.Printf("[Error] Failed initialize consul client: %s", err.Error())
 		return 1
 	}
 
 	// build transformer if needed
-	if c.pathTransformer, err = ct.New(config.pathTransform); err != nil {
+	if c.pathTransformer, err = ct.New(pathTransformation); err != nil {
 		log.Printf("[Error] Failed to initialize path transformer: %s", err.Error())
 		return 1
 	}
 
 	// restore keys unless otherwise requested
-	if !config.noKV {
+	if !skipKV {
 		if count, err = c.restoreKeys(); err != nil {
 			log.Printf("[Error] Failed to restore kv data: %s", err.Error())
 			return 1
@@ -71,13 +68,13 @@ func (c *Command) Run(args []string) int {
 		// show success
 		log.Printf("[Success] Restored %d keys from %s to %s/%s",
 			count,
-			config.fileName,
-			config.consulConfig.Address,
-			config.consulPrefix)
+			kvFileName,
+			consulConfig.Address,
+			consulPrefix)
 	}
 
 	// restore acls if requested
-	if config.aclFileName != "" {
+	if aclFileName != "" {
 		if count, err = c.restoreACLs(); err != nil {
 			log.Printf("[Error] Failed to restore ACL tokens: %s", err.Error())
 			return 1
@@ -86,8 +83,8 @@ func (c *Command) Run(args []string) int {
 		// show success
 		log.Printf("[Success] Restored %d ACL tokens from %s to %s",
 			count,
-			config.aclFileName,
-			config.consulConfig.Address)
+			aclFileName,
+			consulConfig.Address)
 	}
 
 	// exit clean

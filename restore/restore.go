@@ -15,7 +15,7 @@ func (c *Command) restoreKeys() (int, error) {
 	var err error        // general error holder
 
 	// read json data from source
-	if data, err = common.ReadData(config.fileName, config.cryptKey); err != nil {
+	if data, err = common.ReadData(kvFileName, cryptKey); err != nil {
 		return 0, err
 	}
 
@@ -31,12 +31,12 @@ func (c *Command) restoreKeys() (int, error) {
 	count = len(kvps)
 
 	// delete tree before restore if requested
-	if config.delTree {
+	if delTree {
 		var deletePrefix string // scoped string
 		// set delete prefix to passed prefix
-		deletePrefix = config.consulPrefix
+		deletePrefix = consulPrefix
 		// check prefix
-		if config.consulPrefix == "/" {
+		if consulPrefix == "/" {
 			deletePrefix = "" // special case for root
 		}
 		// send the delete request
@@ -66,7 +66,7 @@ func (c *Command) restoreACLs() (int, error) {
 	var err error            // general error holder
 
 	// read json data from source
-	if data, err = common.ReadData(config.aclFileName, config.cryptKey); err != nil {
+	if data, err = common.ReadData(aclFileName, cryptKey); err != nil {
 		return 0, err
 	}
 
@@ -99,7 +99,7 @@ func (c *Command) restoreQueries() (int, error) {
 	var err error                              // general error holder
 
 	// read json data from source
-	if data, err = common.ReadData(config.queryFileName, config.cryptKey); err != nil {
+	if data, err = common.ReadData(queryFileName, cryptKey); err != nil {
 		return 0, err
 	}
 
