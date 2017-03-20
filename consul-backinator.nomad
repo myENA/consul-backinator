@@ -1,5 +1,7 @@
 job "consul-backinator" {
-	datacenters = ["dc1"]
+	datacenters = [
+		"dc1"
+	]
 	type = "service"
 
 	update {
@@ -35,7 +37,7 @@ job "consul-backinator" {
 			config {
 				image = "myena/consul-backinator"
 				args = [
-				"backup", "-file", "s3://name-of-your-bucket/backups"
+					"backup", "-file", "s3://name-of-your-bucket/backups"
 				]
 			}
 
