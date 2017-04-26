@@ -1,4 +1,9 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/myENA/consul-backinator)](https://goreportcard.com/report/github.com/myENA/consul-backinator) [![Mozilla Public License](https://img.shields.io/badge/license-MPL-blue.svg)](https://www.mozilla.org/MPL/) [![GoDoc](https://godoc.org/github.com/myENA/consul-backinator/common?status.svg)](https://godoc.org/github.com/myENA/consul-backinator/common) [![Docker Automated Build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/myena/consul-backinator/)
+[![Mozilla Public License](https://img.shields.io/badge/license-MPL-blue.svg)](https://www.mozilla.org/MPL)
+[![Go Report Card](https://goreportcard.com/badge/github.com/myENA/consul-backinator)](https://goreportcard.com/report/github.com/myENA/consul-backinator)
+[![GoDoc](https://godoc.org/github.com/myENA/consul-backinator/common?status.svg)](https://godoc.org/github.com/myENA/consul-backinator/common)
+[![Downloads](https://img.shields.io/github/downloads/myENA/consul-backinator/total.svg)](https://github.com/myENA/consul-backinator/releases)
+[![Docker Pulls](https://img.shields.io/docker/pulls/myena/consul-backinator.svg)](https://hub.docker.com/r/myena/consul-backinator)
+[![Docker Automated Build](https://img.shields.io/docker/automated/myena/consul-backinator.svg)](https://hub.docker.com/r/myena/consul-backinator)
 
 # consul-backinator
 
