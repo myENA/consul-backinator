@@ -1,8 +1,9 @@
 package config
 
 import (
-	ccns "github.com/myENA/consul-backinator/common/consul"
 	"os"
+
+	ccns "github.com/myENA/consul-backinator/common/consul"
 )
 
 // AddEnvDefaults attempts to populates missing config information from environment variables

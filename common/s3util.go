@@ -3,33 +3,25 @@ package common
 import (
 	"errors"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 )
 
 // Exported error messages
 var (
-	ErrS3MissingKey = errors.New("Missing S3 access and/or secret key.  " +
-		"The keys should be passed in the URI or set in the AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY environment variables.  " +
-		"Example: s3://access-key:secret-key@my-bucket/path/to/object")
-	ErrS3MissingBucketPath = errors.New("Missing S3 bucket or path.  " +
-		"The bucket and path should be passed in the URI specification.  " +
-		"Example: s3://my-bucket/path/to/object")
-	ErrS3UnknownScheme    = errors.New("Unknown scheme in S3 URI - please use an 's3://' or 's3n://' scheme")
-	ErrCreateUnknownError = errors.New("Failed to create bucket on S3 datastore.") // This shouldn't happen
+	ErrS3MissingBucketKey = errors.New("missing S3 bucket or object key")
+	ErrS3UnknownScheme    = errors.New("unknown URI scheme")
 )
 
 // s3Info contains the information needed to connect to an S3
 // datastore and create or retrieve objects
 type s3Info struct {
-	accessKey string
-	secretKey string
-	region    string
+	awsConfig *aws.Config
 	bucket    string
-	path      string
-	endpoint  string
-	secure    bool
+	key       string
 }
 
 // isS3 does a very basic check if the given string *could* be an S3 URI
@@ -56,63 +48,47 @@ func parseS3URI(s3uri string) (*s3Info, error) {
 	}
 
 	// init info
-	info = new(s3Info)
+	info = &s3Info{awsConfig: aws.NewConfig()}
 
 	// get access key
 	if u.User != nil && u.User.Username() != "" {
-		info.accessKey = u.User.Username()
-	} else {
-		// check environment
-		if info.accessKey = os.Getenv("AWS_ACCESS_KEY_ID"); info.accessKey == "" {
-			return nil, ErrS3MissingKey
-		}
-	}
-
-	// get secret key
-	if u.User != nil {
-		var ok bool // context sensitive validation holder
-		if info.secretKey, ok = u.User.Password(); !ok {
-			info.secretKey = ""
-		}
-	}
-
-	// check secret key
-	if info.secretKey == "" {
-		// check environment
-		if info.secretKey = os.Getenv("AWS_SECRET_ACCESS_KEY"); info.secretKey == "" {
-			return nil, ErrS3MissingKey
+		if temps, ok := u.User.Password(); ok {
+			info.awsConfig.Credentials = credentials.NewStaticCredentials(
+				u.User.Username(),
+				temps,
+				"",
+			)
 		}
 	}
 
 	// get region
-	if info.region = u.Query().Get("region"); info.region == "" {
-		if info.region = os.Getenv("AWS_REGION"); info.region == "" {
-			info.region = "us-east-1"
-		}
+	if temps := u.Query().Get("region"); temps != "" {
+		info.awsConfig.Region = aws.String(temps)
 	}
 
 	// get bucket
 	if info.bucket = u.Host; info.bucket == "" {
-		return nil, ErrS3MissingBucketPath
+		return nil, ErrS3MissingBucketKey
 	}
 
-	// get path
-	if info.path = u.Path; u.Path == "" || u.Path == "/" {
-		return nil, ErrS3MissingBucketPath
+	// get object key
+	if info.key = u.Path; u.Path == "" || u.Path == "/" {
+		return nil, ErrS3MissingBucketKey
 	}
 
 	// check for endpoint override
-	if info.endpoint = u.Query().Get("endpoint"); info.endpoint == "" {
-		info.endpoint = "s3.amazonaws.com"
+	if temps := u.Query().Get("endpoint"); temps != "" {
+		info.awsConfig.Endpoint = aws.String(temps)
 	}
 
 	// check for ssl override
-	if str := u.Query().Get("secure"); str != "" {
-		if info.secure, err = strconv.ParseBool(str); err != nil {
+	if temps := u.Query().Get("secure"); temps != "" {
+		var secure bool // local bool
+		if secure, err = strconv.ParseBool(temps); err != nil {
 			return nil, err
 		}
-	} else {
-		info.secure = true
+		// update config
+		info.awsConfig.DisableSSL = aws.Bool(secure)
 	}
 
 	// return populated struct

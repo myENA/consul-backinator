@@ -3,10 +3,11 @@ package backup
 import (
 	"flag"
 	"fmt"
-	cc "github.com/myENA/consul-backinator/common/config"
-	ccns "github.com/myENA/consul-backinator/common/consul"
 	"os"
 	"strings"
+
+	cc "github.com/myENA/consul-backinator/common/config"
+	ccns "github.com/myENA/consul-backinator/common/consul"
 )
 
 // setupFlags initializes the instance configuration

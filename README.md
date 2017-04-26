@@ -192,7 +192,7 @@ This table describes all the S3 URI options and corresponding environment variab
 |--------------|-------------------------|-------------|------------------------|------------------|
 | `access-key` | `AWS_ACCESS_KEY_ID`     | yes         | Your S3/AWS access key |                  |
 | `secret-key` | `AWS_SECRET_ACCESS_KEY` | yes         | Your S3/AWS secret key |                  |
-| `region`     | `AWS_REGION`            | no          | Your S3/AWS region     | us-east-1        |
+| `region`     | `AWS_REGION`            | yes         | Your S3/AWS region     |                  |
 | `endpoint`   |                         | no          | Optional endpoint      | s3.amazonaws.com |
 | `secure`     |                         | no          | Optional secure flag   | true             |
 

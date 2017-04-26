@@ -2,9 +2,10 @@ package restore
 
 import (
 	"fmt"
+	"log"
+
 	ccns "github.com/myENA/consul-backinator/common/consul"
 	ct "github.com/myENA/consul-backinator/common/transformer"
-	"log"
 )
 
 // Command is a Command implementation that runs the backup operation

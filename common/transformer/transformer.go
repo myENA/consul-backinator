@@ -2,10 +2,11 @@ package transformer
 
 import (
 	"errors"
-	"github.com/hashicorp/consul/api"
-	ccns "github.com/myENA/consul-backinator/common/consul"
 	"log"
 	"strings"
+
+	"github.com/hashicorp/consul/api"
+	ccns "github.com/myENA/consul-backinator/common/consul"
 )
 
 // ErrBadTransform indicates an uneven transformation list

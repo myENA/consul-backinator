@@ -2,30 +2,37 @@ package common
 
 import (
 	"bytes"
-	"github.com/minio/minio-go"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 // write writes an encrypted/compressed object and signature to an S3 datastore
 func (info *s3Info) write(key string, data []byte) error {
-	var mc *minio.Client  // minio s3 client
-	var buf *bytes.Buffer // data buffer
-	var err error         // general error holder
+	var s3Client *s3.S3     // aws s3 client
+	var buf *bytes.Buffer   // data buffer
+	var err error           // general error holder
+	var awsErr awserr.Error // aws framework error
+	var ok bool             // assert check
 
-	// init minio client
-	if mc, err = minio.New(info.endpoint, info.accessKey, info.secretKey, info.secure); err != nil {
-		return err
-	}
+	// init s3 client
+	s3Client = s3.New(session.Must(session.NewSession(info.awsConfig)))
 
 	// attempt to create bucket
-	if err = mc.MakeBucket(info.bucket, info.region); err != nil {
-		var exists bool // context sensitive validator
+	if _, err = s3Client.CreateBucket(&s3.CreateBucketInput{
+		Bucket: aws.String(info.bucket),
+	}); err != nil {
 		// it might already exist
-		if exists, err = mc.BucketExists(info.bucket); err != nil {
+		if awsErr, ok = err.(awserr.Error); ok {
+			if awsErr.Code() != s3.ErrCodeBucketAlreadyExists {
+				// nope - return the error
+				return err
+			}
+		} else {
+			// other failure - return the error
 			return err
-		}
-		// not exists but no error - don't think this should ever happen
-		if !exists {
-			return ErrCreateUnknownError
 		}
 	}
 
@@ -38,7 +45,11 @@ func (info *s3Info) write(key string, data []byte) error {
 	}
 
 	// upload data object
-	if _, err = mc.PutObject(info.bucket, info.path, buf, "application/octet-stream"); err != nil {
+	if _, err = s3Client.PutObject(&s3.PutObjectInput{
+		Bucket: aws.String(info.bucket),
+		Key:    aws.String(info.key),
+		Body:   bytes.NewReader(buf.Bytes()),
+	}); err != nil {
 		return err
 	}
 
@@ -51,7 +62,11 @@ func (info *s3Info) write(key string, data []byte) error {
 	}
 
 	// upload signature object
-	if _, err = mc.PutObject(info.bucket, info.path+".sig", buf, "application/octet-stream"); err != nil {
+	if _, err = s3Client.PutObject(&s3.PutObjectInput{
+		Bucket: aws.String(info.bucket),
+		Key:    aws.String(info.key + ".sig"),
+		Body:   bytes.NewReader(buf.Bytes()),
+	}); err != nil {
 		return err
 	}
 

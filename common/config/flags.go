@@ -2,6 +2,7 @@ package config
 
 import (
 	"flag"
+
 	"github.com/hashicorp/consul/api"
 	ccns "github.com/myENA/consul-backinator/common/consul"
 )

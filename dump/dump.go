@@ -3,9 +3,10 @@ package dump
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+
 	"github.com/hashicorp/consul/api"
 	"github.com/myENA/consul-backinator/common"
-	"os"
 )
 
 // dumpData reads data from a backup file and prints to stdout

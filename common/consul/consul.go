@@ -2,6 +2,7 @@ package consul
 
 import (
 	"crypto/tls"
+
 	"github.com/hashicorp/consul/api"
 	"github.com/hashicorp/go-cleanhttp"
 )
