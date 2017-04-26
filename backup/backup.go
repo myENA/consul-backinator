@@ -3,6 +3,7 @@ package backup
 import (
 	"encoding/json"
 	"errors"
+
 	"github.com/hashicorp/consul/api"
 	"github.com/myENA/consul-backinator/common"
 )

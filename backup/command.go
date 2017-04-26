@@ -2,9 +2,10 @@ package backup
 
 import (
 	"fmt"
+	"log"
+
 	ccns "github.com/myENA/consul-backinator/common/consul"
 	ct "github.com/myENA/consul-backinator/common/transformer"
-	"log"
 )
 
 // primary configuration

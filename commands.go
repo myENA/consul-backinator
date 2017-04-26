@@ -1,11 +1,12 @@
 package main
 
 import (
+	"os"
+
 	"github.com/mitchellh/cli"
 	"github.com/myENA/consul-backinator/backup"
 	"github.com/myENA/consul-backinator/dump"
 	"github.com/myENA/consul-backinator/restore"
-	"os"
 )
 
 // available commands

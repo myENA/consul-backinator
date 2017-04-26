@@ -2,9 +2,10 @@ package restore
 
 import (
 	"encoding/json"
+	"log"
+
 	"github.com/hashicorp/consul/api"
 	"github.com/myENA/consul-backinator/common"
-	"log"
 )
 
 // restoreKeys reads keys from a backup file and restores them to consul
