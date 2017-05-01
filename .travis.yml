@@ -21,6 +21,4 @@ install:
   - chmod +x $HOME/bin/consul
 
 script:
-  - make check
-  - make test
-  - make
+  - make check build test
