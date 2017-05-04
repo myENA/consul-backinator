@@ -67,8 +67,16 @@ To use the latest container from Docker Hub ...
 docker pull myena/consul-backinator
 docker run myena/consul-backinator
 ```
-
 See [DOCKER.md](DOCKER.md) for some Docker use cases.
+
+To run on Nomad ...
+
+```
+git clone https://github.com/myENA/consul-backinator.git
+cd consul-backinator
+```
+`Edit the job specification file consul-backinator.nomad to suit your environment. It uses S3 by default and must be configured with the correct bucket URI, access key, and secret key.It's recommended to use a dedicated consul-backinator user with IAM permissions to just this bucket for security purposes. It runs every hour by default and writes output to STDERR and STDOUT.`
+
 
 ## Security
 
