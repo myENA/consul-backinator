@@ -113,7 +113,7 @@ Options:
 	-queries         Optional source filename or S3 location for query definitions
 	-transform       Optional path transformation (oldPath,newPath...)
 	-delete          Delete all keys under specified prefix prior to restoration (default: false)
-	-prefix          Prefix for delete operation
+	-prefix          Path prefix for delete and restore operation
 	-addr            Optional consul address and port (default: "127.0.0.1:8500")
 	-scheme          Optional consul scheme ("http" or "https")
 	-dc              Optional consul datacenter

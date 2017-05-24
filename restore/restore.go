@@ -3,6 +3,7 @@ package restore
 import (
 	"encoding/json"
 	"log"
+	"strings"
 
 	"github.com/hashicorp/consul/api"
 	"github.com/myENA/consul-backinator/common"
@@ -31,22 +32,28 @@ func (c *Command) restoreKeys() (int, error) {
 	// set count
 	count = len(kvps)
 
+	// set to passed prefix
+	myPrefix := c.config.consulPrefix
+	// check prefix
+	if c.config.consulPrefix == "/" {
+		myPrefix = "" // special case for root
+	}
+
 	// delete tree before restore if requested
 	if c.config.delTree {
-		// set delete prefix to passed prefix
-		deletePrefix := c.config.consulPrefix
-		// check prefix
-		if c.config.consulPrefix == "/" {
-			deletePrefix = "" // special case for root
-		}
+
 		// send the delete request
-		if _, err := c.consulClient.KV().DeleteTree(deletePrefix, nil); err != nil {
+		if _, err := c.consulClient.KV().DeleteTree(myPrefix, nil); err != nil {
 			return count, err
 		}
 	}
 
 	// loop through keys
 	for _, kv := range kvps {
+		// filter prefix
+		if myPrefix != "" && !strings.HasPrefix(kv.Key, myPrefix) {
+			continue
+		}
 		// write key
 		if _, err = c.consulClient.KV().Put(kv, nil); err != nil {
 			log.Printf("[Warning] Failed to restore key %s: %s",
