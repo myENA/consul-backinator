@@ -29,9 +29,6 @@ func (c *Command) restoreKeys() (int, error) {
 	// transform paths
 	c.pathTransformer.Transform(kvps)
 
-	// set count
-	count = len(kvps)
-
 	// set to passed prefix
 	myPrefix := c.config.consulPrefix
 	// check prefix
@@ -41,7 +38,6 @@ func (c *Command) restoreKeys() (int, error) {
 
 	// delete tree before restore if requested
 	if c.config.delTree {
-
 		// send the delete request
 		if _, err := c.consulClient.KV().DeleteTree(myPrefix, nil); err != nil {
 			return count, err
@@ -50,7 +46,7 @@ func (c *Command) restoreKeys() (int, error) {
 
 	// loop through keys
 	for _, kv := range kvps {
-		// filter prefix
+		// filter by prefix
 		if myPrefix != "" && !strings.HasPrefix(kv.Key, myPrefix) {
 			continue
 		}
@@ -58,6 +54,9 @@ func (c *Command) restoreKeys() (int, error) {
 		if _, err = c.consulClient.KV().Put(kv, nil); err != nil {
 			log.Printf("[Warning] Failed to restore key %s: %s",
 				kv.Key, err.Error())
+		} else {
+			// success - increment count
+			count++
 		}
 	}
 
@@ -82,15 +81,15 @@ func (c *Command) restoreACLs() (int, error) {
 		return 0, err
 	}
 
-	// set count
-	count = len(acls)
-
 	// loop through acls
 	for _, acl := range acls {
 		// write token
 		if _, _, err = c.consulClient.ACL().Create(acl, nil); err != nil {
 			log.Printf("[Warning] Failed to restore ACL token %s: %s",
 				acl.Name, err.Error())
+		} else {
+			// success - increment count
+			count++
 		}
 	}
 
@@ -115,15 +114,15 @@ func (c *Command) restoreQueries() (int, error) {
 		return 0, err
 	}
 
-	// set count
-	count = len(queries)
-
 	// loop through acls
 	for _, query := range queries {
 		// write query definitions
 		if _, _, err = c.consulClient.PreparedQuery().Create(query, nil); err != nil {
 			log.Printf("[Warning] Failed to restore query definition %s: %s",
 				query.ID, err.Error())
+		} else {
+			// success - increment count
+			count++
 		}
 	}
 
