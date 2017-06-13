@@ -12,7 +12,7 @@ sudo: false
 dist: trusty
 
 env:
-  - CONSUL_VERSION=0.8.1
+  - CONSUL_VERSION=0.8.4
 
 install:
   - mkdir -p $HOME/bin

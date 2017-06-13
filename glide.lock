@@ -1,10 +1,10 @@
-hash: 59210ed2a8bed6af0dfd1a6ac724144cc4e252321dd9b8cdda06733dffecef3c
-updated: 2017-05-24T12:37:26.660783672-05:00
+hash: 3f108fc898d6a57a3ae056d458ecd4d157e0bd4f01cbabf923dfc06e68e442de
+updated: 2017-06-13T13:00:41.281226959-05:00
 imports:
 - name: github.com/armon/go-radix
   version: 4239b77079c7b5d1243b7b4736304ce8ddb6f0f2
 - name: github.com/aws/aws-sdk-go
-  version: 73b6153078ca6e3fac11a9b86c819e0f82c42aa2
+  version: 0acbed719df7e03681e759ca100f3dcbc9fc28d7
   subpackages:
   - aws
   - aws/awserr
@@ -22,6 +22,7 @@ imports:
   - aws/request
   - aws/session
   - aws/signer/v4
+  - internal/shareddefaults
   - private/protocol
   - private/protocol/query
   - private/protocol/query/queryutil
@@ -35,7 +36,7 @@ imports:
 - name: github.com/go-ini/ini
   version: e7fea39b01aea8d5671f6858f0532f56e8bff3a5
 - name: github.com/hashicorp/consul
-  version: ea2a82b221c3e0a466a4f38ab4e8718ad8c60621
+  version: f4360770d8e7b852e2d05835b583d20799e58133
   subpackages:
   - api
   - testutil
