@@ -50,7 +50,7 @@ func parseS3URI(s3uri string) (*s3Info, error) {
 	// init info
 	info = &s3Info{awsConfig: aws.NewConfig()}
 
-	// get access key
+	// get access/secret key
 	if u.User != nil && u.User.Username() != "" {
 		if temps, ok := u.User.Password(); ok {
 			info.awsConfig.Credentials = credentials.NewStaticCredentials(
