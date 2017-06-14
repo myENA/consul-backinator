@@ -42,8 +42,13 @@ job "consul-backinator" {
 			}
 
 			env {
+				# The "AWS_ACCESS_KEY_ID" and "AWS_SECRET_ACCESS_KEY" environment
+				# settings are not needed if you are running this inside an ec2
+				# instance with have an associated IAM profile.
 				"AWS_ACCESS_KEY_ID"     = "AWS ACCESS KEY GOES HERE"
 				"AWS_SECRET_ACCESS_KEY" = "AWS SECRET KEY GOES HERE"
+				# The "AWS_REGION" and "CONSUL_HTTP_ADDR" environment settings are
+				# always required unless specified in the command section above.
 				"AWS_REGION"            = "us-east-1"
 				"CONSUL_HTTP_ADDR"      = "${NOMAD_IP_consulbackinator}:8500"
 			}

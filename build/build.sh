@@ -78,7 +78,7 @@ if [ $RELEASE_BUILD -eq 1 ]; then
 	-osarch="linux/amd64 darwin/amd64 freebsd/amd64 windows/amd64 windows/386" \
 	-ldflags="-X main.appVersion=${RELEASE_VERSION} -s -w" \
 	-output="./dist/${BUILD_NAME}-${RELEASE_VERSION}-{{.Arch}}-{{.OS}}/${BUILD_NAME}-${RELEASE_VERSION}" \
-	> /dev/null 2>&1
+	> /dev/null >&1
 
 	## gox return
 	RETVAL=$?
@@ -90,7 +90,8 @@ else
 
 	## build it
 	CGO_ENABLED=0 go build -o "${BUILD_NAME}" \
-	-ldflags="-X main.appVersion=${RELEASE_VERSION} -s -w"
+	-ldflags="-X main.appVersion=${RELEASE_VERSION} -s -w" \
+	> /dev/null >&1
 
 	## go build return
 	RETVAL=$?
@@ -108,13 +109,18 @@ if [ $RELEASE_BUILD -eq 1 ]; then
 	printf "Packaging ... "
 
 	## package files
-	pushd ./dist/ > /dev/null 2>&1
+	pushd ./dist/ > /dev/null >&1
 	find . -maxdepth 1 -type d -name \*-\* \
-	-exec tar -czf {}.tar.gz {} > /dev/null 2>&1 \; \
-	-exec zip -m -r {}.zip {} > /dev/null 2>&1 \;
+	-exec tar -czf {}.tar.gz {} > /dev/null >&1 \; \
+	-exec zip -m -r {}.zip {} > /dev/null >&1 \;
+
+	## package binaries
+	printf "Signing ... "
+
+	## generate checksums and sign
 	shasum -a256 *.tar.gz *.zip >> ${BUILD_NAME}-${RELEASE_VERSION}-SHA256SUMS
-	gpg2 -u "r&d@ena.com" -b ${BUILD_NAME}-${RELEASE_VERSION}-SHA256SUMS > /dev/null 2>&1
-	popd > /dev/null 2>&1
+	gpg2 -u "r&d@ena.com" -b ${BUILD_NAME}-${RELEASE_VERSION}-SHA256SUMS > /dev/null >&1
+	popd > /dev/null >&1
 
 	## all done
 	printf "done.\nRelease files may be found in the ./dist/ directory.\n"
