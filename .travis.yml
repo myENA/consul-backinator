@@ -14,6 +14,14 @@ dist: trusty
 env:
   - CONSUL_VERSION=0.8.4
 
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/cf7e28bf6b96c8e81aec
+    on_success: change
+    on_failure: always
+    on_start: never
+
 install:
   - mkdir -p $HOME/bin
   - export PATH="$HOME/bin:$PATH"
