@@ -8,6 +8,8 @@
 
 # consul-backinator
 
+[![Join the chat at https://gitter.im/consul-backinator/Lobby](https://badges.gitter.im/consul-backinator/Lobby.svg)](https://gitter.im/consul-backinator/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Summary
 
 Flexible Consul KV pair backup and restore tool with a few unique features
