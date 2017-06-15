@@ -5,6 +5,7 @@
 [![Downloads](https://img.shields.io/github/downloads/myENA/consul-backinator/total.svg)](https://github.com/myENA/consul-backinator/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/myena/consul-backinator.svg)](https://hub.docker.com/r/myena/consul-backinator)
 [![Docker Automated Build](https://img.shields.io/docker/automated/myena/consul-backinator.svg)](https://hub.docker.com/r/myena/consul-backinator)
+[![Gitter Chat](https://badges.gitter.im/consul-backinator/Lobby.svg)](https://gitter.im/consul-backinator/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # consul-backinator
 
