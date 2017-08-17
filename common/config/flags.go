@@ -1,11 +1,15 @@
 package config
 
 import (
+	"errors"
 	"flag"
 
 	"github.com/hashicorp/consul/api"
 	ccns "github.com/myENA/consul-backinator/common/consul"
 )
+
+// ErrUnknownArg is returned when non-flag arguments are present after the command
+var ErrUnknownArg = errors.New("Unknown non-flag argument(s) present after command")
 
 // AddSharedConsulFlags adds flags shared by multiple command implementations
 func AddSharedConsulFlags(cmdFlags *flag.FlagSet, consulConfig *ccns.Config) {

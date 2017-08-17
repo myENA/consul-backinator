@@ -36,7 +36,7 @@ func (c *Command) Run(args []string) int {
 
 	// setup flags
 	if err = c.setupFlags(args); err != nil {
-		log.Printf("[Error] Init failed: %s", err.Error())
+		log.Printf("[Error] Setup failed: %s", err.Error())
 		return 1
 	}
 

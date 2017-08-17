@@ -54,6 +54,11 @@ func (c *Command) setupFlags(args []string) error {
 		return nil
 	}
 
+	// check for remaining garbage
+	if cmdFlags.NArg() > 0 {
+		return cc.ErrUnknownArg
+	}
+
 	// populate potentially missing config items
 	cc.AddEnvDefaults(c.config.consulConfig)
 
