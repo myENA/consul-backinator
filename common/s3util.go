@@ -93,7 +93,7 @@ func parseS3URI(s3uri string) (*s3Info, error) {
 	}
 
 	// get object key
-	if info.key = u.Path; u.Path == "" || u.Path == "/" {
+	if info.key = u.Path; info.key == "" || info.key == "/" {
 		return nil, ErrS3MissingBucketKey
 	}
 
