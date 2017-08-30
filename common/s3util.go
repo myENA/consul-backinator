@@ -33,9 +33,32 @@ func isS3(s string) bool {
 // to an S3 endpoing and create or retrieve objects.  The data is collected from
 // parsing the passed s3uri and environment variables.
 func parseS3URI(s3uri string) (*s3Info, error) {
-	var info *s3Info // parsed info
-	var u *url.URL   // parsed uri
-	var err error    // general error holder
+	var info *s3Info                // parsed info
+	var u *url.URL                  // parsed url
+	var accessKey, secretKey string // key holders
+	var err error                   // general error holder
+
+	// The `net/url` package does not handle '/' in password.
+	// Therefore, we strip out and parse the user/password portion manually.
+	// See: https://github.com/myENA/consul-backinator/issues/30
+	if strings.Contains(s3uri, "@") {
+		var keyStart = strings.Index(s3uri, "://") + 3 // get start
+		var keyEnd = strings.Index(s3uri, "@")         // get end
+		var keyString = s3uri[keyStart:keyEnd]         // pull out key string
+		// check key string
+		if strings.Contains(keyString, ":") {
+			// split the keys
+			var keySplit = strings.Split(keyString, ":")
+			// check split
+			if len(keySplit) == 2 {
+				// set keys
+				accessKey = keySplit[0]
+				secretKey = keySplit[1]
+				// rewrite uri - remove credentials
+				s3uri = s3uri[:keyStart] + s3uri[keyEnd+1:]
+			}
+		}
+	}
 
 	// parse the s3 path
 	if u, err = url.Parse(s3uri); err != nil {
@@ -50,15 +73,13 @@ func parseS3URI(s3uri string) (*s3Info, error) {
 	// init info
 	info = &s3Info{awsConfig: aws.NewConfig()}
 
-	// get access/secret key
-	if u.User != nil && u.User.Username() != "" {
-		if temps, ok := u.User.Password(); ok {
-			info.awsConfig.Credentials = credentials.NewStaticCredentials(
-				u.User.Username(),
-				temps,
-				"",
-			)
-		}
+	// check access/secret key
+	if accessKey != "" && secretKey != "" {
+		info.awsConfig.Credentials = credentials.NewStaticCredentials(
+			accessKey,
+			secretKey,
+			"",
+		)
 	}
 
 	// get region
