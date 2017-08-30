@@ -24,10 +24,12 @@ func (info *s3Info) write(key string, data []byte) error {
 	if _, err = s3Client.CreateBucket(&s3.CreateBucketInput{
 		Bucket: aws.String(info.bucket),
 	}); err != nil {
-		// it might already exist or we don't have permission
+		// ignore non-fatal creation errors
 		if awsErr, ok = err.(awserr.Error); ok {
-			if awsErr.Code() != s3.ErrCodeBucketAlreadyExists && awsErr.Code() != "AccessDenied" {
-				// nope - return the error
+			if awsErr.Code() != s3.ErrCodeBucketAlreadyExists &&
+				awsErr.Code() != s3.ErrCodeBucketAlreadyOwnedByYou &&
+				awsErr.Code() != "AccessDenied" {
+				// not something we catch - return the error
 				return err
 			}
 		} else {
