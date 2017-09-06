@@ -7,7 +7,7 @@ import:
 - package: github.com/mitchellh/cli
 - package: github.com/hashicorp/go-cleanhttp
 - package: github.com/aws/aws-sdk-go
-  version: v1.10.27
+  version: v1.10.38
   subpackages:
   - aws
   - aws/awserr
