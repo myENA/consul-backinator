@@ -11,19 +11,31 @@ import (
 
 // write writes an encrypted/compressed object and signature to an S3 datastore
 func (info *s3Info) write(key string, data []byte) error {
-	var s3Client *s3.S3     // aws s3 client
-	var buf *bytes.Buffer   // data buffer
-	var err error           // general error holder
-	var awsErr awserr.Error // aws framework error
-	var ok bool             // assert check
+	var s3Client *s3.S3                     // aws s3 client
+	var bucketRequest *s3.CreateBucketInput // aws create bucket request
+	var buf *bytes.Buffer                   // data buffer
+	var err error                           // general error holder
+	var awsErr awserr.Error                 // aws framework error
+	var ok bool                             // assert check
 
 	// init s3 client
 	s3Client = s3.New(session.Must(session.NewSession(info.awsConfig)))
 
-	// attempt to create bucket
-	if _, err = s3Client.CreateBucket(&s3.CreateBucketInput{
+	// build create bucket request
+	bucketRequest = &s3.CreateBucketInput{
 		Bucket: aws.String(info.bucket),
-	}); err != nil {
+	}
+
+	// add location constraint if needed
+	// http://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
+	if info.awsConfig.Region != nil && aws.StringValue(info.awsConfig.Region) != "us-east-1" {
+		bucketRequest.CreateBucketConfiguration = &s3.CreateBucketConfiguration{
+			LocationConstraint: info.awsConfig.Region,
+		}
+	}
+
+	// attempt to create bucket
+	if _, err = s3Client.CreateBucket(bucketRequest); err != nil {
 		// ignore non-fatal creation errors
 		if awsErr, ok = err.(awserr.Error); ok {
 			if awsErr.Code() != s3.ErrCodeBucketAlreadyExists &&
