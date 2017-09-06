@@ -26,7 +26,7 @@ func (info *s3Info) write(key string, data []byte) error {
 		Bucket: aws.String(info.bucket),
 	}
 
-	// add location constraint if needed
+	// only add location constraint if needed
 	// http://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region
 	if info.awsConfig.Region != nil && aws.StringValue(info.awsConfig.Region) != "us-east-1" {
 		bucketRequest.CreateBucketConfiguration = &s3.CreateBucketConfiguration{
