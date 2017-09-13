@@ -1,5 +1,5 @@
-hash: 458fc8cec98e9c5d900c3dc6b6599efa1c2d8647cfd06a8cc67fef8c3ea8bb26
-updated: 2017-09-12T20:18:31.469167407-05:00
+hash: 563860a043f5982925471f37630618f634ff087a97fc7f87cbe3200704ce9333
+updated: 2017-09-12T21:30:22.09140494-05:00
 imports:
 - name: cloud.google.com/go
   version: f886afbd89b4ec094f6bd26a38993afb36ef130c
@@ -61,7 +61,7 @@ imports:
   subpackages:
   - proto
 - name: github.com/hashicorp/consul
-  version: 75ca2cace08e38de8af1731ee8614d0533d5a4d4
+  version: 112c0603d3d6fb23ab5f15e8fdb1a761da8eaf9a
   subpackages:
   - api
   - testutil
@@ -165,11 +165,11 @@ imports:
   - urlfetch
 testImports:
 - name: github.com/davecgh/go-spew
-  version: a476722483882dd40b8111f0eb64e1d7f43f56e4
+  version: 04cdfd42973bb9c8589fd6a731800cf222fde1a9
   subpackages:
   - spew
 - name: github.com/pmezard/go-difflib
-  version: 792786c7400a136282c1664665ae0a8db921c6c2
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
   subpackages:
   - difflib
 - name: github.com/stretchr/testify

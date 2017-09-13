@@ -1,7 +1,8 @@
-package main
+package main_test
 
 import (
 	"io/ioutil"
+	stdLog "log"
 	"os"
 	"testing"
 
@@ -18,6 +19,8 @@ import (
 const (
 	MyAwesomeToken = "c2011091e592a41d557b425c4da65241fce12c0c"
 	MySecretKey    = "CorrectHorseBatteryStaple"
+	appName        = "consul-backinator" // normally from version.go
+	appVersion     = "test"              // normally from version.go
 )
 
 type BackinatorTestSuite struct {
@@ -150,6 +153,7 @@ func (suite *BackinatorTestSuite) Test01Backup() {
 		"backup": func() (cli.Command, error) {
 			return &backup.Command{
 				Self: "test-backup",
+				Log:  stdLog.New(os.Stderr, "", stdLog.LstdFlags),
 			}, nil
 		},
 	}
@@ -187,6 +191,7 @@ func (suite *BackinatorTestSuite) Test02Restore() {
 		"restore": func() (cli.Command, error) {
 			return &restore.Command{
 				Self: "test-restore",
+				Log:  stdLog.New(os.Stderr, "", stdLog.LstdFlags),
 			}, nil
 		},
 	}
