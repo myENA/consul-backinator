@@ -13,6 +13,7 @@ import (
 // setupFlags initializes the instance configuration
 func (c *Command) setupFlags(args []string) error {
 	var cmdFlags *flag.FlagSet // instance flagset
+	var err error              // error holder
 
 	// init config if needed
 	if c.config == nil {
@@ -48,7 +49,7 @@ func (c *Command) setupFlags(args []string) error {
 	cc.AddSharedConsulFlags(cmdFlags, c.config.consulConfig)
 
 	// parse flags and ignore error
-	if err := cmdFlags.Parse(args); err != nil {
+	if err = cmdFlags.Parse(args); err != nil {
 		return nil
 	}
 

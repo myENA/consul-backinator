@@ -2,7 +2,7 @@ package backup
 
 import (
 	"fmt"
-	"log"
+	stdLog "log"
 
 	ccns "github.com/myENA/consul-backinator/common/consul"
 	ct "github.com/myENA/consul-backinator/common/transformer"
@@ -23,6 +23,7 @@ type config struct {
 // Command is a Command implementation that runs the backup operation
 type Command struct {
 	Self            string
+	Log             *stdLog.Logger
 	config          *config
 	consulClient    *ccns.Client
 	pathTransformer *ct.PathTransformer
@@ -35,13 +36,13 @@ func (c *Command) Run(args []string) int {
 
 	// setup flags
 	if err = c.setupFlags(args); err != nil {
-		log.Printf("[Error] Setup failed: %s", err.Error())
+		c.Log.Printf("[Error] Setup failed: %s", err.Error())
 		return 1
 	}
 
 	// sanity check
 	if c.config.noKV && c.config.aclFileName == "" && c.config.queryFileName == "" {
-		log.Printf("[Error] Passing 'nokv' without an 'acls' or 'queries' file " +
+		c.Log.Printf("[Error] Passing 'nokv' without an 'acls' or 'queries' file " +
 			"doesn't make any sense.  You should specify an 'acls' or 'queries' file " +
 			"when using the 'nokv' option.")
 		return 1
@@ -49,25 +50,25 @@ func (c *Command) Run(args []string) int {
 
 	// build client
 	if c.consulClient, err = c.config.consulConfig.New(); err != nil {
-		log.Printf("[Error] Failed initialize consul client: %s", err.Error())
+		c.Log.Printf("[Error] Failed initialize consul client: %s", err.Error())
 		return 1
 	}
 
 	// build transformer if needed
 	if c.pathTransformer, err = ct.New(c.config.pathTransform); err != nil {
-		log.Printf("[Error] Failed to initialize path transformer: %s", err.Error())
+		c.Log.Printf("[Error] Failed to initialize path transformer: %s", err.Error())
 		return 1
 	}
 
 	// backup keys unless otherwise requested
 	if !c.config.noKV {
 		if count, err = c.backupKeys(); err != nil {
-			log.Printf("[Error] Failed to backup key data: %s", err.Error())
+			c.Log.Printf("[Error] Failed to backup key data: %s", err.Error())
 			return 1
 		}
 
 		// show success
-		log.Printf("[Success] Backed up %d keys from %s/%s to %s",
+		c.Log.Printf("[Success] Backed up %d keys from %s/%s to %s",
 			count,
 			c.config.consulConfig.Address,
 			c.config.consulPrefix,
@@ -77,12 +78,12 @@ func (c *Command) Run(args []string) int {
 	// backup acls if requested
 	if c.config.aclFileName != "" {
 		if count, err = c.backupACLs(); err != nil {
-			log.Printf("[Error] Failed to backup ACL tokens: %s", err.Error())
+			c.Log.Printf("[Error] Failed to backup ACL tokens: %s", err.Error())
 			return 1
 		}
 
 		// show success
-		log.Printf("[Success] Backed up %d ACL tokens from %s to %s",
+		c.Log.Printf("[Success] Backed up %d ACL tokens from %s to %s",
 			count,
 			c.config.consulConfig.Address,
 			c.config.aclFileName)
@@ -91,12 +92,12 @@ func (c *Command) Run(args []string) int {
 	// backup query definitions if requested
 	if c.config.queryFileName != "" {
 		if count, err = c.backupQueries(); err != nil {
-			log.Printf("[Error] Failed to backup query definitions: %s", err.Error())
+			c.Log.Printf("[Error] Failed to backup query definitions: %s", err.Error())
 			return 1
 		}
 
 		// show success
-		log.Printf("[Success] Backed up %d query definitions from %s to %s",
+		c.Log.Printf("[Success] Backed up %d query definitions from %s to %s",
 			count,
 			c.config.consulConfig.Address,
 			c.config.queryFileName)

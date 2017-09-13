@@ -1,6 +1,10 @@
-hash: 94826af32ab84ce136670896439e06aca430afae1afc451bcad3eede77baa8fa
-updated: 2017-09-06T12:20:23.728459988-05:00
+hash: 458fc8cec98e9c5d900c3dc6b6599efa1c2d8647cfd06a8cc67fef8c3ea8bb26
+updated: 2017-09-12T20:18:31.469167407-05:00
 imports:
+- name: cloud.google.com/go
+  version: f886afbd89b4ec094f6bd26a38993afb36ef130c
+  subpackages:
+  - compute/metadata
 - name: github.com/armon/go-radix
   version: 1fca145dffbcaa8fe914309b1ec0cfc67500fe61
 - name: github.com/aws/aws-sdk-go
@@ -24,17 +28,38 @@ imports:
   - aws/signer/v4
   - internal/shareddefaults
   - private/protocol
+  - private/protocol/ec2query
   - private/protocol/query
   - private/protocol/query/queryutil
   - private/protocol/rest
   - private/protocol/restxml
   - private/protocol/xml/xmlutil
+  - service/ec2
   - service/s3
   - service/sts
+- name: github.com/Azure/azure-sdk-for-go
+  version: df4dd90d076ebbf6e87d08d3f00bfac8ff4bde1a
+  subpackages:
+  - arm/network
+- name: github.com/Azure/go-autorest
+  version: 48a8154950f853ae1f2a9c409e0eb1fb71119bc8
+  subpackages:
+  - autorest
+  - autorest/adal
+  - autorest/azure
+  - autorest/date
+  - autorest/to
+  - autorest/validation
 - name: github.com/bgentry/speakeasy
   version: 4aabc24848ce5fd31929f7d1e4ea74d3709c14cd
+- name: github.com/dgrijalva/jwt-go
+  version: a539ee1a749a2b895533f979515ac7e6e0f5b650
 - name: github.com/go-ini/ini
   version: c787282c39ac1fc618827141a1f762240def08a3
+- name: github.com/golang/protobuf
+  version: 17ce1425424ab154092bbb43af630bd647f3bb0d
+  subpackages:
+  - proto
 - name: github.com/hashicorp/consul
   version: 75ca2cace08e38de8af1731ee8614d0533d5a4d4
   subpackages:
@@ -45,6 +70,13 @@ imports:
   version: 7554cd9344cec97297fa6649b055a8c98c2a1e55
 - name: github.com/hashicorp/go-cleanhttp
   version: 3573b8b52aa7b37b9358d966a898feb387f62437
+- name: github.com/hashicorp/go-discover
+  version: 21b26b722865b64ae5809a532d2c18f3a3800129
+  subpackages:
+  - provider/aws
+  - provider/azure
+  - provider/gce
+  - provider/softlayer
 - name: github.com/hashicorp/go-multierror
   version: 83588e72410abfbe4df460eeb6f30841ae47d4c4
 - name: github.com/hashicorp/go-rootcerts
@@ -60,21 +92,77 @@ imports:
 - name: github.com/mattn/go-isatty
   version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
 - name: github.com/mitchellh/cli
-  version: dff723fff508858a44c1f4bd0911f00d73b0202f
+  version: 65fcae5817c8600da98ada9d7edf26dd1a84837b
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
 - name: github.com/pkg/errors
-  version: c605e284fe17294bda444b34710735b29d1a9d90
+  version: 2b3a18b5f0fb6b4f9190549597d3f962c02bc5eb
 - name: github.com/posener/complete
-  version: 9f41f7636a724791a3b8b1d35e84caa1124f0d3c
+  version: 88e59760adaddb8276c9b15511302890690e2dae
   subpackages:
   - cmd
   - cmd/install
   - match
+- name: github.com/renier/xmlrpc
+  version: ce4a1a486c03a3c6e1816df25b8c559d1879d380
+- name: github.com/softlayer/softlayer-go
+  version: ba0eaed1782df1b25af8af69df2950472b71135d
+  subpackages:
+  - config
+  - datatypes
+  - filter
+  - services
+  - session
+  - sl
+- name: golang.org/x/net
+  version: b129b8e0fbeb39c8358e51a07ab6c50ad415e72e
+  repo: https://github.com/golang/net.git
+  vcs: git
+  subpackages:
+  - .
+  - context
+  - context/ctxhttp
+- name: golang.org/x/oauth2
+  version: 13449ad91cb26cb47661c1b080790392170385fd
+  subpackages:
+  - google
+  - internal
+  - jws
+  - jwt
 - name: golang.org/x/sys
-  version: 9aade4d3a3b7e6d876cd3823ad20ec45fc035402
+  version: 062cd7e4e68206d8bab9b18396626e855c992658
   subpackages:
   - unix
+- name: golang.org/x/text
+  version: acd49d43e9b95df46670431bf5c7ae59586daad8
+  repo: https://github.com/golang/text.git
+  vcs: git
+  subpackages:
+  - .
+  - encoding
+  - encoding/charmap
+  - encoding/internal
+  - encoding/internal/identifier
+  - transform
+- name: google.golang.org/api
+  version: 2fe03ca2dc379c00d654a4459d1a50812cac2848
+  subpackages:
+  - compute/v1
+  - gensupport
+  - googleapi
+  - googleapi/internal/uritemplates
+- name: google.golang.org/appengine
+  version: d9a072cfa7b9736e44311ef77b3e09d804bfa599
+  subpackages:
+  - internal
+  - internal/app_identity
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/modules
+  - internal/remote_api
+  - internal/urlfetch
+  - urlfetch
 testImports:
 - name: github.com/davecgh/go-spew
   version: a476722483882dd40b8111f0eb64e1d7f43f56e4

@@ -2,7 +2,7 @@ package dump
 
 import (
 	"fmt"
-	"log"
+	stdLog "log"
 )
 
 // primary configuration
@@ -18,6 +18,7 @@ type config struct {
 // Command is a Command implementation that runs the backup operation
 type Command struct {
 	Self   string
+	Log    *stdLog.Logger
 	config *config
 }
 
@@ -27,13 +28,13 @@ func (c *Command) Run(args []string) int {
 
 	// setup flags
 	if err = c.setupFlags(args); err != nil {
-		log.Printf("[Error] Setup failed: %s", err.Error())
+		c.Log.Printf("[Error] Setup failed: %s", err.Error())
 		return 1
 	}
 
 	// dump data or acls
 	if err = c.dumpData(); err != nil {
-		log.Printf("[Error] Failed to dump data: %s", err.Error())
+		c.Log.Printf("[Error] Failed to dump data: %s", err.Error())
 		return 1
 	}
 

@@ -2,7 +2,6 @@ package restore
 
 import (
 	"encoding/json"
-	"log"
 	"strings"
 
 	"github.com/hashicorp/consul/api"
@@ -52,7 +51,7 @@ func (c *Command) restoreKeys() (int, error) {
 		}
 		// write key
 		if _, err = c.consulClient.KV().Put(kv, nil); err != nil {
-			log.Printf("[Warning] Failed to restore key %s: %s",
+			c.Log.Printf("[Warning] Failed to restore key %s: %s",
 				kv.Key, err.Error())
 		} else {
 			// success - increment count
@@ -85,7 +84,7 @@ func (c *Command) restoreACLs() (int, error) {
 	for _, acl := range acls {
 		// write token
 		if _, _, err = c.consulClient.ACL().Create(acl, nil); err != nil {
-			log.Printf("[Warning] Failed to restore ACL token %s: %s",
+			c.Log.Printf("[Warning] Failed to restore ACL token %s: %s",
 				acl.Name, err.Error())
 		} else {
 			// success - increment count
@@ -118,7 +117,7 @@ func (c *Command) restoreQueries() (int, error) {
 	for _, query := range queries {
 		// write query definitions
 		if _, _, err = c.consulClient.PreparedQuery().Create(query, nil); err != nil {
-			log.Printf("[Warning] Failed to restore query definition %s: %s",
+			c.Log.Printf("[Warning] Failed to restore query definition %s: %s",
 				query.ID, err.Error())
 		} else {
 			// success - increment count
