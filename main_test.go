@@ -12,8 +12,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/myENA/consul-backinator/backup"
-	"github.com/myENA/consul-backinator/restore"
+	"github.com/myENA/consul-backinator/command/backup"
+	"github.com/myENA/consul-backinator/command/restore"
 )
 
 const (

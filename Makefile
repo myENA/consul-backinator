@@ -13,7 +13,7 @@ build:
 	@build/build.sh -i
 
 test:
-	@go test -v
+	@$(GOPATH)/bin/porter go test -v
 
 release:
 	@build/build.sh -ir
