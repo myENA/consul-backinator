@@ -1,5 +1,5 @@
-hash: 563860a043f5982925471f37630618f634ff087a97fc7f87cbe3200704ce9333
-updated: 2017-09-12T21:30:22.09140494-05:00
+hash: 600a1f9f64f7034a9f6fa6e383332fb3ee8b0a501a781709c6307d80b32ee435
+updated: 2017-10-31T12:29:54.929691-05:00
 imports:
 - name: cloud.google.com/go
   version: f886afbd89b4ec094f6bd26a38993afb36ef130c
@@ -8,7 +8,7 @@ imports:
 - name: github.com/armon/go-radix
   version: 1fca145dffbcaa8fe914309b1ec0cfc67500fe61
 - name: github.com/aws/aws-sdk-go
-  version: 960dd6034cbdac0e9716bfa66d91de88b286889f
+  version: ee1f179877b2daf2aaabf71fa900773bf8842253
   subpackages:
   - aws
   - aws/awserr
@@ -61,9 +61,10 @@ imports:
   subpackages:
   - proto
 - name: github.com/hashicorp/consul
-  version: 112c0603d3d6fb23ab5f15e8fdb1a761da8eaf9a
+  version: 51ea240df8476e02215d53fbfad5838bf0d44d21
   subpackages:
   - api
+  - test/porter
   - testutil
   - testutil/retry
 - name: github.com/hashicorp/errwrap
@@ -130,7 +131,7 @@ imports:
   - jws
   - jwt
 - name: golang.org/x/sys
-  version: 062cd7e4e68206d8bab9b18396626e855c992658
+  version: 62bee037599929a6e9146f29d10dd5208c43507d
   subpackages:
   - unix
 - name: golang.org/x/text

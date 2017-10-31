@@ -7,7 +7,7 @@ ifeq ($(SUDO),true)
 	sudo = sudo
 endif
 
-.PHONY: build test release check clean docker docker_release
+.PHONY: build test release check clean distclean docker docker-release
 
 build:
 	@build/build.sh -i
@@ -24,9 +24,12 @@ check:
 clean:
 	@build/build.sh -d
 
+distclean:
+	@build/build.sh -dc
+
 docker:
 	$(sudo) docker build -t $(IMAGE_PATH):latest .
 
-docker_release:
+docker-release:
 	$(sudo) docker build -t $(IMAGE_PATH):latest .
 	$(sudo) docker tag $(IMAGE_PATH):latest $(IMAGE_PATH):$(RELEASE_VERSION)

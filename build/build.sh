@@ -33,8 +33,11 @@ ensureGox() {
 	fi
 }
 
+## exit toggle
+should_exit=false
+
 ## read options
-while getopts ":uidr" opt; do
+while getopts ":uidcr" opt; do
 	case $opt in
 		u)
 			ensureGlide
@@ -50,7 +53,13 @@ while getopts ":uidr" opt; do
 			printf "Removing binary, glide.lock and vendor directory ... "
 			rm -rf "${BUILD_NAME}" glide.lock vendor
 			printf "done.\n"
-			exit 0
+			should_exit=true
+		;;
+		c)
+			printf "Cleaning dist directory ... "
+			rm -rf ./dist/
+			printf "done.\n"
+			should_exit=true
 		;;
 		r)
 			ensureGox
@@ -64,6 +73,11 @@ done
 
 ## remove options
 shift $((OPTIND-1))
+
+## exiting?
+if [ $should_exit == true ]; then
+	exit 0
+fi
 
 ## check release option
 if [ $RELEASE_BUILD -eq 1 ]; then

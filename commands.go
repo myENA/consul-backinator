@@ -5,9 +5,9 @@ import (
 	"os"
 
 	"github.com/mitchellh/cli"
-	"github.com/myENA/consul-backinator/backup"
-	"github.com/myENA/consul-backinator/dump"
-	"github.com/myENA/consul-backinator/restore"
+	"github.com/myENA/consul-backinator/command/backup"
+	"github.com/myENA/consul-backinator/command/dump"
+	"github.com/myENA/consul-backinator/command/restore"
 )
 
 // package global logger
