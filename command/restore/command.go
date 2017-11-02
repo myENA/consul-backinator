@@ -42,9 +42,9 @@ func (c *Command) Run(args []string) int {
 	}
 
 	// sanity check
-	if c.config.noKV && c.config.aclFileName == "" {
-		c.Log.Printf("[Error] Passing 'nokv' and an empty 'acls' file " +
-			"doesn't make any sense.  You should specify an 'acls' file " +
+	if c.config.noKV && (c.config.aclFileName == "" && c.config.queryFileName == "") {
+		c.Log.Printf("[Error] Passing 'nokv' and an empty 'acls' and/or 'queries' file " +
+			"doesn't make any sense.  You should specify an 'acls' and/or 'queries' file " +
 			"when using the 'nokv' option.")
 		return 1
 	}
@@ -87,6 +87,20 @@ func (c *Command) Run(args []string) int {
 		c.Log.Printf("[Success] Restored %d ACL tokens from %s to %s",
 			count,
 			c.config.aclFileName,
+			c.config.consulConfig.Address)
+	}
+
+	// restore queries if requested
+	if c.config.queryFileName != "" {
+		if count, err = c.restoreQueries(); err != nil {
+			c.Log.Printf("[Error] Failed to restore query definitions: %s", err.Error())
+			return 1
+		}
+
+		// show success
+		c.Log.Printf("[Success] Restored %d query definitions from %s to %s",
+			count,
+			c.config.queryFileName,
 			c.config.consulConfig.Address)
 	}
 

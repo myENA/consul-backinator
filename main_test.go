@@ -25,13 +25,15 @@ const (
 
 type BackinatorTestSuite struct {
 	suite.Suite
-	TestSource             *testutil.TestServer
-	TestTarget             *testutil.TestServer
-	TestSourceClient       *api.Client
-	TestSourceClientConfig *api.Config
-	TestACLEntry           *api.ACLEntry
-	TestKeyFile            string
-	TestACLFile            string
+	TestSource                  *testutil.TestServer
+	TestTarget                  *testutil.TestServer
+	TestSourceClient            *api.Client
+	TestSourceClientConfig      *api.Config
+	TestACLEntry                *api.ACLEntry
+	TestPreparedQueryDefinition *api.PreparedQueryDefinition
+	TestKeyFile                 string
+	TestACLFile                 string
+	TestQueryFile               string
 }
 
 func mktemp(prefix string) string {
@@ -45,8 +47,9 @@ func mktemp(prefix string) string {
 }
 
 func (suite *BackinatorTestSuite) SetupSuite() {
-	var err error    // error holder
-	var aclID string // acl identifier
+	var err error      // error holder
+	var aclID string   // acl identifier
+	var queryID string // query identifier
 
 	// create source consul server
 	if suite.TestSource, err = testutil.NewTestServerConfig(
@@ -94,8 +97,26 @@ func (suite *BackinatorTestSuite) SetupSuite() {
 	aclID, _, err = suite.TestSourceClient.ACL().Create(suite.TestACLEntry, nil)
 
 	// check return
-	assert.NoError(suite.T(), err, "api operation returned error")
-	assert.NotEmpty(suite.T(), aclID, "api operation returned empty")
+	assert.NoError(suite.T(), err, "api acl operation returned error")
+	assert.NotEmpty(suite.T(), aclID, "api acl operation returned empty")
+
+	// populate dummy prepared query
+	suite.TestPreparedQueryDefinition = &api.PreparedQueryDefinition{
+		Name: "myCustomQuery",
+		Service: api.ServiceQuery{
+			Service: "testService",
+		},
+		DNS: api.QueryDNSOptions{
+			TTL: "10s",
+		},
+	}
+
+	// push the prepared query
+	queryID, _, err = suite.TestSourceClient.PreparedQuery().Create(suite.TestPreparedQueryDefinition, nil)
+
+	// check return
+	assert.NoError(suite.T(), err, "api query operation returned error")
+	assert.NotEmpty(suite.T(), queryID, "api query operation returned empty")
 
 	// populate source kv data
 	suite.TestSource.SetKVString(suite.T(), "key1", "value1")
@@ -111,6 +132,7 @@ func (suite *BackinatorTestSuite) SetupSuite() {
 
 	// setup temporary files
 	suite.TestACLFile = mktemp(appName + ".acls")
+	suite.TestQueryFile = mktemp(appName + ".pqs")
 	suite.TestKeyFile = mktemp(appName + ".bak")
 }
 
@@ -124,6 +146,8 @@ func (suite *BackinatorTestSuite) TearDownSuite() {
 	os.Remove(suite.TestKeyFile + ".sig")
 	os.Remove(suite.TestACLFile)
 	os.Remove(suite.TestACLFile + ".sig")
+	os.Remove(suite.TestQueryFile)
+	os.Remove(suite.TestQueryFile + ".sig")
 	suite.T().Log("Done!")
 }
 
@@ -142,6 +166,8 @@ func (suite *BackinatorTestSuite) Test01Backup() {
 		MySecretKey,
 		"-acls",
 		suite.TestACLFile,
+		"-queries",
+		suite.TestQueryFile,
 		"-addr",
 		suite.TestSource.HTTPAddr,
 		"-dc",
@@ -180,6 +206,8 @@ func (suite *BackinatorTestSuite) Test02Restore() {
 		MySecretKey,
 		"-acls",
 		suite.TestACLFile,
+		"-queries",
+		suite.TestQueryFile,
 		"-addr",
 		suite.TestTarget.HTTPAddr,
 		"-dc",

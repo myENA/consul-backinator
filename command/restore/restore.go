@@ -113,15 +113,30 @@ func (c *Command) restoreQueries() (int, error) {
 		return 0, err
 	}
 
-	// loop through acls
+	// loop through queries
 	for _, query := range queries {
-		// write query definitions
-		if _, _, err = c.consulClient.PreparedQuery().Create(query, nil); err != nil {
-			c.Log.Printf("[Warning] Failed to restore query definition %s: %s",
-				query.ID, err.Error())
+		var existing []*api.PreparedQueryDefinition // existing query definitions
+		// check for existing query
+		if existing, _, err = c.consulClient.PreparedQuery().Get(query.ID, nil); err != nil && existing != nil {
+			// update existing query
+			if _, err = c.consulClient.PreparedQuery().Update(query, nil); err != nil {
+				c.Log.Printf("[Warning] Failed to update existing query definition %s: %s",
+					query.ID, err.Error())
+			} else {
+				// success - increment count
+				count++
+			}
 		} else {
-			// success - increment count
-			count++
+			// remove id from backed-up query before creating
+			query.ID = ""
+			// attempt to create non-existent query
+			if _, _, err = c.consulClient.PreparedQuery().Create(query, nil); err != nil {
+				c.Log.Printf("[Warning] Failed to create missing query definition %s: %s",
+					query.ID, err.Error())
+			} else {
+				// success - increment count
+				count++
+			}
 		}
 	}
 
