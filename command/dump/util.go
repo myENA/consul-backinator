@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	cc "github.com/myENA/consul-backinator/common/config"
 )
 
 // setupFlags initializes the instance configuration
@@ -34,6 +36,11 @@ func (c *Command) setupFlags(args []string) error {
 	// parse flags and ignore error
 	if err := cmdFlags.Parse(args); err != nil {
 		return nil
+	}
+
+	// check for remaining garbage
+	if cmdFlags.NArg() > 0 {
+		return cc.ErrUnknownArg
 	}
 
 	// always okay
