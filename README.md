@@ -31,6 +31,7 @@ changed and any scripts which embedded this tool will need to be updated.
 * Optional path transformation (path replacement) on key backup and/or restore
 * Clean well documented code that's simple to follow
 * Direct AWS/S3 support for backup and restoration of KVs, ACLs and queries
+* Node auto discovery in cloud environments via [go-discover](https://github.com/hashicorp/go-discover)
 
 ## Installing
 
