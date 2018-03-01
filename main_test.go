@@ -233,7 +233,7 @@ func (suite *BackinatorTestSuite) Test02Restore() {
 
 func (suite *BackinatorTestSuite) Test03VerifyTarget() {
 	// TODO Read data from target server and verify
-	// it matches the orifinal source
+	// it matches the original source
 }
 
 func TestBackinatorTestSuite(t *testing.T) {

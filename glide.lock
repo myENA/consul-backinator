@@ -1,5 +1,5 @@
-hash: 600a1f9f64f7034a9f6fa6e383332fb3ee8b0a501a781709c6307d80b32ee435
-updated: 2017-10-31T12:29:54.929691-05:00
+hash: 6d24fd42a225c6c3feb12f9c1fe22f85b78a8b11f379f061bada79aaf86f6bb8
+updated: 2018-03-01T13:35:22.547031-06:00
 imports:
 - name: cloud.google.com/go
   version: f886afbd89b4ec094f6bd26a38993afb36ef130c
@@ -8,7 +8,7 @@ imports:
 - name: github.com/armon/go-radix
   version: 1fca145dffbcaa8fe914309b1ec0cfc67500fe61
 - name: github.com/aws/aws-sdk-go
-  version: ee1f179877b2daf2aaabf71fa900773bf8842253
+  version: 9a79087b1148376f4dd860c188c948479e2def3b
   subpackages:
   - aws
   - aws/awserr
@@ -26,6 +26,7 @@ imports:
   - aws/request
   - aws/session
   - aws/signer/v4
+  - internal/sdkrand
   - internal/shareddefaults
   - private/protocol
   - private/protocol/ec2query
@@ -61,10 +62,10 @@ imports:
   subpackages:
   - proto
 - name: github.com/hashicorp/consul
-  version: 51ea240df8476e02215d53fbfad5838bf0d44d21
+  version: 9a494b5fb9c86180a5702e29c485df1507a47198
   subpackages:
   - api
-  - test/porter
+  - lib/freeport
   - testutil
   - testutil/retry
 - name: github.com/hashicorp/errwrap
@@ -96,6 +97,8 @@ imports:
   version: 65fcae5817c8600da98ada9d7edf26dd1a84837b
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
+- name: github.com/mitchellh/go-testing-interface
+  version: a61a99592b77c9ba629d254a693acffaeb4b7e28
 - name: github.com/pkg/errors
   version: 2b3a18b5f0fb6b4f9190549597d3f962c02bc5eb
 - name: github.com/posener/complete
