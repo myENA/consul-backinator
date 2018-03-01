@@ -16,6 +16,9 @@ including ACL token and prepared query backup and restoration.
 
 ## Note
 
+Builds currently randomly failing under travis due to issues with the consul
+integration tests.  I'm investigating but may not have a fix anytime soon.
+
 There was a potentially breaking change in the operation of this tool on
 May 09, 2016 when the different operations were broken out into sub commands
 to simplify the flag listings.  The functionality remains the same and previous
