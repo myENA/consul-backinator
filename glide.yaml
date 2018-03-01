@@ -15,3 +15,21 @@ import:
   - aws/request
   - aws/session
   - service/s3
+## indirect dependencies for go-discover
+- package: github.com/Azure/azure-sdk-for-go
+  version: v10.1.0-beta
+  subpackages:
+  - arm/network
+- package: github.com/Azure/go-autorest
+  version: ~8.1.0
+  subpackages:
+  - autorest
+  - autorest/adal
+  - autorest/azure
+  - autorest/date
+  - autorest/to
+  - autorest/validation
+- package: github.com/nicolai86/scaleway-sdk
+  version: 33df10cad9fff60467a3dcb992d5340c2b9a8046
+  subpackages:
+  - api
