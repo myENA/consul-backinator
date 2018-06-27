@@ -111,7 +111,7 @@ func parseS3URI(s3uri string) (*s3Info, error) {
 		// update config
 		info.awsConfig.DisableSSL = aws.Bool(secure)
 	}
-	
+
 	//check for pathstyle override
 	if temps := u.Query().Get("pathstyle"); temps != "" {
 		var pathstyle bool // local bool
