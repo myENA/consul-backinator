@@ -1,14 +1,16 @@
-hash: acbe48eefc9ae87d07eb4ac9386f21d1df099fb6b100d96248120fa1587b68af
-updated: 2018-06-27T15:33:52.776416-05:00
+hash: d6adb11f1a0c2f8042f633f2ab418c4fccb3ee159be597c5c018af8797641467
+updated: 2018-06-27T16:22:27.766457-05:00
 imports:
 - name: cloud.google.com/go
-  version: 49597cda9a6e8ccfb2fda1e75ee1ab3997d7ef81
+  version: 45528feae6df48b8834de4c7780d7b3d7d7b477b
   subpackages:
   - compute/metadata
+- name: github.com/armon/go-metrics
+  version: 58588f401c2cc130a7308a52ca3bc6c0a76db04b
 - name: github.com/armon/go-radix
   version: 1fca145dffbcaa8fe914309b1ec0cfc67500fe61
 - name: github.com/aws/aws-sdk-go
-  version: 9a79087b1148376f4dd860c188c948479e2def3b
+  version: aff39e8473db578a1cec9ac2f829a56813c1d631
   subpackages:
   - aws
   - aws/awserr
@@ -20,16 +22,20 @@ imports:
   - aws/credentials/ec2rolecreds
   - aws/credentials/endpointcreds
   - aws/credentials/stscreds
+  - aws/csm
   - aws/defaults
   - aws/ec2metadata
   - aws/endpoints
   - aws/request
   - aws/session
   - aws/signer/v4
+  - internal/sdkio
   - internal/sdkrand
   - internal/shareddefaults
   - private/protocol
   - private/protocol/ec2query
+  - private/protocol/eventstream
+  - private/protocol/eventstream/eventstreamapi
   - private/protocol/query
   - private/protocol/query/queryutil
   - private/protocol/rest
@@ -39,11 +45,12 @@ imports:
   - service/s3
   - service/sts
 - name: github.com/Azure/azure-sdk-for-go
-  version: 59c277f1b488b81b1a5f944212f25b69bea8ece3
+  version: 7971189ecf5a584b9211f2527737f94bb979644e
   subpackages:
-  - arm/network
+  - services/network/mgmt/2015-06-15/network
+  - version
 - name: github.com/Azure/go-autorest
-  version: f6e08fe5e4d45c9a66e40196d3fed5f37331d224
+  version: e6d2a85bbb5cd2a3162e4942594e1e520e442b0b
   subpackages:
   - autorest
   - autorest/adal
@@ -54,21 +61,22 @@ imports:
 - name: github.com/bgentry/speakeasy
   version: 4aabc24848ce5fd31929f7d1e4ea74d3709c14cd
 - name: github.com/denverdino/aliyungo
-  version: e4c87df5b13aa9db2324c9951839a2bb03e5af62
+  version: 3f1df87ed446bd21146b79ecb99ef136efec43e5
   subpackages:
   - common
   - ecs
   - util
 - name: github.com/dgrijalva/jwt-go
-  version: dbeaa9332f19a944acb5736b4456cfcc02140e29
+  version: 06ea1031745cb8b3dab3f6a236daf2b0aa468b7e
 - name: github.com/digitalocean/godo
-  version: 7249498ac084d6cc697aae29fb1108acbfba99e2
-  subpackages:
-  - context
+  version: a3505618b6f43aa1ddfb841791464fc660015fb4
+- name: github.com/fatih/color
+  version: 2d684516a8861da43017284349b7e303e809ac21
 - name: github.com/go-ini/ini
-  version: 32e4be5f41bb918afb6e37c07426e2ddbcb6647e
+  version: cec2bdc49009247305a260b082a18e802d0fe292
 - name: github.com/golang/protobuf
-  version: bbd03ef6da3a115852eaf24c8a1c46aeb39aa175
+  version: 1f49d83d9aa00e6ce4fc8258c71cc7786aec968a
+  repo: https://github.com/golang/protobuf
   subpackages:
   - proto
 - name: github.com/google/go-querystring
@@ -76,7 +84,7 @@ imports:
   subpackages:
   - query
 - name: github.com/gophercloud/gophercloud
-  version: afbf0422412f5dc726fa12be280fa0c3cb31fcbd
+  version: 19abc56a8cd8d3630ab9735173cb92c0bf635f33
   subpackages:
   - openstack
   - openstack/compute/v2/flavors
@@ -88,7 +96,7 @@ imports:
   - openstack/utils
   - pagination
 - name: github.com/hashicorp/consul
-  version: 9a494b5fb9c86180a5702e29c485df1507a47198
+  version: 28141971f966e99916da2c5e461dd968746491cd
   subpackages:
   - api
   - lib/freeport
@@ -97,9 +105,9 @@ imports:
 - name: github.com/hashicorp/errwrap
   version: 7554cd9344cec97297fa6649b055a8c98c2a1e55
 - name: github.com/hashicorp/go-cleanhttp
-  version: 3573b8b52aa7b37b9358d966a898feb387f62437
+  version: d5fe4b57a186c716b0e00b8c301cbd9b4182694d
 - name: github.com/hashicorp/go-discover
-  version: 8f2af0ac44208783caab4dd65462ffb965229c60
+  version: 283c00e7695d2b48f5cab77849d8f6409648e21d
   subpackages:
   - provider/aliyun
   - provider/aws
@@ -109,42 +117,64 @@ imports:
   - provider/os
   - provider/scaleway
   - provider/softlayer
+  - provider/triton
+  - provider/vsphere
+- name: github.com/hashicorp/go-immutable-radix
+  version: 7f3cd4390caab3250a57f30efdb2a65dd7649ecf
 - name: github.com/hashicorp/go-multierror
-  version: 83588e72410abfbe4df460eeb6f30841ae47d4c4
+  version: b7773ae218740a7be65057fc60b366a49b538a44
 - name: github.com/hashicorp/go-rootcerts
   version: 6bb64b370b90e7ef1fa532be9e591a81c3493e00
 - name: github.com/hashicorp/go-uuid
   version: 27454136f0364f2d44b1276c552d69105cf8c498
+- name: github.com/hashicorp/golang-lru
+  version: 0fb14efe8c47ae851c0034ed7a448854d3d34cf3
+  subpackages:
+  - simplelru
 - name: github.com/hashicorp/serf
-  version: c20a0b1b1ea9eb8168bcdec0116688fa9254e449
+  version: 984a73625de3138f44deb38d00878fab39eb6447
   subpackages:
   - coordinate
 - name: github.com/jmespath/go-jmespath
   version: c2b33e8439af944379acbdd9c3a5fe0bc44bd8a5
+- name: github.com/joyent/triton-go
+  version: 728bae006df64d52659759373c2b8650865d409b
+  subpackages:
+  - authentication
+  - client
+  - compute
+  - errors
+- name: github.com/mattn/go-colorable
+  version: efa589957cd060542a26d2dd7832fd6a6c6c3ade
 - name: github.com/mattn/go-isatty
-  version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
+  version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
 - name: github.com/mitchellh/cli
-  version: 65fcae5817c8600da98ada9d7edf26dd1a84837b
+  version: c48282d14eba4b0817ddef3f832ff8d13851aefd
 - name: github.com/mitchellh/go-homedir
-  version: b8bc1bf767474819792c23f32d8286a45736f1c6
+  version: 3864e76763d94a6df2f9960b16a20a33da9f9a66
 - name: github.com/mitchellh/go-testing-interface
   version: a61a99592b77c9ba629d254a693acffaeb4b7e28
+- name: github.com/mitchellh/mapstructure
+  version: bb74f1db0675b241733089d5a1faa5dd8b0ef57b
 - name: github.com/nicolai86/scaleway-sdk
   version: 33df10cad9fff60467a3dcb992d5340c2b9a8046
   subpackages:
   - api
 - name: github.com/pkg/errors
-  version: f15c970de5b76fac0b59abb32d62c17cc7bed265
+  version: c605e284fe17294bda444b34710735b29d1a9d90
 - name: github.com/posener/complete
-  version: 88e59760adaddb8276c9b15511302890690e2dae
+  version: e037c22b2fcfa85e74495388f03892ed194bba76
   subpackages:
   - cmd
   - cmd/install
   - match
 - name: github.com/renier/xmlrpc
   version: ce4a1a486c03a3c6e1816df25b8c559d1879d380
+- name: github.com/Sirupsen/logrus
+  version: d26492970760ca5d33129d2d799e34be5c4782eb
+  repo: https://github.com/Sirupsen/logrus
 - name: github.com/softlayer/softlayer-go
-  version: 792e2b462464b34b932dcbe2e8d1de98c80a89d5
+  version: 3aaf70665e74e5c84687386e575e1130bc42af20
   subpackages:
   - config
   - datatypes
@@ -154,49 +184,77 @@ imports:
   - sl
 - name: github.com/tent/http-link-go
   version: ac974c61c2f990f4115b119354b5e0b47550e888
+- name: github.com/vmware/govmomi
+  version: 123ed177021588bac57b5c87c1a84270ddf2eca8
+  subpackages:
+  - find
+  - list
+  - nfc
+  - object
+  - property
+  - session
+  - task
+  - vim25
+  - vim25/debug
+  - vim25/methods
+  - vim25/mo
+  - vim25/progress
+  - vim25/soap
+  - vim25/types
+  - vim25/xml
+- name: github.com/vmware/vic
+  version: 3b94d45e491c9d8571dfba8496c45f8d12820304
+  subpackages:
+  - pkg/vsphere/tags
+- name: golang.org/x/crypto
+  version: 728b753d0135da6801d45a38e6f43ff55779c5c2
+  subpackages:
+  - curve25519
+  - ed25519
+  - ed25519/internal/edwards25519
+  - ssh
+  - ssh/agent
 - name: golang.org/x/net
   version: 22ae77b79946ea320088417e4d50825671d82d57
-  repo: https://github.com/golang/net.git
-  vcs: git
   subpackages:
-  - .
   - context
   - context/ctxhttp
 - name: golang.org/x/oauth2
-  version: 2f32c3ac0fa4fb807a0fcefb0b6f2468a0d99bd0
+  version: 1611bb46e67abc64a71ecc5c3ae67f1cbbc2b921
   subpackages:
   - google
   - internal
   - jws
   - jwt
 - name: golang.org/x/sync
-  version: fd80eb99c8f653c847d294a001bdf2a3a6f768f5
+  version: 1d60e4601c6fd243af51cc01ddf169918a5407ca
   subpackages:
   - errgroup
 - name: golang.org/x/sys
-  version: 062cd7e4e68206d8bab9b18396626e855c992658
+  version: d8f5ea21b9295e315e612b4bcf4bedea93454d4d
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: 0b0b1f509072617b86d90971b51da23cc52694f2
-  repo: https://github.com/golang/text.git
-  vcs: git
+  version: f28f36722d5ef2f9655ad3de1f248e3e52ad5ebd
+  repo: https://go.googlesource.com/text
   subpackages:
-  - .
   - encoding
   - encoding/charmap
   - encoding/internal
   - encoding/internal/identifier
+  - internal
+  - language
+  - message
   - transform
 - name: google.golang.org/api
-  version: ab90adb3efa287b869ecb698db42f923cc734972
+  version: dfa61ae24628a06502b9c2805d983b57e89399b5
   subpackages:
   - compute/v1
   - gensupport
   - googleapi
   - googleapi/internal/uritemplates
 - name: google.golang.org/appengine
-  version: 5bee14b453b4c71be47ec1781b0fa61c2ea182db
+  version: ca59ef35f409df61fa4a5f8290ff289b37eccfb8
   subpackages:
   - internal
   - internal/app_identity
@@ -209,16 +267,21 @@ imports:
   - urlfetch
 testImports:
 - name: github.com/davecgh/go-spew
-  version: 8991bc29aa16c548c550c7ff78260e27b9ab7c73
+  version: 5215b55f46b2b919f50a1df0eaa5886afe4e3b3d
+  repo: https://github.com/davecgh/go-spew
   subpackages:
   - spew
 - name: github.com/pmezard/go-difflib
   version: 792786c7400a136282c1664665ae0a8db921c6c2
+  repo: https://github.com/pmezard/go-difflib
   subpackages:
   - difflib
 - name: github.com/stretchr/testify
-  version: be8372ae8ec5c6daaed3cc28ebf73c54b737c240
+  version: 9f9027faeb0dad515336ed2f28317f9f8f527ab4
+  repo: https://github.com/stretchr/testify
   subpackages:
   - assert
+  - http
+  - mock
   - require
   - suite
