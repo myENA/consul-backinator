@@ -1,12 +1,10 @@
 hash: acbe48eefc9ae87d07eb4ac9386f21d1df099fb6b100d96248120fa1587b68af
-updated: 2018-03-01T16:51:43.39816-06:00
+updated: 2018-06-27T15:33:52.776416-05:00
 imports:
 - name: cloud.google.com/go
   version: 49597cda9a6e8ccfb2fda1e75ee1ab3997d7ef81
   subpackages:
   - compute/metadata
-- name: github.com/armon/go-metrics
-  version: 783273d703149aaeb9897cf58613d5af48861c25
 - name: github.com/armon/go-radix
   version: 1fca145dffbcaa8fe914309b1ec0cfc67500fe61
 - name: github.com/aws/aws-sdk-go
@@ -99,7 +97,7 @@ imports:
 - name: github.com/hashicorp/errwrap
   version: 7554cd9344cec97297fa6649b055a8c98c2a1e55
 - name: github.com/hashicorp/go-cleanhttp
-  version: d5fe4b57a186c716b0e00b8c301cbd9b4182694d
+  version: 3573b8b52aa7b37b9358d966a898feb387f62437
 - name: github.com/hashicorp/go-discover
   version: 8f2af0ac44208783caab4dd65462ffb965229c60
   subpackages:
@@ -111,28 +109,22 @@ imports:
   - provider/os
   - provider/scaleway
   - provider/softlayer
-- name: github.com/hashicorp/go-immutable-radix
-  version: 7f3cd4390caab3250a57f30efdb2a65dd7649ecf
 - name: github.com/hashicorp/go-multierror
-  version: b7773ae218740a7be65057fc60b366a49b538a44
+  version: 83588e72410abfbe4df460eeb6f30841ae47d4c4
 - name: github.com/hashicorp/go-rootcerts
   version: 6bb64b370b90e7ef1fa532be9e591a81c3493e00
 - name: github.com/hashicorp/go-uuid
   version: 27454136f0364f2d44b1276c552d69105cf8c498
-- name: github.com/hashicorp/golang-lru
-  version: 0fb14efe8c47ae851c0034ed7a448854d3d34cf3
-  subpackages:
-  - simplelru
 - name: github.com/hashicorp/serf
-  version: 3b250ce4404edb266330f53fcfc8ad0d0dacfae7
+  version: c20a0b1b1ea9eb8168bcdec0116688fa9254e449
   subpackages:
   - coordinate
 - name: github.com/jmespath/go-jmespath
   version: c2b33e8439af944379acbdd9c3a5fe0bc44bd8a5
 - name: github.com/mattn/go-isatty
-  version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
+  version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
 - name: github.com/mitchellh/cli
-  version: 518dc677a1e1222682f4e7db06721942cb8e9e4c
+  version: 65fcae5817c8600da98ada9d7edf26dd1a84837b
 - name: github.com/mitchellh/go-homedir
   version: b8bc1bf767474819792c23f32d8286a45736f1c6
 - name: github.com/mitchellh/go-testing-interface
@@ -142,9 +134,9 @@ imports:
   subpackages:
   - api
 - name: github.com/pkg/errors
-  version: 30136e27e2ac8d167177e8a583aa4c3fea5be833
+  version: f15c970de5b76fac0b59abb32d62c17cc7bed265
 - name: github.com/posener/complete
-  version: cdc49b71388c2ab059f57997ef2575c9e8b4f146
+  version: 88e59760adaddb8276c9b15511302890690e2dae
   subpackages:
   - cmd
   - cmd/install
@@ -182,7 +174,7 @@ imports:
   subpackages:
   - errgroup
 - name: golang.org/x/sys
-  version: f6cff0780e542efa0c8e864dc8fa522808f6a598
+  version: 062cd7e4e68206d8bab9b18396626e855c992658
   subpackages:
   - unix
 - name: golang.org/x/text
