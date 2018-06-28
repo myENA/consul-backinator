@@ -31,4 +31,4 @@ install:
   - curl -L "https://github.com/Masterminds/glide/releases/download/v${GLIDE_VERSION}/glide-v${GLIDE_VERSION}-linux-amd64.tar.gz" | tar -C $HOME/bin -vxz --strip=1 linux-amd64/glide
 
 script:
-  - make check build test
+  - make build check test

@@ -1,1 +1,12 @@
-.gitignore
+.DS_*
+.Apple*
+.vimrc
+.idea
+*.iml
+.*~
+?
+*.bak
+*.sig
+dist/
+vendor/
+consul-backinator

@@ -1,8 +1,8 @@
 hash: d6adb11f1a0c2f8042f633f2ab418c4fccb3ee159be597c5c018af8797641467
-updated: 2018-06-27T16:22:27.766457-05:00
+updated: 2018-06-28T15:26:15.445375-05:00
 imports:
 - name: cloud.google.com/go
-  version: 45528feae6df48b8834de4c7780d7b3d7d7b477b
+  version: 75763d24f38012ba2bb6f3966a39a6f0759a353c
   subpackages:
   - compute/metadata
 - name: github.com/armon/go-metrics
@@ -138,7 +138,7 @@ imports:
 - name: github.com/jmespath/go-jmespath
   version: c2b33e8439af944379acbdd9c3a5fe0bc44bd8a5
 - name: github.com/joyent/triton-go
-  version: 728bae006df64d52659759373c2b8650865d409b
+  version: 830d2b111e62b15793a2f2db637c073055ab62bb
   subpackages:
   - authentication
   - client
@@ -203,7 +203,7 @@ imports:
   - vim25/types
   - vim25/xml
 - name: github.com/vmware/vic
-  version: 3b94d45e491c9d8571dfba8496c45f8d12820304
+  version: fddf519e4fb8aedcdd0e1148bb34584ebf4a0116
   subpackages:
   - pkg/vsphere/tags
 - name: golang.org/x/crypto
