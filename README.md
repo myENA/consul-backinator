@@ -207,13 +207,14 @@ The current URI parsing accepts `s3://` and `s3n://` scheme prefixes.
 
 This table describes all the S3 URI options and corresponding environment variables.
 
-| Paramater    | Environment             | Required    | Description            | Default          |
-|--------------|-------------------------|-------------|------------------------|------------------|
-| `access-key` | `AWS_ACCESS_KEY_ID`     | yes         | Your S3/AWS access key |                  |
-| `secret-key` | `AWS_SECRET_ACCESS_KEY` | yes         | Your S3/AWS secret key |                  |
-| `region`     | `AWS_REGION`            | yes         | Your S3/AWS region     |                  |
-| `endpoint`   |                         | no          | Optional endpoint      | s3.amazonaws.com |
-| `secure`     |                         | no          | Optional secure flag   | true             |
+| Paramater    | Environment             | Required    | Description             | Default          |
+|--------------|-------------------------|-------------|-------------------------|------------------|
+| `access-key` | `AWS_ACCESS_KEY_ID`     | yes         | Your S3/AWS access key  |                  |
+| `secret-key` | `AWS_SECRET_ACCESS_KEY` | yes         | Your S3/AWS secret key  |                  |
+| `region`     | `AWS_REGION`            | yes         | Your S3/AWS region      |                  |
+| `endpoint`   |                         | no          | Optional endpoint       | s3.amazonaws.com |
+| `secure`     |                         | no          | Optional secure flag    | true             |
+| `pathstyle`  |                         | no          | Optional pathstyle flag | false            |
 
 ## Example
 
