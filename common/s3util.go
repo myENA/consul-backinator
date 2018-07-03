@@ -108,8 +108,11 @@ func parseS3URI(s3uri string) (*s3Info, error) {
 		if secure, err = strconv.ParseBool(temps); err != nil {
 			return nil, err
 		}
-		// update config
-		info.awsConfig.DisableSSL = aws.Bool(secure)
+		// update config to disable SSL if secure is false
+		// see #43 - this was a terrible name for this paramater
+		if secure == false {
+			info.awsConfig.DisableSSL = aws.Bool(true)
+		}
 	}
 
 	//check for pathstyle override
