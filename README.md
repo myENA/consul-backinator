@@ -81,7 +81,10 @@ git clone https://github.com/myENA/consul-backinator.git
 cd consul-backinator
 ```
 
-Edit the job specification file `consul-backinator.nomad` to suit your environment. It uses S3 by default and must be configured with the correct bucket URI, access key, and secret key.  It's recommended to use a dedicated consul-backinator user with IAM permissions to just this bucket for security purposes.  The job runs every hour by default and writes output to STDERR and STDOUT.
+Edit the job specification file `consul-backinator.nomad` to suit your environment. It uses S3 by default and must be
+configured with the correct bucket URI, access key, and secret key.  It's recommended to use a dedicated
+consul-backinator user with IAM permissions to just this bucket for security purposes.  The job runs every
+15 minutes by default and logs to STDERR and STDOUT.
 
 ## Security
 
@@ -233,6 +236,7 @@ ahurt$ ls -la *.sig *.bak
 
 ## Thanks
 
-* The [HashiCorp](https://github.com/hashicorp) folks for the excellent Consul service discovery daemon and the excellent embedded API and golang package.  In addition to some very nice references back to this utility in a few issues.
+* The [HashiCorp](https://github.com/hashicorp) folks for the excellent Consul service discovery daemon and the
+excellent embedded API and golang package.  In addition to some very nice references back to this utility in a few issues.
 * [Adam Avilla](https://github.com/hekaldama) for his time and contributions to the Docker portions of the build.
 * All the other contributors, testers and stargazers.
