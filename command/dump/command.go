@@ -57,9 +57,7 @@ Options:
 
 	-file         Source filename (default: "consul.bak")
 	-key          Passphrase for data encryption and signature validation (default: "password")
-	-plain        Dump a reduced set of information
-	-acls         Specified file is an ACL token backup file
-	-queries      Specified file is a prepared query backup file (consider using plain for query files)
+	-plain        Dump a reduced set of information.  This is only valid for key/value files.
 
 Please see documentation on GitHub for a detailed explanation of all options.
 https://github.com/myENA/consul-backinator

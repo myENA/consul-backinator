@@ -10,14 +10,17 @@ import (
 
 // primary configuration
 type config struct {
-	fileName      string
-	cryptKey      string
-	noKV          bool
-	aclFileName   string
-	queryFileName string
-	pathTransform string
-	consulPrefix  string
-	consulConfig  *ccns.Config
+	fileName          string
+	cryptKey          string
+	noKV              bool
+	aclFileName       string
+	aclPolicyFileName string
+	legacyACLFileName string
+	queryFileName     string
+	pathTransform     string
+	consulPrefix      string
+	pathExclude       string
+	consulConfig      *ccns.Config
 }
 
 // Command is a Command implementation that runs the backup operation
@@ -48,6 +51,19 @@ func (c *Command) Run(args []string) int {
 		return 1
 	}
 
+	// warn if backing up ACLs without policies
+	if c.config.aclFileName != "" && c.config.aclPolicyFileName == "" {
+		c.Log.Printf("[Warning] Backing up ACL tokens but not policies.  " +
+			"You must specify a 'policies' file to backup new-style ACL policies")
+	}
+
+	// warn in change of behavior for ACL option
+	if c.config.aclFileName != "" {
+		c.Log.Printf("[Warning] The behavior of the 'acls' option has changed.  " +
+			"This option now only backs-up new (1.4.0+) ACL tokens.  " +
+			"To backup legacy ACLs please use the 'legacy-acls' option.")
+	}
+
 	// build client
 	if c.consulClient, err = c.config.consulConfig.New(); err != nil {
 		c.Log.Printf("[Error] Failed initialize consul client: %s", err.Error())
@@ -75,9 +91,9 @@ func (c *Command) Run(args []string) int {
 			c.config.fileName)
 	}
 
-	// backup acls if requested
+	// backup new-style acls if requested
 	if c.config.aclFileName != "" {
-		if count, err = c.backupACLs(); err != nil {
+		if count, err = c.backupACLTokens(); err != nil {
 			c.Log.Printf("[Error] Failed to backup ACL tokens: %s", err.Error())
 			return 1
 		}
@@ -87,6 +103,34 @@ func (c *Command) Run(args []string) int {
 			count,
 			c.config.consulConfig.Address,
 			c.config.aclFileName)
+	}
+
+	// backup new-style acl policies if requested
+	if c.config.aclPolicyFileName != "" {
+		if count, err = c.backupACLPolicies(); err != nil {
+			c.Log.Printf("[Error] Failed to backup ACL policies: %s", err.Error())
+			return 1
+		}
+
+		// show success
+		c.Log.Printf("[Success] Backed up %d ACL policies from %s to %s",
+			count,
+			c.config.consulConfig.Address,
+			c.config.aclPolicyFileName)
+	}
+
+	// backup legacy acls if requested
+	if c.config.legacyACLFileName != "" {
+		if count, err = c.backupLegacyACLs(); err != nil {
+			c.Log.Printf("[Error] Failed to legacy backup ACL tokens: %s", err.Error())
+			return 1
+		}
+
+		// show success
+		c.Log.Printf("[Success] Backed up %d legacy ACL tokens from %s to %s",
+			count,
+			c.config.consulConfig.Address,
+			c.config.legacyACLFileName)
 	}
 
 	// backup query definitions if requested
@@ -127,10 +171,13 @@ Options:
 	-file            Destination filename or S3 location (default: "consul.bak")
 	-key             Passphrase for data encryption and signature validation (default: "password")
 	-nokv            Do not attempt to backup kv data
-	-acls            Optional backup filename or S3 location for acl tokens
+	-acls            Optional backup filename or S3 location for new (1.4.0+) acl tokens
+	-policies        Optional backup filename or S3 location for new (1.4.0+) acl policies
+	-legacy-acls     Optional backup filename or S3 location for legacy acl tokens
 	-queries         Optional backup filename or S3 location for prepared queries
 	-transform       Optional path transformation (oldPath,newPath...)
 	-prefix          Optional prefix from under which all keys will be fetched
+	-exclude         Optional list of excluded paths (pathOne,PathTwo...)
 	-addr            Optional consul address and port (default: "127.0.0.1:8500")
 	-scheme          Optional consul scheme ("http" or "https")
 	-dc              Optional consul datacenter

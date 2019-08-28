@@ -63,15 +63,80 @@ func (c *Command) restoreKeys() (int, error) {
 	return count, nil
 }
 
-// restoreACLs reads acl tokens from a backup file and restores them to consul
-func (c *Command) restoreACLs() (int, error) {
+// restoreACLTokens restores new (1.4.0+) consul acl tokens from a backup file and restores them to consul
+func (c *Command) restoreACLTokens() (int, error) {
+	var aclTokens []*api.ACLToken // new-style acl tokens
+	var count int                 // token count
+	var data []byte               // read tokens
+	var err error                 // general error holder
+
+	// read json data from source
+	if data, err = common.ReadData(c.config.aclFileName, c.config.cryptKey); err != nil {
+		return 0, err
+	}
+
+	// decode data
+	if err = json.Unmarshal(data, &aclTokens); err != nil {
+		return 0, err
+	}
+
+	// loop through tokens
+	for _, token := range aclTokens {
+		c.Log.Printf("[Debug] restoring %+v", token)
+		// write token
+		if _, _, err = c.consulClient.ACL().TokenCreate(token, nil); err != nil {
+			c.Log.Printf("[Warning] Failed to restore ACL token %s: %s",
+				token.Description, err.Error())
+		} else {
+			count++
+		}
+	}
+
+	// return restore count - no error
+	return count, nil
+}
+
+// restoreACLPolicies restores new (1.4.0+) consul acl policies from a backup file and restores them to consul
+func (c *Command) restoreACLPolicies() (int, error) {
+	var aclPolicies []*api.ACLPolicy // new-style acl policies
+	var count int                    // token count
+	var data []byte                  // read tokens
+	var err error                    // general error holder
+
+	// read json data from source
+	if data, err = common.ReadData(c.config.aclPolicyFileName, c.config.cryptKey); err != nil {
+		return 0, err
+	}
+
+	// decode data
+	if err = json.Unmarshal(data, &aclPolicies); err != nil {
+		return 0, err
+	}
+
+	// loop through policies
+	for _, policy := range aclPolicies {
+		// write token
+		if _, _, err = c.consulClient.ACL().PolicyCreate(policy, nil); err != nil {
+			c.Log.Printf("[Warning] Failed to restore ACL policy %s: %s",
+				policy.Name, err.Error())
+		} else {
+			count++
+		}
+	}
+
+	// return restore count - no error
+	return count, nil
+}
+
+// restoreLegacyACLs reads legacy acl tokens from a backup file and restores them to consul
+func (c *Command) restoreLegacyACLs() (int, error) {
 	var acls []*api.ACLEntry // acl tokens
 	var count int            // token count
 	var data []byte          // read json data
 	var err error            // general error holder
 
 	// read json data from source
-	if data, err = common.ReadData(c.config.aclFileName, c.config.cryptKey); err != nil {
+	if data, err = common.ReadData(c.config.legacyACLFileName, c.config.cryptKey); err != nil {
 		return 0, err
 	}
 
@@ -84,7 +149,7 @@ func (c *Command) restoreACLs() (int, error) {
 	for _, acl := range acls {
 		// write token
 		if _, _, err = c.consulClient.ACL().Create(acl, nil); err != nil {
-			c.Log.Printf("[Warning] Failed to restore ACL token %s: %s",
+			c.Log.Printf("[Warning] Failed to restore legacy ACL token %s: %s",
 				acl.Name, err.Error())
 		} else {
 			// success - increment count

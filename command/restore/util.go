@@ -37,6 +37,10 @@ func (c *Command) setupFlags(args []string) error {
 		"Do not attempt to restore kv data")
 	cmdFlags.StringVar(&c.config.aclFileName, "acls", "",
 		"Optional source filename for acl tokens")
+	cmdFlags.StringVar(&c.config.aclPolicyFileName, "policies", "",
+		"Optional source filename for acl policies")
+	cmdFlags.StringVar(&c.config.aclFileName, "legacy-acls", "",
+		"Optional source filename for legacy acl tokens")
 	cmdFlags.StringVar(&c.config.queryFileName, "queries", "",
 		"Optional source filename for query definitions")
 	cmdFlags.StringVar(&c.config.pathTransform, "transform", "",

@@ -10,15 +10,17 @@ import (
 
 // primary configuration
 type config struct {
-	fileName      string
-	cryptKey      string
-	noKV          bool
-	aclFileName   string
-	queryFileName string
-	pathTransform string
-	delTree       bool
-	consulPrefix  string
-	consulConfig  *ccns.Config
+	fileName          string
+	cryptKey          string
+	noKV              bool
+	aclFileName       string
+	aclPolicyFileName string
+	legacyACLFileName string
+	queryFileName     string
+	pathTransform     string
+	delTree           bool
+	consulPrefix      string
+	consulConfig      *ccns.Config
 }
 
 // Command is a Command implementation that runs the backup operation
@@ -49,6 +51,19 @@ func (c *Command) Run(args []string) int {
 		return 1
 	}
 
+	// warn if restoring ACLs without policies
+	if c.config.aclFileName != "" && c.config.aclPolicyFileName == "" {
+		c.Log.Printf("[Warning] Restoring ACL tokens but not policies.  " +
+			"You must specify a 'policies' file to restore ACL policies")
+	}
+
+	// warn in change of behavior for ACL option
+	if c.config.aclFileName != "" {
+		c.Log.Printf("[Warning] The behavior of the 'acls' option has changed.  " +
+			"This option now only restores new (1.4.0+) ACL tokens.  " +
+			"To restore legacy ACLs please use the 'legacy-acls' option.")
+	}
+
 	// build client
 	if c.consulClient, err = c.config.consulConfig.New(); err != nil {
 		c.Log.Printf("[Error] Failed initialize consul client: %s", err.Error())
@@ -76,9 +91,9 @@ func (c *Command) Run(args []string) int {
 			c.config.consulPrefix)
 	}
 
-	// restore acls if requested
+	// restore new-style acls if requested
 	if c.config.aclFileName != "" {
-		if count, err = c.restoreACLs(); err != nil {
+		if count, err = c.restoreACLTokens(); err != nil {
 			c.Log.Printf("[Error] Failed to restore ACL tokens: %s", err.Error())
 			return 1
 		}
@@ -86,7 +101,35 @@ func (c *Command) Run(args []string) int {
 		// show success
 		c.Log.Printf("[Success] Restored %d ACL tokens from %s to %s",
 			count,
-			c.config.aclFileName,
+			c.config.consulConfig.Address,
+			c.config.aclFileName)
+	}
+
+	// restore new-style acl policies if requested
+	if c.config.aclPolicyFileName != "" {
+		if count, err = c.restoreACLPolicies(); err != nil {
+			c.Log.Printf("[Error] Failed to restore ACL policies: %s", err.Error())
+			return 1
+		}
+
+		// show success
+		c.Log.Printf("[Success] Restored %d ACL policies from %s to %s",
+			count,
+			c.config.consulConfig.Address,
+			c.config.aclPolicyFileName)
+	}
+
+	// restore legacy acls if requested
+	if c.config.legacyACLFileName != "" {
+		if count, err = c.restoreLegacyACLs(); err != nil {
+			c.Log.Printf("[Error] Failed to restore legacy ACL tokens: %s", err.Error())
+			return 1
+		}
+
+		// show success
+		c.Log.Printf("[Success] Restored %d legacy ACL tokens from %s to %s",
+			count,
+			c.config.legacyACLFileName,
 			c.config.consulConfig.Address)
 	}
 
@@ -124,7 +167,9 @@ Options:
 	-file            Source filename or S3 location (default: "consul.bak")
 	-key             Passphrase for data encryption and signature validation (default: "password")
 	-nokv            Do not attempt to restore kv data
-	-acls            Optional source filename or S3 location for acl tokens
+	-acls            Optional source filename or S3 location for new (1.4.0+) acl tokens
+	-policies        Optional source filename or S3 location for new (1.4.0+) acl policies
+	-legacy-acls     Optional source filename or S3 location for legacy acl tokens
 	-queries         Optional source filename or S3 location for query definitions
 	-transform       Optional path transformation (oldPath,newPath...)
 	-delete          Delete all keys under specified prefix prior to restoration (default: false)

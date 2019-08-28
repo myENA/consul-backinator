@@ -38,12 +38,18 @@ func (c *Command) setupFlags(args []string) error {
 		"Do not attempt to backup kv data")
 	cmdFlags.StringVar(&c.config.aclFileName, "acls", "",
 		"Optional backup filename for acl tokens")
+	cmdFlags.StringVar(&c.config.aclPolicyFileName, "policies", "",
+		"Optional backup filename for acl policies")
+	cmdFlags.StringVar(&c.config.legacyACLFileName, "legacy-acls", "",
+		"Optional backup filename for legacy acl tokens")
 	cmdFlags.StringVar(&c.config.queryFileName, "queries", "",
 		"Optional backup filename for query definitions")
 	cmdFlags.StringVar(&c.config.pathTransform, "transform", "",
 		"Optional path transformation")
 	cmdFlags.StringVar(&c.config.consulPrefix, "prefix", "/",
 		"Optional prefix from under which all keys will be fetched")
+	cmdFlags.StringVar(&c.config.pathExclude, "exclude", "",
+		"Optional list of excluded paths")
 
 	// add shared flags
 	cc.AddSharedConsulFlags(cmdFlags, c.config.consulConfig)

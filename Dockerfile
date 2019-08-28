@@ -1,15 +1,14 @@
-FROM alpine:latest
-ENV GOPATH /opt/go
-ENV SRCPATH $GOPATH/src/github.com/myENA/consul-backinator
-COPY . $SRCPATH
+FROM golang:alpine as build
+ENV BLDPATH /opt/consul-backinator
+COPY . $BLDPATH
 RUN \
-	apk add --no-cache --no-progress ca-certificates bash git glide go musl-dev && \
-	mkdir -p $GOPATH/bin && \
-	export PATH=$GOPATH/bin:$PATH && \
-	cd $SRCPATH && \
+	apk add --no-cache --no-progress ca-certificates bash git musl-dev && \
+	cd $BLDPATH && \
 	chmod +x build/build.sh && \
-	build/build.sh -i && \
-	mv consul-backinator /usr/local/bin/consul-backinator && \
-	apk del --no-cache --no-progress --purge bash git glide go musl-dev && \
-	rm -rf $GOPATH /tmp/* /root/.glide
+	build/build.sh && \
+	mv consul-backinator /usr/local/bin/consul-backinator
+
+FROM alpine:latest
+COPY --from=build /usr/local/bin/consul-backinator /usr/local/bin/consul-backinator
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 ENTRYPOINT ["/usr/local/bin/consul-backinator"]

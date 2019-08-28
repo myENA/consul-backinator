@@ -1,9 +1,8 @@
 language: go
 
 go:
-  - 1.10.x
-  - 1.9.x
-  - 1.8.x
+  - 1.11.x
+  - 1.12.x
 
 branches:
   only:
@@ -13,7 +12,7 @@ sudo: false
 dist: trusty
 
 env:
-  - CONSUL_VERSION=1.2.0 GLIDE_VERSION=0.13.1
+  - CONSUL_VERSION=1.6.0
 
 notifications:
   webhooks:
@@ -28,7 +27,6 @@ install:
   - export PATH="$HOME/bin:$PATH"
   - curl -L "https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip" | funzip > $HOME/bin/consul
   - chmod +x $HOME/bin/consul
-  - curl -L "https://github.com/Masterminds/glide/releases/download/v${GLIDE_VERSION}/glide-v${GLIDE_VERSION}-linux-amd64.tar.gz" | tar -C $HOME/bin -vxz --strip=1 linux-amd64/glide
 
 script:
   - make build check test

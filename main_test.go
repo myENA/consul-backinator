@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/consul/api"
-	"github.com/hashicorp/consul/testutil"
+	"github.com/hashicorp/consul/sdk/testutil"
 	"github.com/mitchellh/cli"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
@@ -29,10 +29,12 @@ type BackinatorTestSuite struct {
 	TestTarget                  *testutil.TestServer
 	TestSourceClient            *api.Client
 	TestSourceClientConfig      *api.Config
-	TestACLEntry                *api.ACLEntry
+	TestLegacyACLEntry          *api.ACLEntry
 	TestPreparedQueryDefinition *api.PreparedQueryDefinition
 	TestKeyFile                 string
 	TestACLFile                 string
+	TestACLPolicyFile           string
+	TestLegacyACLFile           string
 	TestQueryFile               string
 }
 
@@ -87,14 +89,14 @@ func (suite *BackinatorTestSuite) SetupSuite() {
 	}
 
 	// populate dummy acl entry
-	suite.TestACLEntry = &api.ACLEntry{
+	suite.TestLegacyACLEntry = &api.ACLEntry{
 		Name:  "myCustomACL",
 		Type:  "client",
 		Rules: `key "" { policy = "read" } key "foo/" { policy = "write" } key "foo/private/" { policy = "deny" } operator = "read"`,
 	}
 
-	// push a custom acl
-	aclID, _, err = suite.TestSourceClient.ACL().Create(suite.TestACLEntry, nil)
+	// push a custom legacy acl
+	aclID, _, err = suite.TestSourceClient.ACL().Create(suite.TestLegacyACLEntry, nil)
 
 	// check return
 	assert.NoError(suite.T(), err, "api acl operation returned error")
@@ -132,6 +134,8 @@ func (suite *BackinatorTestSuite) SetupSuite() {
 
 	// setup temporary files
 	suite.TestACLFile = mktemp(appName + ".acls")
+	suite.TestACLPolicyFile = mktemp(appName + ".pols")
+	suite.TestLegacyACLFile = mktemp(appName + ".legacy-acls")
 	suite.TestQueryFile = mktemp(appName + ".pqs")
 	suite.TestKeyFile = mktemp(appName + ".bak")
 }
@@ -146,6 +150,10 @@ func (suite *BackinatorTestSuite) TearDownSuite() {
 	os.Remove(suite.TestKeyFile + ".sig")
 	os.Remove(suite.TestACLFile)
 	os.Remove(suite.TestACLFile + ".sig")
+	os.Remove(suite.TestACLPolicyFile)
+	os.Remove(suite.TestACLPolicyFile + ".sig")
+	os.Remove(suite.TestLegacyACLFile)
+	os.Remove(suite.TestLegacyACLFile + ".sig")
 	os.Remove(suite.TestQueryFile)
 	os.Remove(suite.TestQueryFile + ".sig")
 	suite.T().Log("Done!")
@@ -166,6 +174,10 @@ func (suite *BackinatorTestSuite) Test01Backup() {
 		MySecretKey,
 		"-acls",
 		suite.TestACLFile,
+		"-policies",
+		suite.TestACLPolicyFile,
+		"-legacy-acls",
+		suite.TestLegacyACLFile,
 		"-queries",
 		suite.TestQueryFile,
 		"-addr",
@@ -206,6 +218,10 @@ func (suite *BackinatorTestSuite) Test02Restore() {
 		MySecretKey,
 		"-acls",
 		suite.TestACLFile,
+		"-policies",
+		suite.TestACLPolicyFile,
+		"-legacy-acls",
+		suite.TestLegacyACLFile,
 		"-queries",
 		suite.TestQueryFile,
 		"-addr",
