@@ -90,12 +90,23 @@ consul-backinator user with IAM permissions to just this bucket for security pur
 
 Releases after 1.4 will be accompanied by a GPG signed SHA256SUM file.
 
+Releases from 1.6.6 will use this GPG key:
+
+````
+Education Networks of America (ENA github code signing key) <rd@ena.com>
+````
+
+The public key [720E001BD902187F83763C62C924F0AC9DA36FEB](https://pgp.key-server.io/search/0x720E001BD902187F83763C62C924F0AC9DA36FEB)
+is available via public servers and [gpg/rd@ena.com.asc](gpg/rd@ena.com.asc) in this repository.
+
+
+For previous releases, they are signed by this key:
 ````
 ENA R&D Team (ENA R&D code signing key) <r&d@ena.com> 73F17750
 ````
 
-The public key [62859FAD5BAEA13C3839D5053CA59EE673F17750](http://pgp.key-server.io/search/0x62859FAD5BAEA13C3839D5053CA59EE673F17750)
-is available via public servers and [gpg/r&d@ena.com.asc](gpg/r&d@ena.com.asc) in this repository.
+This old key is still available at [62859FAD5BAEA13C3839D5053CA59EE673F17750](http://pgp.key-server.io/search/0x62859FAD5BAEA13C3839D5053CA59EE673F17750)
+via public servers.
 
 When verifying releases please note that only the SHA256SUM file is signed with the GPG key.
 The following process should be more than satisfactory to verify the authenticity of any release.
@@ -106,14 +117,14 @@ Using the key downloaded from the public server or contained in this repository 
 should import the gpg key into your local key store.
 
 ```
-gpg --import "r&d@ena.com.asc"
+gpg --import "rd@ena.com.asc"
 ```
 
 Next, with the release archive, shasum and signature file downloaded you should
 verify integrity of the checksum file using the GPG signature.
 
 ```
-gpg --verify consul-backinator-1.5-SHA256SUMS.sig consul-backinator-1.5-SHA256SUMS
+gpg --verify consul-backinator-1.6.6-SHA256SUMS.sig consul-backinator-1.6.6-SHA256SUMS
 ```
 
 Finally, ensure the downloaded archive matches the verified checksums file.
