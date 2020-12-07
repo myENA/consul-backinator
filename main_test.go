@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/consul/api"
-	"github.com/hashicorp/consul/testutil"
+	"github.com/hashicorp/consul/sdk/testutil"
 	"github.com/mitchellh/cli"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
@@ -52,25 +52,25 @@ func (suite *BackinatorTestSuite) SetupSuite() {
 	var queryID string // query identifier
 
 	// create source consul server
-	if suite.TestSource, err = testutil.NewTestServerConfig(
+	if suite.TestSource, err = testutil.NewTestServerConfigT(
+		suite.T(),
 		func(c *testutil.TestServerConfig) {
 			c.Datacenter = "test-source"
 			c.ACLDatacenter = "test-source"
 			c.ACLDefaultPolicy = "allow"
 			c.ACLMasterToken = MyAwesomeToken
-			c.Performance.RaftMultiplier = 5
 		}); err != nil {
 		suite.T().Fatal(err)
 	}
 
 	// create target consul server
-	if suite.TestTarget, err = testutil.NewTestServerConfig(
+	if suite.TestTarget, err = testutil.NewTestServerConfigT(
+		suite.T(),
 		func(c *testutil.TestServerConfig) {
 			c.Datacenter = "test-target"
 			c.ACLDatacenter = "test-target"
 			c.ACLDefaultPolicy = "allow"
 			c.ACLMasterToken = MyAwesomeToken
-			c.Performance.RaftMultiplier = 5
 		}); err != nil {
 		suite.T().Fatal(err)
 	}

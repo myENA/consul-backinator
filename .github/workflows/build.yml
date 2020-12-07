@@ -1,0 +1,29 @@
+on: [ push, pull_request ]
+name: Build
+jobs:
+  build:
+    env:
+      CONSUL_VERSION: 1.9.0
+    strategy:
+      matrix:
+        go-version: [ 1.14.x, 1.15.x ]
+        os: [ ubuntu-latest ]
+    runs-on: ${{matrix.os}}
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install Consul
+        run: |
+          mkdir -p $HOME/bin
+          curl -L "https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip" | funzip > $HOME/bin/consul
+          chmod 755 $HOME/bin/consul
+      - name: Test
+
+        run: |
+          export PATH=$PATH:$HOME/bin
+          make build check test
+

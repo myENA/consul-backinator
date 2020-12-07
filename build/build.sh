@@ -2,26 +2,16 @@
 #
 ## package declarations
 BUILD_NAME="consul-backinator"
-RELEASE_VERSION="1.6.5"
+RELEASE_VERSION="1.6.6"
 RELEASE_BUILD=0
 
 ## simple usage example
 showUsage() {
-	printf "Usage: $0 [-u|-i|-d]
-	-u    Update vendor directory from glide.yaml using 'glide up' and build
-	-i    Install vendor directory from glide.lock using 'glide install' and build
-	-d    Remove existing glide.lock and vendor directory and exit
+	printf "Usage: $0 [-b|-i|-d]
+	-b    issue go build
+	-i    issue go install
 	-r    Build and package release binaries\n\n"
 	exit 0
-}
-
-## install glide if needed
-ensureGlide() {
-	which glide > /dev/null 2>&1
-	if [ $? -ne 0 ]; then
-		printf "Installing glide ... "
-		go get github.com/Masterminds/glide
-	fi
 }
 
 ## install gox if needed
@@ -39,21 +29,11 @@ should_exit=false
 ## read options
 while getopts ":uidcr" opt; do
 	case $opt in
-		u)
-			ensureGlide
-			printf "Updating vendor directory ... "
-			glide -q up > /dev/null 2>&1
+		b)
+			go build
 		;;
 		i)
-			ensureGlide
-			printf "Installing from glide.lock ... "
-			glide -q install > /dev/null 2>&1
-		;;
-		d)
-			printf "Removing binary, glide.lock and vendor directory ... "
-			rm -rf "${BUILD_NAME}" glide.lock vendor
-			printf "done.\n"
-			should_exit=true
+			go install
 		;;
 		c)
 			printf "Cleaning dist directory ... "
@@ -89,7 +69,7 @@ if [ $RELEASE_BUILD -eq 1 ]; then
 
 	## call gox to build our binaries
 	CGO_ENABLED=0 gox \
-	-osarch="linux/amd64 darwin/amd64 freebsd/amd64 windows/amd64 windows/386" \
+	-osarch="linux/amd64 linux/arm64 darwin/amd64 freebsd/amd64 windows/amd64 windows/386" \
 	-ldflags="-X main.appVersion=${RELEASE_VERSION} -s -w" \
 	-output="./dist/${BUILD_NAME}-${RELEASE_VERSION}-{{.Arch}}-{{.OS}}/${BUILD_NAME}-${RELEASE_VERSION}" \
 	> /dev/null >&1
@@ -103,7 +83,7 @@ else
 	printf "Building ... "
 
 	## build it
-	CGO_ENABLED=0 go build -o "${BUILD_NAME}" \
+ 	CGO_ENABLED=0 go build -o "${BUILD_NAME}" \
 	-ldflags="-X main.appVersion=${RELEASE_VERSION} -s -w" \
 	> /dev/null >&1
 
@@ -133,7 +113,7 @@ if [ $RELEASE_BUILD -eq 1 ]; then
 
 	## generate checksums and sign
 	shasum -a256 *.tar.gz *.zip >> ${BUILD_NAME}-${RELEASE_VERSION}-SHA256SUMS
-	gpg2 -u "r&d@ena.com" -b ${BUILD_NAME}-${RELEASE_VERSION}-SHA256SUMS > /dev/null >&1
+	gpg -u "rd@ena.com" -b ${BUILD_NAME}-${RELEASE_VERSION}-SHA256SUMS > /dev/null >&1
 	popd > /dev/null >&1
 
 	## all done
