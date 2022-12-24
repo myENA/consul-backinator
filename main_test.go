@@ -29,7 +29,8 @@ type BackinatorTestSuite struct {
 	TestTarget                  *testutil.TestServer
 	TestSourceClient            *api.Client
 	TestSourceClientConfig      *api.Config
-	TestACLEntry                *api.ACLEntry
+	TestACLPolicy               *api.ACLPolicy
+	TestACLToken                *api.ACLToken
 	TestPreparedQueryDefinition *api.PreparedQueryDefinition
 	TestKeyFile                 string
 	TestACLFile                 string
@@ -48,7 +49,6 @@ func mktemp(prefix string) string {
 
 func (suite *BackinatorTestSuite) SetupSuite() {
 	var err error      // error holder
-	var aclID string   // acl identifier
 	var queryID string // query identifier
 
 	// create source consul server
@@ -58,7 +58,7 @@ func (suite *BackinatorTestSuite) SetupSuite() {
 			c.Datacenter = "test-source"
 			c.ACLDatacenter = "test-source"
 			c.ACLDefaultPolicy = "allow"
-			c.ACLMasterToken = MyAwesomeToken
+			c.ACL.Tokens.InitialManagement = MyAwesomeToken
 		}); err != nil {
 		suite.T().Fatal(err)
 	}
@@ -70,7 +70,7 @@ func (suite *BackinatorTestSuite) SetupSuite() {
 			c.Datacenter = "test-target"
 			c.ACLDatacenter = "test-target"
 			c.ACLDefaultPolicy = "allow"
-			c.ACLMasterToken = MyAwesomeToken
+			c.ACL.Tokens.InitialManagement = MyAwesomeToken
 		}); err != nil {
 		suite.T().Fatal(err)
 	}
@@ -86,19 +86,32 @@ func (suite *BackinatorTestSuite) SetupSuite() {
 		suite.T().Fatal(err)
 	}
 
-	// populate dummy acl entry
-	suite.TestACLEntry = &api.ACLEntry{
-		Name:  "myCustomACL",
-		Type:  "client",
+	// create acl policy definition
+	policyDef := &api.ACLPolicy{
+		Name:  "myCustomACLPolicy",
 		Rules: `key "" { policy = "read" } key "foo/" { policy = "write" } key "foo/private/" { policy = "deny" } operator = "read"`,
 	}
 
+	suite.TestACLPolicy, _, err = suite.TestSourceClient.ACL().PolicyCreate(policyDef, nil)
+
+	// check return
+	assert.NoError(suite.T(), err, "api acl policy operation returned error")
+	assert.NotEmpty(suite.T(), suite.TestACLPolicy, "api acl policy operation returned empty")
+
 	// push a custom acl
-	aclID, _, err = suite.TestSourceClient.ACL().Create(suite.TestACLEntry, nil)
+	tokenDef := &api.ACLToken{
+		Description: "myCustomACL",
+		Policies: []*api.ACLTokenPolicyLink{
+			{
+				ID: suite.TestACLPolicy.ID,
+			},
+		},
+	}
+	suite.TestACLToken, _, err = suite.TestSourceClient.ACL().TokenCreate(tokenDef, nil)
 
 	// check return
 	assert.NoError(suite.T(), err, "api acl operation returned error")
-	assert.NotEmpty(suite.T(), aclID, "api acl operation returned empty")
+	assert.NotEmpty(suite.T(), suite.TestACLToken, "api acl operation returned empty")
 
 	// populate dummy prepared query
 	suite.TestPreparedQueryDefinition = &api.PreparedQueryDefinition{

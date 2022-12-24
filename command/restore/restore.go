@@ -65,10 +65,12 @@ func (c *Command) restoreKeys() (int, error) {
 
 // restoreACLs reads acl tokens from a backup file and restores them to consul
 func (c *Command) restoreACLs() (int, error) {
-	var acls []*api.ACLEntry // acl tokens
-	var count int            // token count
-	var data []byte          // read json data
-	var err error            // general error holder
+	var aclData common.BackupACLData // acl tokens
+	var roleCount int                // role count
+	var policyCount int              // policy count
+	var tokenCount int               // token count
+	var data []byte                  // read json data
+	var err error                    // general error holder
 
 	// read json data from source
 	if data, err = common.ReadData(c.config.aclFileName, c.config.cryptKey); err != nil {
@@ -76,24 +78,47 @@ func (c *Command) restoreACLs() (int, error) {
 	}
 
 	// decode data
-	if err = json.Unmarshal(data, &acls); err != nil {
+	if err = json.Unmarshal(data, &aclData); err != nil {
 		return 0, err
 	}
 
-	// loop through acls
-	for _, acl := range acls {
-		// write token
-		if _, _, err = c.consulClient.ACL().Create(acl, nil); err != nil {
-			c.Log.Printf("[Warning] Failed to restore ACL token %s: %s",
-				acl.Name, err.Error())
+	// loop through acl roles
+	for _, role := range aclData.Roles {
+		// write role
+		if _, _, err = c.consulClient.ACL().RoleCreate(role, nil); err != nil {
+			c.Log.Printf("[Warning] Failed to restore ACL role %s: %v",
+				role.Name, err)
 		} else {
 			// success - increment count
-			count++
+			roleCount++
 		}
 	}
 
-	// return acl count - no error
-	return count, nil
+	// loop through acl policies
+	for _, policy := range aclData.Policies {
+		if _, _, err := c.consulClient.ACL().PolicyCreate(policy, nil); err != nil {
+			c.Log.Printf("[Warning] Failed to restore ACL policy %s: %v",
+				policy.Name, err)
+		} else {
+			// success - increment count
+			policyCount++
+		}
+	}
+
+	// loop through acl tokens
+	for _, token := range aclData.Tokens {
+		// write token
+		if _, _, err = c.consulClient.ACL().TokenCreate(token, nil); err != nil {
+			c.Log.Printf("[Warning] Failed to restore ACL token with description %q: %v",
+				token.Description, err)
+		} else {
+			// success - increment count
+			tokenCount++
+		}
+	}
+
+	// return restored acl items count - no error
+	return roleCount + policyCount + tokenCount, nil
 }
 
 // restoreQueries reads query definitions from a backup file and restores them to consul

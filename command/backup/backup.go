@@ -54,11 +54,20 @@ func (c *Command) backupKeys() (int, error) {
 
 // backupACLs fetches acl tokens consul and writes them to a backup file
 func (c *Command) backupACLs() (int, error) {
-	var acls []*api.ACLEntry   // list of acl tokens
-	var opts *api.QueryOptions // client query options
-	var count int              // token count
-	var data []byte            // read tokens
-	var err error              // general error holder
+	var aclData *common.BackupACLData // storage for acl data
+	var opts *api.QueryOptions        // client query options
+	var roleCount int                 // role count
+	var policyCount int               // policy count
+	var tokenCount int                // token count
+	var data []byte
+	var err error // general error holder
+
+	// build backup acl data type
+	aclData = &common.BackupACLData{
+		Roles:    make([]*api.ACLRole, 0),
+		Policies: make([]*api.ACLPolicy, 0),
+		Tokens:   make([]*api.ACLToken, 0),
+	}
 
 	// build query options
 	opts = &api.QueryOptions{
@@ -66,31 +75,57 @@ func (c *Command) backupACLs() (int, error) {
 		RequireConsistent: true,
 	}
 
-	// get all acl tokens
-	if acls, _, err = c.consulClient.ACL().List(opts); err != nil {
+	// get all acl roles
+	if aclData.Roles, _, err = c.consulClient.ACL().RoleList(opts); err != nil {
 		return 0, err
 	}
+	// get all acl policies
+	if policies, _, err := c.consulClient.ACL().PolicyList(opts); err != nil {
+		return 0, err
+	} else {
+		for _, policy := range policies {
+			if aclPolicy, _, err := c.consulClient.ACL().PolicyRead(policy.ID, opts); err != nil {
+				return 0, err
+			} else {
+				aclData.Policies = append(aclData.Policies, aclPolicy)
+			}
+		}
+	}
+	// get all acl tokens
+	if tokens, _, err := c.consulClient.ACL().TokenList(opts); err != nil {
+		return 0, err
+	} else {
+		for _, token := range tokens {
+			if aclToken, _, err := c.consulClient.ACL().TokenRead(token.AccessorID, opts); err != nil {
+				return 0, err
+			} else {
+				aclData.Tokens = append(aclData.Tokens, aclToken)
+			}
+		}
+	}
 
-	// set count
-	count = len(acls)
+	// set counts
+	roleCount = len(aclData.Roles)
+	policyCount = len(aclData.Policies)
+	tokenCount = len(aclData.Tokens)
 
-	// check count
-	if count == 0 {
-		return 0, errors.New("No tokens found")
+	// check tokenCount
+	if tokenCount == 0 && roleCount == 0 && policyCount == 0 {
+		return 0, errors.New("no acl tokens, roles, or policies found")
 	}
 
 	// encode and return
-	if data, err = json.MarshalIndent(acls, "", "  "); err != nil {
+	if data, err = json.MarshalIndent(aclData, "", "  "); err != nil {
 		return 0, err
 	}
 
-	// write data to destination
+	// write acls to destination
 	if err = common.WriteData(c.config.aclFileName, c.config.cryptKey, data); err != nil {
 		return 0, err
 	}
 
-	// return token count - no error
-	return count, nil
+	// return token tokenCount - no error
+	return roleCount + policyCount + tokenCount, nil
 }
 
 // backupQueries fetches prepared query definitions from consul and writes them to a backup file

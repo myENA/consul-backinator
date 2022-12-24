@@ -79,12 +79,12 @@ func (c *Command) Run(args []string) int {
 	// restore acls if requested
 	if c.config.aclFileName != "" {
 		if count, err = c.restoreACLs(); err != nil {
-			c.Log.Printf("[Error] Failed to restore ACL tokens: %s", err.Error())
+			c.Log.Printf("[Error] Failed to restore ACL items: %s", err.Error())
 			return 1
 		}
 
 		// show success
-		c.Log.Printf("[Success] Restored %d ACL tokens from %s to %s",
+		c.Log.Printf("[Success] Restored %d ACL roles, policies, and tokens from %s to %s",
 			count,
 			c.config.aclFileName,
 			c.config.consulConfig.Address)
