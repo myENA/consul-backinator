@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-
 ## ensure we have the misspell tool
 ## https://github.com/client9/misspell
 if ! misspell=$(type -p "${GOPATH}/bin/misspell"); then
 	echo -n "Installing misspell ... "
-	go get -u github.com/client9/misspell/cmd/misspell
+	go install github.com/client9/misspell/cmd/misspell@latest
 	echo "done"
 	misspell=$(type -p "${GOPATH}/bin/misspell")
 fi
